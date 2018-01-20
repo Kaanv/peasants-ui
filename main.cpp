@@ -3,8 +3,8 @@
 #include <SDL/SDL_opengl.h>
 #include <SDL/SDL_ttf.h>
 #include <SDL/SDL_image.h>
-
-using namespace std;
+#include <vector>
+#include <memory>
 
 struct Resolution
 {
@@ -287,6 +287,25 @@ enum PollingPlace
     PollingPlace_Exit
 };
 
+class Button
+{
+public:
+    Button();
+    void update();
+private:
+    TTF_Font* font;
+    SDL_Color textColor;
+};
+
+Button::Button()
+    : font(TTF_OpenFont("Fonts//font.ttf", 40))
+{}
+
+void Button::update()
+{
+
+}
+
 class Menu
 {
 public:
@@ -296,26 +315,62 @@ public:
 class MainMenu : public Menu
 {
 public:
+    MainMenu(int x, int y);
     PollingPlace enter();
 private:
     PollingPlace startEventPoll();
     void updateScreen();
+    void updateButtonsOnMotion(int x, int y);
 
+    std::vector<Button> buttons;
     SDL_Event event;
+    int x, y;
 };
+
+MainMenu::MainMenu(int x, int y)
+{
+    this->x = x;
+    this->y = y;
+}
 
 PollingPlace MainMenu::enter()
 {
-    return startEventPoll();
+    PollingPlace currentPlace = PollingPlace_MainMenu;
+    while (currentPlace == PollingPlace_MainMenu)
+    {
+        currentPlace = startEventPoll();
+    }
+    return currentPlace;
 }
 
 PollingPlace MainMenu::startEventPoll()
 {
-    while(SDL_PollEvent(&event))
+    while (SDL_PollEvent(&event))
     {
-        if(event.type == SDL_QUIT) return PollingPlace_Exit;
+        if (event.type == SDL_QUIT) return PollingPlace_Exit;
+        else if (event.type == SDL_ACTIVEEVENT &&
+                 event.active.state & SDL_APPACTIVE &&
+                 event.active.gain != 0) updateScreen();
+        else if (event.type == SDL_VIDEOEXPOSE) updateScreen();
+        else if (event.type == SDL_MOUSEMOTION)
+        {
+            updateButtonsOnMotion(event.motion.x, event.motion.y);
+        }
     }
     return PollingPlace_MainMenu;
+}
+
+void MainMenu::updateScreen()
+{
+    for (auto& button : buttons)
+    {
+        button.update();
+    }
+}
+
+void MainMenu::updateButtonsOnMotion(int x, int y)
+{
+
 }
 
 int main()
@@ -323,7 +378,7 @@ int main()
     Resolution resolution{800, 600};
     SDL_Surface *screen = init(resolution.x, resolution.y);
     PollingPlace currentPlace = PollingPlace_MainMenu;
-    MainMenu mainMenu;
+    MainMenu mainMenu(10, 10);
 
     while (currentPlace != PollingPlace_Exit)
     {
