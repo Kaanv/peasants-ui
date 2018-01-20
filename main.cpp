@@ -290,18 +290,32 @@ enum PollingPlace
 class Menu
 {
 public:
-    virtual void startEventPoll() = 0;
+    virtual PollingPlace enter() = 0;
 };
 
 class MainMenu : public Menu
 {
 public:
-    void startEventPoll();
+    PollingPlace enter();
+private:
+    PollingPlace startEventPoll();
+    void updateScreen();
+
+    SDL_Event event;
 };
 
-void MainMenu::startEventPoll()
+PollingPlace MainMenu::enter()
 {
+    return startEventPoll();
+}
 
+PollingPlace MainMenu::startEventPoll()
+{
+    while(SDL_PollEvent(&event))
+    {
+        if(event.type == SDL_QUIT) return PollingPlace_Exit;
+    }
+    return PollingPlace_MainMenu;
 }
 
 int main()
@@ -313,9 +327,7 @@ int main()
 
     while (currentPlace != PollingPlace_Exit)
     {
-        mainMenu.startEventPoll();
-        SDL_Delay(2000);
-        currentPlace = PollingPlace_Exit;
+        currentPlace = mainMenu.enter();
     }
 
     delete screen;
