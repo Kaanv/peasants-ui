@@ -281,10 +281,43 @@ SDLKey intToSDLKey(int keyNumber)
     }
 }
 
+enum PollingPlace
+{
+    PollingPlace_MainMenu,
+    PollingPlace_Exit
+};
+
+class Menu
+{
+public:
+    virtual void startEventPoll() = 0;
+};
+
+class MainMenu : public Menu
+{
+public:
+    void startEventPoll();
+};
+
+void MainMenu::startEventPoll()
+{
+
+}
+
 int main()
 {
     Resolution resolution{800, 600};
     SDL_Surface *screen = init(resolution.x, resolution.y);
+    PollingPlace currentPlace = PollingPlace_MainMenu;
+    MainMenu mainMenu;
 
+    while (currentPlace != PollingPlace_Exit)
+    {
+        mainMenu.startEventPoll();
+        SDL_Delay(2000);
+        currentPlace = PollingPlace_Exit;
+    }
+
+    delete screen;
     return 0;
 }
