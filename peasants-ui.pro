@@ -11,4 +11,10 @@ LIBS += -lGLEW
 LIBS += -lGLU
 LIBS += -lGL
 
-SOURCES += main.cpp
+SOURCES += main.cpp \
+    textures.cpp \
+    text.cpp
+
+HEADERS += \
+    textures.hpp \
+    text.hpp

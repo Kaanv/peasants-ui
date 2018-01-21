@@ -5,6 +5,8 @@
 #include <SDL/SDL_image.h>
 #include <vector>
 #include <memory>
+#include "textures.hpp"
+#include "text.hpp"
 
 struct Resolution
 {
@@ -287,21 +289,115 @@ enum PollingPlace
     PollingPlace_Exit
 };
 
+struct Position
+{
+    double x, y;
+};
+
+struct Dimensions
+{
+    double width, height;
+};
+
+void drawRectangle(Dimensions dimensions, Position position)
+{
+    glBegin(GL_QUADS);
+    glVertex3f(position.x, position.y, 0.0);
+    glVertex3f(position.x + dimensions.width, position.y, 0.0);
+    glVertex3f(position.x + dimensions.width,
+               position.y - dimensions.height, 0.0);
+    glVertex3f(position.x, position.y - dimensions.height, 0.0);
+    glEnd();
+}
+
+void turnOnTextureMode(GLuint texture)
+{
+    glColor3f(1.0, 1.0, 1.0);
+    glEnable(GL_TEXTURE_2D);
+    glMatrixMode(GL_TEXTURE);
+    glBindTexture(GL_TEXTURE_2D, texture);
+}
+
+void turnOffTextureMode()
+{
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    glDisable( GL_TEXTURE_2D );
+}
+
+void drawTexturedRectangle(Dimensions dimensions, Position position)
+{
+    glBegin(GL_QUADS);
+    glTexCoord2f(0.0, 0.0);
+    glVertex3f(position.x, position.y, 0.0);
+    glTexCoord2f(1.0, 0.0);
+    glVertex3f(position.x + dimensions.width, position.y, 0.0);
+    glTexCoord2f(1.0, 1.0);
+    glVertex3f(position.x + dimensions.width,
+               position.y - dimensions.height, 0.0);
+    glTexCoord2f(0.0, 1.0);
+    glVertex3f(position.x, position.y - dimensions.height, 0.0);
+    glEnd();
+}
+
 class Button
 {
 public:
-    Button();
+    Button(Dimensions dimensions, Position positon);
     void update();
+    void handleMotion(Position position);
 private:
+    Dimensions dimensions;
+    Position position;
     TTF_Font* font;
     SDL_Color textColor;
+    GLuint lineTexture;
+    bool isUnderMouseMotion;
 };
 
-Button::Button()
-    : font(TTF_OpenFont("Fonts//font.ttf", 40))
-{}
+Button::Button(Dimensions dimensions, Position positon)
+    : font(TTF_OpenFont("Fonts//font.ttf", 40)),
+      textColor({255, 255, 255, 0}),
+      lineTexture(getTexture("Images//buttonline.png")),
+      isUnderMouseMotion(false)
+{
+    this->dimensions = dimensions;
+    this->position = positon;
+}
 
 void Button::update()
+{
+    std::cout << "Updating button" << std::endl;
+    const int fragments = 30;
+
+    if (isUnderMouseMotion) glColor3f(0.0, 0.2, 0.4);
+    else glColor3f(0.0, 0.2, 0.6);
+
+    drawRectangle({dimensions.width, dimensions.height},
+                  {position.x, position.y});
+
+    turnOnTextureMode(lineTexture);
+
+    for (int i = 0; i < fragments; i++)
+    {
+        drawTexturedRectangle(
+            {dimensions.width / fragments, dimensions.height},
+            {position.x, position.y - i/4 * (dimensions.height / fragments)});
+    }
+
+    drawTexturedRectangle({dimensions.width, dimensions.height},
+                          {position.x, position.y + 0.5});
+    turnOffTextureMode();
+
+    SDL_GL_RenderText("New game",
+                      font,
+                      textColor,
+                      position.x + dimensions.width/2.0,
+                      position.y - dimensions.height/4.0,
+                      dimensions.height);
+}
+
+void Button::handleMotion(Position position)
 {
 
 }
@@ -331,6 +427,7 @@ MainMenu::MainMenu(int x, int y)
 {
     this->x = x;
     this->y = y;
+    buttons.push_back(Button({0.7, 0.125}, {-0.35, 0.425}));
 }
 
 PollingPlace MainMenu::enter()
@@ -366,6 +463,8 @@ void MainMenu::updateScreen()
     {
         button.update();
     }
+
+    SDL_GL_SwapBuffers();
 }
 
 void MainMenu::updateButtonsOnMotion(int x, int y)
