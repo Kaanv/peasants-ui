@@ -8,6 +8,9 @@
 #include "textures.hpp"
 #include "text.hpp"
 
+const int SCREEN_WIDTH = 800;
+const int SCREEN_HEIGHT = 600;
+
 struct Resolution
 {
     int x;
@@ -345,11 +348,12 @@ class Button
 public:
     Button(Dimensions dimensions, Position positon);
     void update();
-    void handleMotion(Position position);
+    void handleMotion(const Position &position);
 private:
     void drawBorder();
     void drawVerticalBorders();
     void drawHorizontalBorders();
+    bool isInside(const Position &position);
 
     Dimensions dimensions;
     Position position;
@@ -441,9 +445,17 @@ void Button::drawHorizontalBorders()
     }
 }
 
-void Button::handleMotion(Position position)
+void Button::handleMotion(const Position &position)
 {
+    isUnderMouseMotion = isInside(position);
+}
 
+bool Button::isInside(const Position &position)
+{
+    return position.x >= this->position.x and
+           position.x <= this->position.x + this->dimensions.width and
+           position.y <= this->position.y and
+           position.y >= this->position.y - this->dimensions.height;
 }
 
 class Menu
@@ -513,7 +525,12 @@ void MainMenu::updateScreen()
 
 void MainMenu::updateButtonsOnMotion(int x, int y)
 {
-
+    for (auto& button : buttons)
+    {
+        button.handleMotion({static_cast<float>(x) * 2.0 / SCREEN_WIDTH - 1.0,
+                             static_cast<float>(-y) * 2.0 / SCREEN_HEIGHT + 1.0});
+    }
+    updateScreen();
 }
 
 int main()
