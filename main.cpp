@@ -347,9 +347,15 @@ void drawTexturedRectangle(Dimensions dimensions, Position position)
 class Button
 {
 public:
-    Button(Dimensions dimensions, Position positon, std::string caption);
-    void update();
-    void handleMotion(const Position &position);
+    Button(Dimensions dimensions,
+           Position positon,
+           std::string caption,
+           int buttonId = 0);
+    void draw();
+    void updateMotion(const Position &position);
+    void updateUnderClick();
+    bool isClicked();
+    int getButtonId();
 private:
     void drawBorder();
     void drawVerticalBorders();
@@ -360,24 +366,31 @@ private:
     Dimensions dimensions;
     Position position;
     std::string caption;
+    int buttonId;
     TTF_Font* font;
     SDL_Color textColor;
     GLuint lineTexture;
     bool isUnderMouseMotion;
+    bool isUnderClick;
 };
 
-Button::Button(Dimensions dimensions, Position positon, std::string caption)
+Button::Button(Dimensions dimensions,
+               Position positon,
+               std::string caption,
+               int buttonId)
     : font(TTF_OpenFont("Fonts//font.ttf", 40)),
       textColor({255, 255, 255, 0}),
       lineTexture(getTexture("Images//buttonline.png")),
-      isUnderMouseMotion(false)
+      isUnderMouseMotion(false),
+      isUnderClick(false)
 {
     this->dimensions = dimensions;
     this->position = positon;
     this->caption = caption;
+    this->buttonId = buttonId;
 }
 
-void Button::update()
+void Button::draw()
 {
     if (isUnderMouseMotion) glColor3f(0.0, 0.2, 0.4);
     else glColor3f(0.0, 0.2, 0.6);
@@ -450,9 +463,19 @@ void Button::drawHorizontalBorders()
     }
 }
 
-void Button::handleMotion(const Position &position)
+void Button::updateMotion(const Position &position)
 {
     isUnderMouseMotion = isInside(position);
+}
+
+void Button::updateUnderClick()
+{
+    isUnderClick = isUnderMouseMotion;
+}
+
+bool Button::isClicked()
+{
+    return isUnderClick;
 }
 
 bool Button::isInside(const Position &position)
@@ -462,6 +485,17 @@ bool Button::isInside(const Position &position)
            position.y <= this->position.y and
            position.y >= this->position.y - this->dimensions.height;
 }
+
+int Button::getButtonId()
+{
+    return buttonId;
+}
+
+enum MenuButtonId
+{
+    ButtonId_NewGame,
+    ButtonId_ExitGame
+};
 
 class Menu
 {
@@ -478,6 +512,7 @@ private:
     PollingPlace startEventPoll();
     void updateScreen();
     void updateButtonsOnMotion(int x, int y);
+    void updateButtonsClickStatus();
 
     std::vector<Button> buttons;
     SDL_Event event;
@@ -486,10 +521,13 @@ private:
 
 MainMenu::MainMenu(int x, int y)
 {
+    Dimensions defaultButtonDimensions = {0.7, 0.125};
     this->x = x;
     this->y = y;
-    buttons.push_back(Button({0.7, 0.125}, {-0.35, 0.425}, "New game"));
-    buttons.push_back(Button({0.7, 0.125}, {-0.35, 0.225}, "Exit game"));
+    buttons.push_back(Button(defaultButtonDimensions, {-0.35, 0.425},
+                             "New game", ButtonId_NewGame));
+    buttons.push_back(Button(defaultButtonDimensions, {-0.35, 0.225},
+                             "Exit game", ButtonId_ExitGame));
 }
 
 PollingPlace MainMenu::enter()
@@ -515,6 +553,21 @@ PollingPlace MainMenu::startEventPoll()
         {
             updateButtonsOnMotion(event.motion.x, event.motion.y);
         }
+        else if(event.type == SDL_MOUSEBUTTONDOWN)
+        {
+            updateButtonsClickStatus();
+        }
+        else if(event.type == SDL_MOUSEBUTTONUP)
+        {
+            for (auto& button : buttons)
+            {
+                if (button.getButtonId() == ButtonId_ExitGame and
+                    button.isClicked())
+                {
+                    return PollingPlace_Exit;
+                }
+            }
+        }
     }
     return PollingPlace_MainMenu;
 }
@@ -523,7 +576,7 @@ void MainMenu::updateScreen()
 {
     for (auto& button : buttons)
     {
-        button.update();
+        button.draw();
     }
 
     SDL_GL_SwapBuffers();
@@ -533,10 +586,18 @@ void MainMenu::updateButtonsOnMotion(int x, int y)
 {
     for (auto& button : buttons)
     {
-        button.handleMotion({static_cast<float>(x) * 2.0 / SCREEN_WIDTH - 1.0,
+        button.updateMotion({static_cast<float>(x) * 2.0 / SCREEN_WIDTH - 1.0,
                              static_cast<float>(-y) * 2.0 / SCREEN_HEIGHT + 1.0});
     }
     updateScreen();
+}
+
+void MainMenu::updateButtonsClickStatus()
+{
+    for (auto& button : buttons)
+    {
+        button.updateUnderClick();
+    }
 }
 
 int main()
