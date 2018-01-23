@@ -375,8 +375,6 @@ Button::Button(Dimensions dimensions, Position positon)
 
 void Button::update()
 {
-    std::cout << "Updating button" << std::endl;
-
     if (isUnderMouseMotion) glColor3f(0.0, 0.2, 0.4);
     else glColor3f(0.0, 0.2, 0.6);
 
