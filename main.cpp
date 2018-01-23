@@ -5,6 +5,7 @@
 #include <SDL/SDL_image.h>
 #include <vector>
 #include <memory>
+#include <string>
 #include "textures.hpp"
 #include "text.hpp"
 
@@ -346,24 +347,26 @@ void drawTexturedRectangle(Dimensions dimensions, Position position)
 class Button
 {
 public:
-    Button(Dimensions dimensions, Position positon);
+    Button(Dimensions dimensions, Position positon, std::string caption);
     void update();
     void handleMotion(const Position &position);
 private:
     void drawBorder();
     void drawVerticalBorders();
     void drawHorizontalBorders();
+    void renderCaption();
     bool isInside(const Position &position);
 
     Dimensions dimensions;
     Position position;
+    std::string caption;
     TTF_Font* font;
     SDL_Color textColor;
     GLuint lineTexture;
     bool isUnderMouseMotion;
 };
 
-Button::Button(Dimensions dimensions, Position positon)
+Button::Button(Dimensions dimensions, Position positon, std::string caption)
     : font(TTF_OpenFont("Fonts//font.ttf", 40)),
       textColor({255, 255, 255, 0}),
       lineTexture(getTexture("Images//buttonline.png")),
@@ -371,6 +374,7 @@ Button::Button(Dimensions dimensions, Position positon)
 {
     this->dimensions = dimensions;
     this->position = positon;
+    this->caption = caption;
 }
 
 void Button::update()
@@ -380,10 +384,13 @@ void Button::update()
 
     drawRectangle({dimensions.width, dimensions.height},
                   {position.x, position.y});
-
     drawBorder();
+    renderCaption();
+}
 
-    SDL_GL_RenderText("New game",
+void Button::renderCaption()
+{
+    SDL_GL_RenderText(caption.c_str(),
                       font,
                       textColor,
                       position.x + dimensions.width/2.0,
@@ -481,7 +488,8 @@ MainMenu::MainMenu(int x, int y)
 {
     this->x = x;
     this->y = y;
-    buttons.push_back(Button({0.7, 0.125}, {-0.35, 0.425}));
+    buttons.push_back(Button({0.7, 0.125}, {-0.35, 0.425}, "New game"));
+    buttons.push_back(Button({0.7, 0.125}, {-0.35, 0.225}, "Exit game"));
 }
 
 PollingPlace MainMenu::enter()
