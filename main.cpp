@@ -347,6 +347,10 @@ public:
     void update();
     void handleMotion(Position position);
 private:
+    void drawBorder();
+    void drawVerticalBorders();
+    void drawHorizontalBorders();
+
     Dimensions dimensions;
     Position position;
     TTF_Font* font;
@@ -368,7 +372,6 @@ Button::Button(Dimensions dimensions, Position positon)
 void Button::update()
 {
     std::cout << "Updating button" << std::endl;
-    const int fragments = 30;
 
     if (isUnderMouseMotion) glColor3f(0.0, 0.2, 0.4);
     else glColor3f(0.0, 0.2, 0.6);
@@ -376,18 +379,7 @@ void Button::update()
     drawRectangle({dimensions.width, dimensions.height},
                   {position.x, position.y});
 
-    turnOnTextureMode(lineTexture);
-
-    for (int i = 0; i < fragments; i++)
-    {
-        drawTexturedRectangle(
-            {dimensions.width / fragments, dimensions.height},
-            {position.x, position.y - i/4 * (dimensions.height / fragments)});
-    }
-
-    drawTexturedRectangle({dimensions.width, dimensions.height},
-                          {position.x, position.y + 0.5});
-    turnOffTextureMode();
+    drawBorder();
 
     SDL_GL_RenderText("New game",
                       font,
@@ -395,6 +387,58 @@ void Button::update()
                       position.x + dimensions.width/2.0,
                       position.y - dimensions.height/4.0,
                       dimensions.height);
+}
+
+void Button::drawBorder()
+{
+    turnOnTextureMode(lineTexture);
+    drawVerticalBorders();
+    drawHorizontalBorders();
+    turnOffTextureMode();
+}
+
+void Button::drawVerticalBorders()
+{
+    const int fragments = 20;
+    const double borderWidth = dimensions.width / 30;
+    const double fragmentHeight = dimensions.height / fragments;
+
+    for (int i = 0; i < fragments; i++)
+    {
+        drawTexturedRectangle(
+            {borderWidth, fragmentHeight},
+            {position.x, position.y - i * fragmentHeight});
+    }
+
+    for (int i = 0; i < fragments; i++)
+    {
+        drawTexturedRectangle(
+            {borderWidth, fragmentHeight},
+            {position.x + dimensions.width - borderWidth,
+             position.y - i * fragmentHeight});
+    }
+}
+
+void Button::drawHorizontalBorders()
+{
+    const int fragments = 40;
+    const double borderHeight = dimensions.height / 7;
+    const double fragmentWidth = dimensions.width / fragments;
+
+    for (int i = 0; i < fragments; i++)
+    {
+        drawTexturedRectangle(
+            {fragmentWidth, borderHeight},
+            {position.x + i * fragmentWidth, position.y});
+    }
+
+    for (int i = 0; i < fragments; i++)
+    {
+        drawTexturedRectangle(
+            {fragmentWidth, borderHeight},
+            {position.x + i * fragmentWidth,
+             position.y - dimensions.height + borderHeight});
+    }
 }
 
 void Button::handleMotion(Position position)
