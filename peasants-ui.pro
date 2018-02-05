@@ -13,8 +13,19 @@ LIBS += -lGL
 
 SOURCES += main.cpp \
     textures.cpp \
-    text.cpp
+    text.cpp \
+    button.cpp \
+    menu.cpp \
+    sdl_gl_wrapper.cpp
 
 HEADERS += \
     textures.hpp \
-    text.hpp
+    text.hpp \
+    dimensions.hpp \
+    position.hpp \
+    sdl_gl_wrapper.hpp \
+    polling_place.hpp \
+    resolution.hpp \
+    constants.hpp \
+    button.hpp \
+    menu.hpp
