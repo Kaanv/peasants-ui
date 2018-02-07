@@ -5,9 +5,15 @@ Game::Game()
 {
     ownId = PollingPlaceId_Game;
     Dimensions defaultButtonDimensions = {0.475, 0.125};
-    buttons.push_back(Button(defaultButtonDimensions, {0.5125, 0.360},
+
+    buttons.push_back(Button(defaultButtonDimensions, {0.5125, 0.660},
+                             "Throw cards", ButtonId_ThrowCards));
+    buttons.push_back(Button(defaultButtonDimensions, {0.5125, 0.525},
+                             "Pass turn", ButtonId_PassTurn));
+
+    buttons.push_back(Button(defaultButtonDimensions, {0.5125, -0.660},
                              "Main menu", ButtonId_MainMenu));
-    buttons.push_back(Button(defaultButtonDimensions, {0.5125, 0.225},
+    buttons.push_back(Button(defaultButtonDimensions, {0.5125, -0.795},
                              "Exit game", ButtonId_ExitGame));
 }
 

@@ -10,7 +10,9 @@ enum MenuButtonId
 {
     ButtonId_NewGame,
     ButtonId_MainMenu,
-    ButtonId_ExitGame
+    ButtonId_ExitGame,
+    ButtonId_PassTurn,
+    ButtonId_ThrowCards
 };
 
 class Button
