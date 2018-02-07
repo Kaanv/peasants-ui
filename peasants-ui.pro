@@ -17,7 +17,8 @@ SOURCES += main.cpp \
     button.cpp \
     menu.cpp \
     sdl_gl_wrapper.cpp \
-    game.cpp
+    game.cpp \
+    polling_place.cpp
 
 HEADERS += \
     textures.hpp \
@@ -25,9 +26,10 @@ HEADERS += \
     dimensions.hpp \
     position.hpp \
     sdl_gl_wrapper.hpp \
-    polling_place.hpp \
     resolution.hpp \
     constants.hpp \
     button.hpp \
     menu.hpp \
-    game.hpp
+    game.hpp \
+    polling_place_id.hpp \
+    polling_place.hpp

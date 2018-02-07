@@ -3,29 +3,19 @@
 
 #include "button.hpp"
 #include "polling_place.hpp"
+#include "polling_place_id.hpp"
 #include "sdl_gl_wrapper.hpp"
 #include <vector>
 
-class Menu
-{
-public:
-    virtual PollingPlaceId enter() = 0;
-};
-
-class MainMenu : public Menu
+class MainMenu : public PollingPlace
 {
 public:
     MainMenu(int x, int y);
-    PollingPlaceId enter();
 private:
-    PollingPlaceId startEventPoll();
-    void updateScreen();
-    void updateButtonsOnMotion(int x, int y);
-    void updateButtonsClickStatus();
-    void drawBackground();
+    PollingPlaceId startEventPoll() override;
+    void updateScreen() override;
+    void drawBackground() override;
 
-    std::vector<Button> buttons;
-    SDL_Event event;
     int x, y;
 };
 

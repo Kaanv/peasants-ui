@@ -3,22 +3,12 @@
 
 Game::Game()
 {
+    ownId = PollingPlaceId_Game;
     Dimensions defaultButtonDimensions = {0.475, 0.125};
     buttons.push_back(Button(defaultButtonDimensions, {0.5125, 0.360},
                              "Main menu", ButtonId_MainMenu));
     buttons.push_back(Button(defaultButtonDimensions, {0.5125, 0.225},
                              "Exit game", ButtonId_ExitGame));
-}
-
-PollingPlaceId Game::enter()
-{
-    updateScreen();
-    PollingPlaceId currentPlace = PollingPlaceId_Game;
-    while (currentPlace == PollingPlaceId_Game)
-    {
-        currentPlace = startEventPoll();
-    }
-    return currentPlace;
 }
 
 PollingPlaceId Game::startEventPoll()
@@ -89,22 +79,4 @@ void Game::drawButtonPanel()
     glColor3f(0.1, 0.1, 0.5);
     drawRectangle(fullVertical,
                   position);
-}
-
-void Game::updateButtonsClickStatus()
-{
-    for (auto& button : buttons)
-    {
-        button.updateUnderClick();
-    }
-}
-
-void Game::updateButtonsOnMotion(int x, int y)
-{
-    for (auto& button : buttons)
-    {
-        button.updateMotion({static_cast<float>(x) * 2.0 / SCREEN_WIDTH - 1.0,
-                             static_cast<float>(-y) * 2.0 / SCREEN_HEIGHT + 1.0});
-    }
-    updateScreen();
 }

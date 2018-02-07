@@ -1,5 +1,5 @@
 #include "resolution.hpp"
-#include "polling_place.hpp"
+#include "polling_place_id.hpp"
 #include "menu.hpp"
 #include "game.hpp"
 #include "sdl_gl_wrapper.hpp"

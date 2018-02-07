@@ -4,6 +4,7 @@
 
 MainMenu::MainMenu(int x, int y)
 {
+    ownId = PollingPlaceId_MainMenu;
     Dimensions defaultButtonDimensions = {0.7, 0.125};
     this->x = x;
     this->y = y;
@@ -11,17 +12,6 @@ MainMenu::MainMenu(int x, int y)
                              "New game", ButtonId_NewGame));
     buttons.push_back(Button(defaultButtonDimensions, {-0.35, 0.225},
                              "Exit game", ButtonId_ExitGame));
-}
-
-PollingPlaceId MainMenu::enter()
-{
-    updateScreen();
-    PollingPlaceId currentPlace = PollingPlaceId_MainMenu;
-    while (currentPlace == PollingPlaceId_MainMenu)
-    {
-        currentPlace = startEventPoll();
-    }
-    return currentPlace;
 }
 
 PollingPlaceId MainMenu::startEventPoll()
@@ -68,24 +58,6 @@ void MainMenu::updateScreen()
     }
 
     SDL_GL_SwapBuffers();
-}
-
-void MainMenu::updateButtonsOnMotion(int x, int y)
-{
-    for (auto& button : buttons)
-    {
-        button.updateMotion({static_cast<float>(x) * 2.0 / SCREEN_WIDTH - 1.0,
-                             static_cast<float>(-y) * 2.0 / SCREEN_HEIGHT + 1.0});
-    }
-    updateScreen();
-}
-
-void MainMenu::updateButtonsClickStatus()
-{
-    for (auto& button : buttons)
-    {
-        button.updateUnderClick();
-    }
 }
 
 void MainMenu::drawBackground()

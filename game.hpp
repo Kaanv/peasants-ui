@@ -3,24 +3,19 @@
 
 #include "button.hpp"
 #include "polling_place.hpp"
+#include "polling_place_id.hpp"
 #include "sdl_gl_wrapper.hpp"
 #include <vector>
 
-class Game
+class Game : public PollingPlace
 {
 public:
     Game();
-    PollingPlaceId enter();
 private:
-    PollingPlaceId startEventPoll();
-    void updateScreen();
-    void drawBackground();
+    PollingPlaceId startEventPoll() override;
+    void updateScreen() override;
+    void drawBackground() override;
     void drawButtonPanel();
-    void updateButtonsClickStatus();
-    void updateButtonsOnMotion(int x, int y);
-
-    std::vector<Button> buttons;
-    SDL_Event event;
 };
 
 #endif // GAME_HPP
