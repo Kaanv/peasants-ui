@@ -1,11 +1,11 @@
 #ifndef POLLING_PLACE_HPP
 #define POLLING_PLACE_HPP
 
-enum PollingPlace
+enum PollingPlaceId
 {
-    PollingPlace_MainMenu,
-    PollingPlace_Game,
-    PollingPlace_Exit
+    PollingPlaceId_MainMenu,
+    PollingPlaceId_Game,
+    PollingPlaceId_Exit
 };
 
 #endif // POLLING_PLACE_HPP

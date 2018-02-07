@@ -1,32 +1,26 @@
-#ifndef MENU_HPP
-#define MENU_HPP
+#ifndef GAME_HPP
+#define GAME_HPP
 
 #include "button.hpp"
 #include "polling_place.hpp"
 #include "sdl_gl_wrapper.hpp"
 #include <vector>
 
-class Menu
+class Game
 {
 public:
-    virtual PollingPlaceId enter() = 0;
-};
-
-class MainMenu : public Menu
-{
-public:
-    MainMenu(int x, int y);
+    Game();
     PollingPlaceId enter();
 private:
     PollingPlaceId startEventPoll();
     void updateScreen();
-    void updateButtonsOnMotion(int x, int y);
-    void updateButtonsClickStatus();
     void drawBackground();
+    void drawButtonPanel();
+    void updateButtonsClickStatus();
+    void updateButtonsOnMotion(int x, int y);
 
     std::vector<Button> buttons;
     SDL_Event event;
-    int x, y;
 };
 
-#endif // MENU_HPP
+#endif // GAME_HPP

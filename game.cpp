@@ -1,30 +1,27 @@
-#include "menu.hpp"
-#include "sdl_gl_wrapper.hpp"
+#include "game.hpp"
 #include "constants.hpp"
 
-MainMenu::MainMenu(int x, int y)
+Game::Game()
 {
-    Dimensions defaultButtonDimensions = {0.7, 0.125};
-    this->x = x;
-    this->y = y;
-    buttons.push_back(Button(defaultButtonDimensions, {-0.35, 0.425},
-                             "New game", ButtonId_NewGame));
-    buttons.push_back(Button(defaultButtonDimensions, {-0.35, 0.225},
+    Dimensions defaultButtonDimensions = {0.475, 0.125};
+    buttons.push_back(Button(defaultButtonDimensions, {0.5125, 0.360},
+                             "Main menu", ButtonId_MainMenu));
+    buttons.push_back(Button(defaultButtonDimensions, {0.5125, 0.225},
                              "Exit game", ButtonId_ExitGame));
 }
 
-PollingPlaceId MainMenu::enter()
+PollingPlaceId Game::enter()
 {
     updateScreen();
-    PollingPlaceId currentPlace = PollingPlaceId_MainMenu;
-    while (currentPlace == PollingPlaceId_MainMenu)
+    PollingPlaceId currentPlace = PollingPlaceId_Game;
+    while (currentPlace == PollingPlaceId_Game)
     {
         currentPlace = startEventPoll();
     }
     return currentPlace;
 }
 
-PollingPlaceId MainMenu::startEventPoll()
+PollingPlaceId Game::startEventPoll()
 {
     while (SDL_PollEvent(&event))
     {
@@ -49,19 +46,21 @@ PollingPlaceId MainMenu::startEventPoll()
                 {
                     switch (button.getButtonId())
                     {
-                        case ButtonId_NewGame: return PollingPlaceId_Game;
+                        case ButtonId_MainMenu: return PollingPlaceId_MainMenu;
                         case ButtonId_ExitGame: return PollingPlaceId_Exit;
                     }
                 }
             }
         }
     }
-    return PollingPlaceId_MainMenu;
+    return PollingPlaceId_Game;
 }
 
-void MainMenu::updateScreen()
+void Game::updateScreen()
 {
     drawBackground();
+    drawButtonPanel();
+
     for (auto& button : buttons)
     {
         button.draw();
@@ -70,17 +69,29 @@ void MainMenu::updateScreen()
     SDL_GL_SwapBuffers();
 }
 
-void MainMenu::updateButtonsOnMotion(int x, int y)
+void Game::drawBackground()
 {
-    for (auto& button : buttons)
-    {
-        button.updateMotion({static_cast<float>(x) * 2.0 / SCREEN_WIDTH - 1.0,
-                             static_cast<float>(-y) * 2.0 / SCREEN_HEIGHT + 1.0});
-    }
-    updateScreen();
+    Dimensions fullScreen{2.0, 2.0};
+    Position rightLeftCorner{-1.0, 1.0};
+
+    glColor3f(0.0, 0.5, 0.0);
+    drawRectangle(fullScreen,
+                  rightLeftCorner);
 }
 
-void MainMenu::updateButtonsClickStatus()
+void Game::drawButtonPanel()
+{
+    float width = 0.5;
+
+    Dimensions fullVertical{width, 2.0};
+    Position position{1.0 - width, 1.0};
+
+    glColor3f(0.1, 0.1, 0.5);
+    drawRectangle(fullVertical,
+                  position);
+}
+
+void Game::updateButtonsClickStatus()
 {
     for (auto& button : buttons)
     {
@@ -88,12 +99,12 @@ void MainMenu::updateButtonsClickStatus()
     }
 }
 
-void MainMenu::drawBackground()
+void Game::updateButtonsOnMotion(int x, int y)
 {
-    Dimensions fullScreen{2.0, 2.0};
-    Position rightLeftCorner{-1.0, 1.0};
-
-    glColor3f(0.1, 0.1, 0.5);
-    drawRectangle(fullScreen,
-                  rightLeftCorner);
+    for (auto& button : buttons)
+    {
+        button.updateMotion({static_cast<float>(x) * 2.0 / SCREEN_WIDTH - 1.0,
+                             static_cast<float>(-y) * 2.0 / SCREEN_HEIGHT + 1.0});
+    }
+    updateScreen();
 }

@@ -16,7 +16,8 @@ SOURCES += main.cpp \
     text.cpp \
     button.cpp \
     menu.cpp \
-    sdl_gl_wrapper.cpp
+    sdl_gl_wrapper.cpp \
+    game.cpp
 
 HEADERS += \
     textures.hpp \
@@ -28,4 +29,5 @@ HEADERS += \
     resolution.hpp \
     constants.hpp \
     button.hpp \
-    menu.hpp
+    menu.hpp \
+    game.hpp
