@@ -1,7 +1,7 @@
 #include "resolution.hpp"
 #include "polling_place_id.hpp"
 #include "menu.hpp"
-#include "game.hpp"
+#include "game_ui.hpp"
 #include "sdl_gl_wrapper.hpp"
 
 int main()
@@ -10,7 +10,7 @@ int main()
     SDL_Surface *screen = init(resolution.x, resolution.y);
     PollingPlaceId currentPlace = PollingPlaceId_MainMenu;
     MainMenu mainMenu(10, 10);
-    Game game;
+    GameUI game;
 
     while (currentPlace != PollingPlaceId_Exit)
     {

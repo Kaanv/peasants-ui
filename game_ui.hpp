@@ -7,10 +7,10 @@
 #include "sdl_gl_wrapper.hpp"
 #include <vector>
 
-class Game : public PollingPlace
+class GameUI : public PollingPlace
 {
 public:
-    Game();
+    GameUI();
 private:
     PollingPlaceId startEventPoll() override;
     void updateScreen() override;

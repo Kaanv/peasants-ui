@@ -1,7 +1,7 @@
-#include "game.hpp"
+#include "game_ui.hpp"
 #include "constants.hpp"
 
-Game::Game()
+GameUI::GameUI()
 {
     ownId = PollingPlaceId_Game;
     Dimensions defaultButtonDimensions = {0.475, 0.125};
@@ -17,7 +17,7 @@ Game::Game()
                              "Exit game", ButtonId_ExitGame));
 }
 
-PollingPlaceId Game::startEventPoll()
+PollingPlaceId GameUI::startEventPoll()
 {
     while (SDL_PollEvent(&event))
     {
@@ -52,7 +52,7 @@ PollingPlaceId Game::startEventPoll()
     return PollingPlaceId_Game;
 }
 
-void Game::updateScreen()
+void GameUI::updateScreen()
 {
     drawBackground();
     drawButtonPanel();
@@ -65,7 +65,7 @@ void Game::updateScreen()
     SDL_GL_SwapBuffers();
 }
 
-void Game::drawBackground()
+void GameUI::drawBackground()
 {
     Dimensions fullScreen{2.0, 2.0};
     Position rightLeftCorner{-1.0, 1.0};
@@ -75,7 +75,7 @@ void Game::drawBackground()
                   rightLeftCorner);
 }
 
-void Game::drawButtonPanel()
+void GameUI::drawButtonPanel()
 {
     float width = 0.5;
 
