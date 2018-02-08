@@ -18,7 +18,13 @@ SOURCES += main.cpp \
     menu.cpp \
     sdl_gl_wrapper.cpp \
     polling_place.cpp \
-    game_ui.cpp
+    game_ui.cpp \
+    Card.cpp \
+    CardsValidator.cpp \
+    Deck.cpp \
+    Game.cpp \
+    Player.cpp \
+    Table.cpp
 
 HEADERS += \
     textures.hpp \
@@ -32,4 +38,10 @@ HEADERS += \
     menu.hpp \
     polling_place_id.hpp \
     polling_place.hpp \
-    game_ui.hpp
+    game_ui.hpp \
+    Card.hpp \
+    CardsValidator.hpp \
+    Deck.hpp \
+    Game.hpp \
+    Player.hpp \
+    Table.hpp
