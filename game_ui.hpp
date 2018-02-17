@@ -17,6 +17,7 @@ private:
     void updateScreen() override;
     void drawBackground() override;
     void drawButtonPanel();
+    void drawCard(Card card, Position position);
     void drawCards();
     void drawCurrentPlayerCards();
 

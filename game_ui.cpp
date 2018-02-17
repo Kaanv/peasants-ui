@@ -1,5 +1,8 @@
 #include "game_ui.hpp"
 #include "constants.hpp"
+#include <map>
+#include <iostream>
+#include "textures.hpp"
 
 GameUI::GameUI() : numberOfPlayers(4),
                    game(numberOfPlayers)
@@ -89,6 +92,50 @@ void GameUI::drawButtonPanel()
                   position);
 }
 
+namespace
+{
+
+std::map<Color, std::string> colorMap
+{
+    {hearts, "hearts"},
+    {diamonds, "diamonds"},
+    {clubs, "clubs"},
+    {spades, "spades"}
+};
+
+std::map<Value, std::string> valueMap
+{
+    {three, "three"},
+    {four, "four"},
+    {five, "five"},
+    {six, "six"},
+    {seven, "seven"},
+    {eight, "eight"},
+    {nine, "nine"},
+    {ten, "ten"},
+    {jack, "jack"},
+    {queen, "queen"},
+    {king, "king"},
+    {ace, "ace"}
+};
+
+}
+
+void GameUI::drawCard(Card card, Position position)
+{
+    std::string filePath =
+       "Images//cards//" + valueMap[card.value] + colorMap[card.color] + ".png";
+
+    GLuint texture = getTexture(filePath);
+    turnOnTextureMode(texture);
+
+    drawTexturedRectangle(
+        {0.17, 0.3},
+        {position.x, position.y});
+
+    turnOffTextureMode();
+}
+
 void GameUI::drawCards()
 {
     drawCurrentPlayerCards();
@@ -96,5 +143,9 @@ void GameUI::drawCards()
 
 void GameUI::drawCurrentPlayerCards()
 {
-
+    Cards cards = game.getCurrentPlayer().getCards();
+    for (unsigned int i = 0; i < cards.size(); i++)
+    {
+        drawCard(cards[i], Position{-0.5 + static_cast<double>(i) * 0.06, 0.0});
+    }
 }

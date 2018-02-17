@@ -80,7 +80,7 @@ GLuint getTexture(std::string filename)
     }
     else
     {
-        printf("SDL could not load image.bmp: %s\n", SDL_GetError());
+        printf("SDL could not load image: %s\n", SDL_GetError());
     }
 // Free the SDL_Surface only if it was successfully created
     if ( surface )
