@@ -8,10 +8,10 @@
 #include "CardsValidator.hpp"
 #include <vector>
 
-class GameUI
+class Game
 {
 public:
-    GameUI(int numberOfPlayers);
+    Game(int numberOfPlayers);
 
     void distributeCardsFromDeck();
     int findStartingPlayer();

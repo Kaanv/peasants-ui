@@ -1,7 +1,7 @@
 #include "Game.hpp"
 #include <stdexcept>
 
-GameUI::GameUI(int numberOfPlayers) : deck(numberOfPlayers),
+Game::Game(int numberOfPlayers) : deck(numberOfPlayers),
                                   cardsValidator(deck.getStartingCard())
 {
     for (int i = 0; i < numberOfPlayers; i++)
@@ -12,7 +12,7 @@ GameUI::GameUI(int numberOfPlayers) : deck(numberOfPlayers),
     resetRound();
 }
 
-void GameUI::distributeCardsFromDeck()
+void Game::distributeCardsFromDeck()
 {
     for (unsigned int i = 0; i < players.size(); i++)
     {
@@ -23,7 +23,7 @@ void GameUI::distributeCardsFromDeck()
     }
 }
 
-int GameUI::findStartingPlayer()
+int Game::findStartingPlayer()
 {
     Card startingCard = deck.getStartingCard();
 
@@ -43,17 +43,17 @@ int GameUI::findStartingPlayer()
     return 0;
 }
 
-bool GameUI::hasRoundEnded()
+bool Game::hasRoundEnded()
 {
     return playersThatEnded.size() >= players.size() - 1;
 }
 
-Player& GameUI::getCurrentPlayer()
+Player& Game::getCurrentPlayer()
 {
     return players[currentPlayerId];
 }
 
-void GameUI::nextPlayer()
+void Game::nextPlayer()
 {
     currentPlayerId = (currentPlayerId + 1) % players.size();
 
@@ -63,7 +63,7 @@ void GameUI::nextPlayer()
     }
 }
 
-void GameUI::throwCards(Cards cards)
+void Game::throwCards(Cards cards)
 {
     if (passedTurns >= players.size() - 1 - playersThatEnded.size())
     {
@@ -78,12 +78,12 @@ void GameUI::throwCards(Cards cards)
     passedTurns = 0;
 }
 
-Cards GameUI::getCardsFromTableTop()
+Cards Game::getCardsFromTableTop()
 {
     return table.getCardsFromTop();
 }
 
-void GameUI::passCurrentPlayerTurn()
+void Game::passCurrentPlayerTurn()
 {
     if (getCardsFromTableTop().size())
     {
@@ -95,13 +95,13 @@ void GameUI::passCurrentPlayerTurn()
     }
 }
 
-void GameUI::nextRound()
+void Game::nextRound()
 {
     setPeasantsLevels();
     resetRound();
 }
 
-void GameUI::checkIfPlayerHasEnded()
+void Game::checkIfPlayerHasEnded()
 {
     if (players[currentPlayerId].hasEnded())
     {
@@ -109,12 +109,12 @@ void GameUI::checkIfPlayerHasEnded()
     }
 }
 
-Player &GameUI::getPlayer(unsigned int id)
+Player &Game::getPlayer(unsigned int id)
 {
     return players[id];
 }
 
-unsigned int GameUI::findOppositePlayerId(int peasantLevel)
+unsigned int Game::findOppositePlayerId(int peasantLevel)
 {
     for (unsigned i = 0; i < players.size(); i++)
     {
@@ -127,12 +127,12 @@ unsigned int GameUI::findOppositePlayerId(int peasantLevel)
     return 0;
 }
 
-void GameUI::setStartingPlayer()
+void Game::setStartingPlayer()
 {
     currentPlayerId = findStartingPlayer();
 }
 
-void GameUI::resetRound()
+void Game::resetRound()
 {
     deck.resetDeck(players.size());
     distributeCardsFromDeck();
@@ -142,7 +142,7 @@ void GameUI::resetRound()
     table.clearTable();
 }
 
-void GameUI::setPeasantsLevels()
+void Game::setPeasantsLevels()
 {
     for (unsigned int i = 0; i < players.size(); i++)
     {

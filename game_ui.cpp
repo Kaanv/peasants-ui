@@ -1,7 +1,8 @@
 #include "game_ui.hpp"
 #include "constants.hpp"
 
-GameUI::GameUI()
+GameUI::GameUI() : numberOfPlayers(4),
+                   game(numberOfPlayers)
 {
     ownId = PollingPlaceId_Game;
     Dimensions defaultButtonDimensions = {0.475, 0.125};
@@ -56,6 +57,7 @@ void GameUI::updateScreen()
 {
     drawBackground();
     drawButtonPanel();
+    drawCards();
 
     for (auto& button : buttons)
     {
@@ -85,4 +87,14 @@ void GameUI::drawButtonPanel()
     glColor3f(0.1, 0.1, 0.5);
     drawRectangle(fullVertical,
                   position);
+}
+
+void GameUI::drawCards()
+{
+    drawCurrentPlayerCards();
+}
+
+void GameUI::drawCurrentPlayerCards()
+{
+
 }
