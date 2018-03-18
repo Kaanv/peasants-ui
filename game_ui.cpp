@@ -145,7 +145,7 @@ void GameUI::drawCard(Card card, Position position)
 
     drawTexturedRectangle(
         {0.17, 0.3},
-        {position.x, position.y});
+        {position.x, card.selected ? position.y : position.y - 0.05});
 
     turnOffTextureMode();
 }
