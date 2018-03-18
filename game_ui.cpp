@@ -6,6 +6,11 @@
 namespace
 {
 
+const double CARD_WIDTH = 0.17;
+const double CARD_HEIGHT = 0.3;
+const double CARD_SPACE = 0.06;
+const double CARD_SELECT_HEIGHT = 0.05;
+
 std::map<Color, std::string> colorMap
 {
     {hearts, "hearts"},
@@ -144,8 +149,8 @@ void GameUI::drawCard(Card card, Position position)
     turnOnTextureMode(texture);
 
     drawTexturedRectangle(
-        {0.17, 0.3},
-        {position.x, card.selected ? position.y : position.y - 0.05});
+        {CARD_WIDTH, CARD_HEIGHT},
+        {position.x, card.selected ? position.y : position.y - CARD_SELECT_HEIGHT});
 
     turnOffTextureMode();
 }
@@ -160,6 +165,6 @@ void GameUI::drawCurrentPlayerCards()
     Cards cards = game.getCurrentPlayer().getCards();
     for (unsigned int i = 0; i < cards.size(); i++)
     {
-        drawCard(cards[i], Position{-0.5 + static_cast<double>(i) * 0.06, -0.6});
+        drawCard(cards[i], Position{-0.5 + static_cast<double>(i) * CARD_SPACE, -0.6});
     }
 }
