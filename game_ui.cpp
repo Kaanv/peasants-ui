@@ -160,6 +160,6 @@ void GameUI::drawCurrentPlayerCards()
     Cards cards = game.getCurrentPlayer().getCards();
     for (unsigned int i = 0; i < cards.size(); i++)
     {
-        drawCard(cards[i], Position{-0.5 + static_cast<double>(i) * 0.06, 0.0});
+        drawCard(cards[i], Position{-0.5 + static_cast<double>(i) * 0.06, -0.6});
     }
 }
