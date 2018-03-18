@@ -1,8 +1,36 @@
 #include "game_ui.hpp"
 #include "constants.hpp"
-#include <map>
 #include <iostream>
 #include "textures.hpp"
+
+namespace
+{
+
+std::map<Color, std::string> colorMap
+{
+    {hearts, "hearts"},
+    {diamonds, "diamonds"},
+    {clubs, "clubs"},
+    {spades, "spades"}
+};
+
+std::map<Value, std::string> valueMap
+{
+    {three, "three"},
+    {four, "four"},
+    {five, "five"},
+    {six, "six"},
+    {seven, "seven"},
+    {eight, "eight"},
+    {nine, "nine"},
+    {ten, "ten"},
+    {jack, "jack"},
+    {queen, "queen"},
+    {king, "king"},
+    {ace, "ace"}
+};
+
+}
 
 GameUI::GameUI() : numberOfPlayers(4),
                    game(numberOfPlayers)
@@ -19,6 +47,22 @@ GameUI::GameUI() : numberOfPlayers(4),
                              "Main menu", ButtonId_MainMenu));
     buttons.push_back(Button(defaultButtonDimensions, {0.5125, -0.795},
                              "Exit game", ButtonId_ExitGame));
+
+    std::string filePath;
+    for (int color = hearts; color <= spades; color++)
+    {
+        for (int value = three; value <= ace; value++)
+        {
+            filePath = "Images//cards//"
+                     + valueMap[static_cast<Value>(value)]
+                     + colorMap[static_cast<Color>(color)]
+                     + ".png";
+            textureMap[std::make_pair<Color, Value>(
+                           static_cast<Color>(color),
+                           static_cast<Value>(value))] =
+                getTexture(filePath);
+        }
+    }
 }
 
 PollingPlaceId GameUI::startEventPoll()
@@ -92,41 +136,11 @@ void GameUI::drawButtonPanel()
                   position);
 }
 
-namespace
-{
-
-std::map<Color, std::string> colorMap
-{
-    {hearts, "hearts"},
-    {diamonds, "diamonds"},
-    {clubs, "clubs"},
-    {spades, "spades"}
-};
-
-std::map<Value, std::string> valueMap
-{
-    {three, "three"},
-    {four, "four"},
-    {five, "five"},
-    {six, "six"},
-    {seven, "seven"},
-    {eight, "eight"},
-    {nine, "nine"},
-    {ten, "ten"},
-    {jack, "jack"},
-    {queen, "queen"},
-    {king, "king"},
-    {ace, "ace"}
-};
-
-}
-
 void GameUI::drawCard(Card card, Position position)
 {
-    std::string filePath =
-       "Images//cards//" + valueMap[card.value] + colorMap[card.color] + ".png";
-
-    GLuint texture = getTexture(filePath);
+    GLuint texture = textureMap[std::make_pair<Color, Value>(
+                                    static_cast<Color>(card.color),
+                                    static_cast<Value>(card.value))];
     turnOnTextureMode(texture);
 
     drawTexturedRectangle(

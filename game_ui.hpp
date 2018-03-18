@@ -7,6 +7,7 @@
 #include "sdl_gl_wrapper.hpp"
 #include "Game.hpp"
 #include <vector>
+#include <map>
 
 class GameUI : public PollingPlace
 {
@@ -23,6 +24,7 @@ private:
 
     int numberOfPlayers;
     Game game;
+    std::map<std::pair<Color, Value>, GLuint> textureMap;
 };
 
 #endif // GAME_UI_HPP
