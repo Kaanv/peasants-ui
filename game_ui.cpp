@@ -103,6 +103,7 @@ PollingPlaceId GameUI::startEventPoll()
                         {
                             game.passCurrentPlayerTurn();
                             game.getCurrentPlayer().unselectAllCards();
+                            game.nextPlayer();
                             break;
                         }
                         case ButtonId_ThrowCards:
