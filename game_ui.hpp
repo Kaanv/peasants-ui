@@ -26,6 +26,7 @@ private:
     int numberOfPlayers;
     Game game;
     std::map<std::pair<Color, Value>, GLuint> textureMap;
+    int lastTicks;
 };
 
 #endif // GAME_UI_HPP

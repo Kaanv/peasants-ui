@@ -38,7 +38,8 @@ std::map<Value, std::string> valueMap
 }
 
 GameUI::GameUI() : numberOfPlayers(4),
-                   game(numberOfPlayers)
+                   game(numberOfPlayers),
+                   lastTicks(0)
 {
     ownId = PollingPlaceId_Game;
     Dimensions defaultButtonDimensions = {0.475, 0.125};
@@ -108,16 +109,24 @@ PollingPlaceId GameUI::startEventPoll()
 
 void GameUI::updateScreen()
 {
-    drawBackground();
-    drawButtonPanel();
-    drawCards();
-
-    for (auto& button : buttons)
+    if(SDL_GetTicks() - lastTicks > 20)
     {
-        button.draw();
-    }
+        drawBackground();
+        drawButtonPanel();
+        drawCards();
 
-    SDL_GL_SwapBuffers();
+        for (auto& button : buttons)
+        {
+            button.draw();
+        }
+
+        SDL_GL_SwapBuffers();
+        lastTicks = SDL_GetTicks();
+    }
+    else
+    {
+        SDL_Delay(10);
+    }
 }
 
 void GameUI::drawBackground()
