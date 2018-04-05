@@ -21,6 +21,7 @@ private:
     void drawCard(Card card, Position position);
     void drawCards();
     void drawCurrentPlayerCards();
+    void updateCardsSelection(int x, int y);
 
     int numberOfPlayers;
     Game game;

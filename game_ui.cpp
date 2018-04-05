@@ -86,6 +86,7 @@ PollingPlaceId GameUI::startEventPoll()
         else if(event.type == SDL_MOUSEBUTTONDOWN)
         {
             updateButtonsClickStatus();
+            updateCardsSelection(event.motion.x, event.motion.y);
         }
         else if(event.type == SDL_MOUSEBUTTONUP)
         {
@@ -166,5 +167,27 @@ void GameUI::drawCurrentPlayerCards()
     for (unsigned int i = 0; i < cards.size(); i++)
     {
         drawCard(cards[i], Position{-0.5 + static_cast<double>(i) * CARD_SPACE, -0.6});
+    }
+}
+
+void GameUI::updateCardsSelection(int x, int y)
+{
+    float glX = static_cast<float>(x) * 2.0 / SCREEN_WIDTH - 1.0;
+    float glY = static_cast<float>(-y) * 2.0 / SCREEN_HEIGHT + 1.0;
+
+    Cards cards = game.getCurrentPlayer().getCards();
+    for (unsigned int i = 0; i < cards.size(); i++)
+    {
+        float width = i == cards.size() - 1 ? CARD_WIDTH : CARD_SPACE;
+        float cardX = -0.5 + static_cast<float>(i) * CARD_SPACE;
+        float cardY = -0.6;
+
+        if (glX >= cardX and
+            glX <= cardX + width and
+            glY <= cardY and
+            glY >= cardY - CARD_HEIGHT)
+        {
+            game.getCurrentPlayer().selectCard(i);
+        }
     }
 }
