@@ -99,6 +99,19 @@ PollingPlaceId GameUI::startEventPoll()
                     {
                         case ButtonId_MainMenu: return PollingPlaceId_MainMenu;
                         case ButtonId_ExitGame: return PollingPlaceId_Exit;
+                        case ButtonId_PassTurn:
+                        {
+                            game.passCurrentPlayerTurn();
+                            game.getCurrentPlayer().unselectAllCards();
+                            break;
+                        }
+                        case ButtonId_ThrowCards:
+                        {
+                            game.throwCards(game.getCurrentPlayer().getSelectedCards());
+                            game.getCurrentPlayer().removeSelectedCards();
+                            game.checkIfPlayerHasEnded();
+                            game.nextPlayer();
+                        }
                     }
                 }
             }
