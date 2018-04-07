@@ -19,7 +19,7 @@ public:
     Player& getCurrentPlayer();
     void nextPlayer();
     void throwCards(Cards cards);
-    Cards getCardsFromTableTop();
+    const Cards& getCardsFromTableTop() const;
     void passCurrentPlayerTurn();
     void nextRound();
     void checkIfPlayerHasEnded();

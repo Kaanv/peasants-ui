@@ -6,7 +6,7 @@
 class Table
 {
 public:
-    Cards getCardsFromTop();
+    const Cards& getCardsFromTop() const;
     void throwCards(Cards cards);
     void clearTable();
 

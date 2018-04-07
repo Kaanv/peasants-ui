@@ -78,7 +78,7 @@ void Game::throwCards(Cards cards)
     passedTurns = 0;
 }
 
-Cards Game::getCardsFromTableTop()
+const Cards& Game::getCardsFromTableTop() const
 {
     return table.getCardsFromTop();
 }

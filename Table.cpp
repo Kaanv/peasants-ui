@@ -1,6 +1,6 @@
 #include "Table.hpp"
 
-Cards Table::getCardsFromTop()
+const Cards& Table::getCardsFromTop() const
 {
     return cardsOnTop;
 }

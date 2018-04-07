@@ -182,6 +182,7 @@ void GameUI::drawCard(Card card, Position position)
 void GameUI::drawCards()
 {
     drawCurrentPlayerCards();
+    drawTableCards();
 }
 
 void GameUI::drawCurrentPlayerCards()
@@ -190,6 +191,15 @@ void GameUI::drawCurrentPlayerCards()
     for (unsigned int i = 0; i < cards.size(); i++)
     {
         drawCard(cards[i], Position{-0.5 + static_cast<double>(i) * CARD_SPACE, -0.6});
+    }
+}
+
+void GameUI::drawTableCards()
+{
+    const Cards& cards = game.getCardsFromTableTop();
+    for (unsigned int i = 0; i < cards.size(); i++)
+    {
+        drawCard(cards[i], Position{-0.4 + static_cast<double>(i) * CARD_SPACE, 0.2});
     }
 }
 
