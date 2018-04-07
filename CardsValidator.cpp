@@ -11,6 +11,7 @@ void CardsValidator::checkIfCardsCouldBeThrown(Cards cards, Cards cardsOnTableTo
     if (not cardsOnTableTop.size())
     {
         validateGameStartingCards(cards);
+        checkIfCardsHaveSameValue(cards);
     }
     else
     {
