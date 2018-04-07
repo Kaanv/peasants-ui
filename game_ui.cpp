@@ -100,26 +100,33 @@ PollingPlaceId GameUI::startEventPoll()
             {
                 if (button.isClicked())
                 {
-                    switch (button.getButtonId())
+                    try
                     {
-                        case ButtonId_MainMenu: return PollingPlaceId_MainMenu;
-                        case ButtonId_ExitGame: return PollingPlaceId_Exit;
-                        case ButtonId_PassTurn:
+                        switch (button.getButtonId())
                         {
-                            game.passCurrentPlayerTurn();
-                            game.getCurrentPlayer().unselectAllCards();
-                            game.nextPlayer();
-                            forceDrawingEverything();
-                            break;
+                            case ButtonId_MainMenu: return PollingPlaceId_MainMenu;
+                            case ButtonId_ExitGame: return PollingPlaceId_Exit;
+                            case ButtonId_PassTurn:
+                            {
+                                game.passCurrentPlayerTurn();
+                                game.getCurrentPlayer().unselectAllCards();
+                                game.nextPlayer();
+                                forceDrawingEverything();
+                                break;
+                            }
+                            case ButtonId_ThrowCards:
+                            {
+                                game.throwCards(game.getCurrentPlayer().getSelectedCards());
+                                game.getCurrentPlayer().removeSelectedCards();
+                                game.checkIfPlayerHasEnded();
+                                game.nextPlayer();
+                                forceDrawingEverything();
+                            }
                         }
-                        case ButtonId_ThrowCards:
-                        {
-                            game.throwCards(game.getCurrentPlayer().getSelectedCards());
-                            game.getCurrentPlayer().removeSelectedCards();
-                            game.checkIfPlayerHasEnded();
-                            game.nextPlayer();
-                            forceDrawingEverything();
-                        }
+                    }
+                    catch (const std::runtime_error & e)
+                    {
+                        std::cout << e.what() << std::endl;
                     }
                 }
             }
