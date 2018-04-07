@@ -22,6 +22,7 @@ private:
     void drawCards();
     void drawCurrentPlayerCards();
     void drawTableCards();
+    void drawPeasantsInfo();
     void updateCardsSelection(int x, int y);
     void forceDrawingEverything();
 

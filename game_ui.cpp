@@ -144,6 +144,7 @@ void GameUI::updateScreen()
             drawBackground();
             drawButtonPanel();
             drawCards();
+            drawPeasantsInfo();
         }
 
         for (auto& button : buttons)
@@ -215,6 +216,11 @@ void GameUI::drawTableCards()
     {
         drawCard(cards[i], Position{-0.4 + static_cast<double>(i) * CARD_SPACE, 0.2});
     }
+}
+
+void GameUI::drawPeasantsInfo()
+{
+
 }
 
 void GameUI::updateCardsSelection(int x, int y)
