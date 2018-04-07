@@ -2,7 +2,8 @@
 #include "sdl_gl_wrapper.hpp"
 #include "constants.hpp"
 
-MainMenu::MainMenu(int x, int y)
+MainMenu::MainMenu(int x, int y) : backgroundNeedsDrawing(true),
+                                   lastTicks(0)
 {
     ownId = PollingPlaceId_MainMenu;
     Dimensions defaultButtonDimensions = {0.7, 0.125};
@@ -22,7 +23,15 @@ PollingPlaceId MainMenu::startEventPoll()
         else if (event.type == SDL_ACTIVEEVENT &&
                  event.active.state & SDL_APPACTIVE &&
                  event.active.gain != 0) updateScreen();
-        else if (event.type == SDL_VIDEOEXPOSE) updateScreen();
+        else if (event.type == SDL_VIDEOEXPOSE)
+        {
+            for (auto& button : buttons)
+            {
+                button.forceDraw();
+            }
+            backgroundNeedsDrawing = true;
+            updateScreen();
+        }
         else if (event.type == SDL_MOUSEMOTION)
         {
             updateButtonsOnMotion(event.motion.x, event.motion.y);
@@ -51,13 +60,18 @@ PollingPlaceId MainMenu::startEventPoll()
 
 void MainMenu::updateScreen()
 {
-    drawBackground();
-    for (auto& button : buttons)
+    if(SDL_GetTicks() - lastTicks > 20)
     {
-        button.draw();
-    }
+        if (backgroundNeedsDrawing) drawBackground();
+        for (auto& button : buttons)
+        {
+            button.draw();
+        }
 
-    SDL_GL_SwapBuffers();
+        SDL_GL_SwapBuffers();
+        lastTicks = SDL_GetTicks();
+        backgroundNeedsDrawing = false;
+    }
 }
 
 void MainMenu::drawBackground()

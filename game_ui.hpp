@@ -23,11 +23,13 @@ private:
     void drawCurrentPlayerCards();
     void drawTableCards();
     void updateCardsSelection(int x, int y);
+    void forceDrawingEverything();
 
     int numberOfPlayers;
     Game game;
     std::map<std::pair<Color, Value>, GLuint> textureMap;
     int lastTicks;
+    bool backgroundNeedsDrawing;
 };
 
 #endif // GAME_UI_HPP

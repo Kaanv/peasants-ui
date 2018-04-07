@@ -27,6 +27,7 @@ public:
     void updateUnderClick();
     bool isClicked();
     int getButtonId();
+    void forceDraw();
 private:
     void drawBorder();
     void drawVerticalBorders();
@@ -43,6 +44,7 @@ private:
     GLuint lineTexture;
     bool isUnderMouseMotion;
     bool isUnderClick;
+    bool needsDrawing;
 };
 
 #endif // BUTTON_HPP

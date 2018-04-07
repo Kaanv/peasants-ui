@@ -10,7 +10,8 @@ Button::Button(Dimensions dimensions,
       textColor({255, 255, 255, 0}),
       lineTexture(getTexture("Images//buttonline.png")),
       isUnderMouseMotion(false),
-      isUnderClick(false)
+      isUnderClick(false),
+      needsDrawing(true)
 {
     this->dimensions = dimensions;
     this->position = positon;
@@ -20,13 +21,22 @@ Button::Button(Dimensions dimensions,
 
 void Button::draw()
 {
-    if (isUnderMouseMotion) glColor3f(0.0, 0.2, 0.4);
-    else glColor3f(0.0, 0.2, 0.6);
+    if (needsDrawing)
+    {
+        if (isUnderMouseMotion) glColor3f(0.0, 0.2, 0.4);
+        else glColor3f(0.0, 0.2, 0.6);
 
-    drawRectangle({dimensions.width, dimensions.height},
-                  {position.x, position.y});
-    drawBorder();
-    renderCaption();
+        drawRectangle({dimensions.width, dimensions.height},
+                      {position.x, position.y});
+        drawBorder();
+        renderCaption();
+        needsDrawing = false;
+    }
+}
+
+void Button::forceDraw()
+{
+    needsDrawing = true;
 }
 
 void Button::renderCaption()
@@ -93,7 +103,10 @@ void Button::drawHorizontalBorders()
 
 void Button::updateMotion(const Position &position)
 {
+    bool wasUnderMotion = isUnderMouseMotion;
     isUnderMouseMotion = isInside(position);
+
+    needsDrawing = wasUnderMotion != isUnderMouseMotion or needsDrawing;
 }
 
 void Button::updateUnderClick()

@@ -39,7 +39,8 @@ std::map<Value, std::string> valueMap
 
 GameUI::GameUI() : numberOfPlayers(4),
                    game(numberOfPlayers),
-                   lastTicks(0)
+                   lastTicks(0),
+                   backgroundNeedsDrawing(true)
 {
     ownId = PollingPlaceId_Game;
     Dimensions defaultButtonDimensions = {0.475, 0.125};
@@ -79,7 +80,11 @@ PollingPlaceId GameUI::startEventPoll()
         else if (event.type == SDL_ACTIVEEVENT &&
                  event.active.state & SDL_APPACTIVE &&
                  event.active.gain != 0) updateScreen();
-        else if (event.type == SDL_VIDEOEXPOSE) updateScreen();
+        else if (event.type == SDL_VIDEOEXPOSE)
+        {
+            forceDrawingEverything();
+            updateScreen();
+        }
         else if (event.type == SDL_MOUSEMOTION)
         {
             updateButtonsOnMotion(event.motion.x, event.motion.y);
@@ -104,6 +109,7 @@ PollingPlaceId GameUI::startEventPoll()
                             game.passCurrentPlayerTurn();
                             game.getCurrentPlayer().unselectAllCards();
                             game.nextPlayer();
+                            forceDrawingEverything();
                             break;
                         }
                         case ButtonId_ThrowCards:
@@ -112,6 +118,7 @@ PollingPlaceId GameUI::startEventPoll()
                             game.getCurrentPlayer().removeSelectedCards();
                             game.checkIfPlayerHasEnded();
                             game.nextPlayer();
+                            forceDrawingEverything();
                         }
                     }
                 }
@@ -125,9 +132,12 @@ void GameUI::updateScreen()
 {
     if(SDL_GetTicks() - lastTicks > 20)
     {
-        drawBackground();
-        drawButtonPanel();
-        drawCards();
+        if (backgroundNeedsDrawing)
+        {
+            drawBackground();
+            drawButtonPanel();
+            drawCards();
+        }
 
         for (auto& button : buttons)
         {
@@ -136,10 +146,7 @@ void GameUI::updateScreen()
 
         SDL_GL_SwapBuffers();
         lastTicks = SDL_GetTicks();
-    }
-    else
-    {
-        SDL_Delay(10);
+        backgroundNeedsDrawing = false;
     }
 }
 
@@ -221,6 +228,16 @@ void GameUI::updateCardsSelection(int x, int y)
             glY >= cardY - CARD_HEIGHT)
         {
             game.getCurrentPlayer().selectCard(i);
+            forceDrawingEverything();
         }
+    }
+}
+
+void GameUI::forceDrawingEverything()
+{
+    backgroundNeedsDrawing = true;
+    for (auto& button : buttons)
+    {
+        button.forceDraw();
     }
 }

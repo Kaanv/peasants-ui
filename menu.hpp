@@ -17,6 +17,8 @@ private:
     void drawBackground() override;
 
     int x, y;
+    bool backgroundNeedsDrawing;
+    int lastTicks;
 };
 
 #endif // MENU_HPP
