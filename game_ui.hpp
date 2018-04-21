@@ -25,6 +25,12 @@ private:
     void drawPeasantsInfo();
     void updateCardsSelection(int x, int y);
     void forceDrawingEverything();
+    void updateSelectedCardSelection(Position glPosition,
+                                     const Cards& cards,
+                                     unsigned int cardIndex);
+    void updateNotSelectedCardSelection(Position glPosition,
+                                        const Cards& cards,
+                                        unsigned int cardIndex);
 
     int numberOfPlayers;
     Game game;
