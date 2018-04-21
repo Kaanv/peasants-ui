@@ -112,6 +112,7 @@ PollingPlaceId GameUI::startEventPoll()
                                 game.getCurrentPlayer().unselectAllCards();
                                 game.nextPlayer();
                                 forceDrawingEverything();
+                                drawPopup("Next player turn");
                                 break;
                             }
                             case ButtonId_ThrowCards:
@@ -121,6 +122,7 @@ PollingPlaceId GameUI::startEventPoll()
                                 game.checkIfPlayerHasEnded();
                                 game.nextPlayer();
                                 forceDrawingEverything();
+                                drawPopup("Next player turn");
                             }
                         }
                     }
