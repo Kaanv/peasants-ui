@@ -35,7 +35,7 @@ void CardsValidator::checkIfCardsHaveSameValue(Cards cards)
     {
         if (cards[i].value != cards[i - 1].value)
         {
-            throw std::runtime_error("Cards must be have same value");
+            throw std::runtime_error("Cards must have same value");
         }
     }
 }
