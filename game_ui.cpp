@@ -1,6 +1,5 @@
 #include "game_ui.hpp"
 #include "constants.hpp"
-#include <iostream>
 #include "textures.hpp"
 #include "text.hpp"
 
@@ -128,7 +127,6 @@ PollingPlaceId GameUI::startEventPoll()
                     catch (const std::runtime_error & e)
                     {
                         drawPopup(e.what());
-                        std::cout << e.what() << std::endl;
                     }
                 }
             }
