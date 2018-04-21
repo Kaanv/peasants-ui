@@ -289,10 +289,17 @@ void GameUI::forceDrawingEverything()
 
 void GameUI::drawPopup(std::string text)
 {
+    Dimensions fullScreen{1.5, 2.0};
+    Position rightLeftCorner{-1.0, 1.0};
+
+    glColor3f(0.0, 0.0, 0.8);
+    drawRectangle(fullScreen,
+                  rightLeftCorner);
+
     TTF_Font* font(TTF_OpenFont("Fonts//font.ttf", 40));
     SDL_Color textColor({255, 255, 255, 0});
 
-    Button okButton = Button({0.475, 0.125}, {0, 0},
+    Button okButton = Button({0.475, 0.125}, {-0.4875, 0.1},
                              "OK", ButtonId_PopupOk);
 
     okButton.draw();
@@ -300,7 +307,9 @@ void GameUI::drawPopup(std::string text)
     SDL_GL_RenderText(text.c_str(),
                       font,
                       textColor,
-                      0.0,
-                      0.0,
+                      -0.25,
+                      0.2,
                       0.1);
+
+    SDL_GL_SwapBuffers();
 }
