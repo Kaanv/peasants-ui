@@ -2,6 +2,7 @@
 #include "constants.hpp"
 #include <iostream>
 #include "textures.hpp"
+#include "text.hpp"
 
 namespace
 {
@@ -126,6 +127,7 @@ PollingPlaceId GameUI::startEventPoll()
                     }
                     catch (const std::runtime_error & e)
                     {
+                        drawPopup(e.what());
                         std::cout << e.what() << std::endl;
                     }
                 }
@@ -283,4 +285,22 @@ void GameUI::forceDrawingEverything()
     {
         button.forceDraw();
     }
+}
+
+void GameUI::drawPopup(std::string text)
+{
+    TTF_Font* font(TTF_OpenFont("Fonts//font.ttf", 40));
+    SDL_Color textColor({255, 255, 255, 0});
+
+    Button okButton = Button({0.475, 0.125}, {0, 0},
+                             "OK", ButtonId_PopupOk);
+
+    okButton.draw();
+
+    SDL_GL_RenderText(text.c_str(),
+                      font,
+                      textColor,
+                      0.0,
+                      0.0,
+                      0.1);
 }

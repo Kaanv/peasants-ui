@@ -31,6 +31,7 @@ private:
     void updateNotSelectedCardSelection(Position glPosition,
                                         const Cards& cards,
                                         unsigned int cardIndex);
+    void drawPopup(std::string text);
 
     int numberOfPlayers;
     Game game;

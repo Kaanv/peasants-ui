@@ -12,7 +12,8 @@ enum MenuButtonId
     ButtonId_MainMenu,
     ButtonId_ExitGame,
     ButtonId_PassTurn,
-    ButtonId_ThrowCards
+    ButtonId_ThrowCards,
+    ButtonId_PopupOk
 };
 
 class Button
