@@ -257,7 +257,28 @@ void GameUI::drawTableCards()
 
 void GameUI::drawPeasantsInfo()
 {
+    TTF_Font* font(TTF_OpenFont("Fonts//font.ttf", 40));
+    SDL_Color textColor({255, 255, 255, 0});
 
+    SDL_GL_RenderText("Peasant levels:",
+                      font,
+                      textColor,
+                      0.75,
+                      0.2,
+                      0.1);
+
+    for (int i = 0; i < numberOfPlayers; i++)
+    {
+        std::string text =
+            "Player " + std::to_string(i + 1) + ": " +
+            std::to_string(game.getPlayer(i).getPeasantLevel());
+        SDL_GL_RenderText(text.c_str(),
+                          font,
+                          textColor,
+                          0.75,
+                          0.13 - i * 0.06,
+                          0.1);
+    }
 }
 
 void GameUI::updateCardsSelection(int x, int y)
