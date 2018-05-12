@@ -120,7 +120,9 @@ PollingPlaceId GameUI::startEventPoll()
                                     game.getCurrentPlayer().unselectAllCards();
                                     game.nextPlayer();
                                     forceDrawingEverything();
-                                    drawPopup("Next player turn");
+                                    std::string text =
+                                        "Player " + std::to_string(game.getCurrentPlayer().getId() + 1) + " turn";
+                                    drawPopup(text.c_str());
                                     break;
                                 }
                                 case ButtonId_ThrowCards:
@@ -130,7 +132,9 @@ PollingPlaceId GameUI::startEventPoll()
                                     game.checkIfPlayerHasEnded();
                                     game.nextPlayer();
                                     forceDrawingEverything();
-                                    drawPopup("Next player turn");
+                                    std::string text =
+                                        "Player " + std::to_string(game.getCurrentPlayer().getId() + 1) + " turn";
+                                    drawPopup(text.c_str());
                                 }
                             }
                         }
