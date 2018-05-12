@@ -40,7 +40,8 @@ std::map<Value, std::string> valueMap
 GameUI::GameUI() : numberOfPlayers(4),
                    game(numberOfPlayers),
                    lastTicks(0),
-                   backgroundNeedsDrawing(true)
+                   backgroundNeedsDrawing(true),
+                   isPopupActive(false)
 {
     ownId = PollingPlaceId_Game;
     Dimensions defaultButtonDimensions = {0.475, 0.125};
@@ -54,6 +55,8 @@ GameUI::GameUI() : numberOfPlayers(4),
                              "Main menu", ButtonId_MainMenu));
     buttons.push_back(Button(defaultButtonDimensions, {0.5125, -0.795},
                              "Exit game", ButtonId_ExitGame));
+    buttons.push_back(Button(defaultButtonDimensions, {-0.4875, 0.1},
+                             "OK", ButtonId_PopupOk));
 
     std::string filePath;
     for (int color = hearts; color <= spades; color++)
@@ -106,23 +109,41 @@ PollingPlaceId GameUI::startEventPoll()
                         {
                             case ButtonId_MainMenu: return PollingPlaceId_MainMenu;
                             case ButtonId_ExitGame: return PollingPlaceId_Exit;
-                            case ButtonId_PassTurn:
+                        }
+                        if (not isPopupActive)
+                        {
+                            switch (button.getButtonId())
                             {
-                                game.passCurrentPlayerTurn();
-                                game.getCurrentPlayer().unselectAllCards();
-                                game.nextPlayer();
-                                forceDrawingEverything();
-                                drawPopup("Next player turn");
-                                break;
+                                case ButtonId_PassTurn:
+                                {
+                                    game.passCurrentPlayerTurn();
+                                    game.getCurrentPlayer().unselectAllCards();
+                                    game.nextPlayer();
+                                    forceDrawingEverything();
+                                    drawPopup("Next player turn");
+                                    break;
+                                }
+                                case ButtonId_ThrowCards:
+                                {
+                                    game.throwCards(game.getCurrentPlayer().getSelectedCards());
+                                    game.getCurrentPlayer().removeSelectedCards();
+                                    game.checkIfPlayerHasEnded();
+                                    game.nextPlayer();
+                                    forceDrawingEverything();
+                                    drawPopup("Next player turn");
+                                }
                             }
-                            case ButtonId_ThrowCards:
+                        }
+                        else
+                        {
+                            switch (button.getButtonId())
                             {
-                                game.throwCards(game.getCurrentPlayer().getSelectedCards());
-                                game.getCurrentPlayer().removeSelectedCards();
-                                game.checkIfPlayerHasEnded();
-                                game.nextPlayer();
-                                forceDrawingEverything();
-                                drawPopup("Next player turn");
+                                case ButtonId_PopupOk:
+                                {
+                                    isPopupActive = false;
+                                    forceDrawingEverything();
+                                    break;
+                                }
                             }
                         }
                     }
@@ -137,9 +158,23 @@ PollingPlaceId GameUI::startEventPoll()
     return PollingPlaceId_Game;
 }
 
+void GameUI::forceDrawButtons()
+{
+    for (auto& button : buttons)
+    {
+        button.forceDraw();
+        button.draw();
+    }
+}
+
 void GameUI::updateScreen()
 {
-    if(SDL_GetTicks() - lastTicks > 20)
+    if (isPopupActive)
+    {
+        forceDrawButtons();
+        SDL_GL_SwapBuffers();
+    }
+    else if(SDL_GetTicks() - lastTicks > 20)
     {
         if (backgroundNeedsDrawing)
         {
@@ -151,7 +186,7 @@ void GameUI::updateScreen()
 
         for (auto& button : buttons)
         {
-            button.draw();
+            if (button.getButtonId() != ButtonId_PopupOk) button.draw();
         }
 
         SDL_GL_SwapBuffers();
@@ -299,17 +334,13 @@ void GameUI::drawPopup(std::string text)
     TTF_Font* font(TTF_OpenFont("Fonts//font.ttf", 40));
     SDL_Color textColor({255, 255, 255, 0});
 
-    Button okButton = Button({0.475, 0.125}, {-0.4875, 0.1},
-                             "OK", ButtonId_PopupOk);
-
-    okButton.draw();
-
     SDL_GL_RenderText(text.c_str(),
                       font,
                       textColor,
                       -0.25,
                       0.2,
                       0.1);
-
+    forceDrawButtons();
     SDL_GL_SwapBuffers();
+    isPopupActive = true;
 }

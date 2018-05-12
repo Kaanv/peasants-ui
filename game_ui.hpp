@@ -32,12 +32,14 @@ private:
                                         const Cards& cards,
                                         unsigned int cardIndex);
     void drawPopup(std::string text);
+    void forceDrawButtons();
 
     int numberOfPlayers;
     Game game;
     std::map<std::pair<Color, Value>, GLuint> textureMap;
     int lastTicks;
     bool backgroundNeedsDrawing;
+    bool isPopupActive;
 };
 
 #endif // GAME_UI_HPP
