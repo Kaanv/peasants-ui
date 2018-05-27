@@ -19,8 +19,10 @@ private:
     void drawBackground() override;
     void drawButtonPanel();
     void drawCard(Card card, Position position);
+    void drawCardTop(Position position);
     void drawCards();
     void drawCurrentPlayerCards();
+    void drawAnotherPlayerCards();
     void drawTableCards();
     void drawPeasantsInfo();
     void updateCardsSelection(int x, int y);
@@ -37,6 +39,7 @@ private:
     int numberOfPlayers;
     Game game;
     std::map<std::pair<Color, Value>, GLuint> textureMap;
+    GLuint cardTopTexture;
     int lastTicks;
     bool backgroundNeedsDrawing;
     bool isPopupActive;

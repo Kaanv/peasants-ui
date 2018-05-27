@@ -73,6 +73,7 @@ GameUI::GameUI() : numberOfPlayers(4),
                 getTexture(filePath);
         }
     }
+    cardTopTexture = getTexture("Images//cards//cardtop.png");
 }
 
 PollingPlaceId GameUI::startEventPoll()
@@ -235,9 +236,21 @@ void GameUI::drawCard(Card card, Position position)
     turnOffTextureMode();
 }
 
+void GameUI::drawCardTop(Position position)
+{
+    turnOnTextureMode(cardTopTexture);
+
+    drawTexturedRectangle(
+        {CARD_WIDTH, CARD_HEIGHT},
+        {position.x, position.y});
+
+    turnOffTextureMode();
+}
+
 void GameUI::drawCards()
 {
     drawCurrentPlayerCards();
+    drawAnotherPlayerCards();
     drawTableCards();
 }
 
@@ -247,6 +260,18 @@ void GameUI::drawCurrentPlayerCards()
     for (unsigned int i = 0; i < cards.size(); i++)
     {
         drawCard(cards[i], Position{-0.5 + static_cast<double>(i) * CARD_SPACE, -0.6});
+    }
+}
+
+void GameUI::drawAnotherPlayerCards()
+{
+    int currentPlayerId = game.getCurrentPlayer().getId();
+    int nextPlayerId = (currentPlayerId + 1) % numberOfPlayers;
+    unsigned int numberOfCards = game.getPlayer(nextPlayerId).getCards().size();
+
+    for (unsigned int i = 0; i < numberOfCards; i++)
+    {
+        drawCardTop(Position{-0.5 + static_cast<double>(i) * CARD_SPACE, 0.93});
     }
 }
 
