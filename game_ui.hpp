@@ -20,6 +20,7 @@ private:
     void drawButtonPanel();
     void drawCard(Card card, Position position);
     void drawCardTop(Position position);
+    void drawCardTopHorizontal(Position position);
     void drawCards();
     void drawCurrentPlayerCards();
     void drawAnotherPlayerCards();

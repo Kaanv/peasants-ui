@@ -247,6 +247,17 @@ void GameUI::drawCardTop(Position position)
     turnOffTextureMode();
 }
 
+void GameUI::drawCardTopHorizontal(Position position)
+{
+    turnOnTextureMode(cardTopTexture);
+
+    drawTexturedRectangle(
+        {CARD_WIDTH, CARD_HEIGHT},
+        {position.x, position.y});
+
+    turnOffTextureMode();
+}
+
 void GameUI::drawCards()
 {
     drawCurrentPlayerCards();
@@ -266,12 +277,29 @@ void GameUI::drawCurrentPlayerCards()
 void GameUI::drawAnotherPlayerCards()
 {
     int currentPlayerId = game.getCurrentPlayer().getId();
+
     int nextPlayerId = (currentPlayerId + 1) % numberOfPlayers;
     unsigned int numberOfCards = game.getPlayer(nextPlayerId).getCards().size();
 
-    for (unsigned int i = 0; i < numberOfCards; i++)
+    for (unsigned int j = 0; j < numberOfCards; j++)
     {
-        drawCardTop(Position{-0.5 + static_cast<double>(i) * CARD_SPACE, 0.93});
+        drawCardTopHorizontal(Position{-0.9, 0.0 + static_cast<double>(j) * CARD_SPACE});
+    }
+
+    nextPlayerId = (nextPlayerId + 1) % numberOfPlayers;
+    numberOfCards = game.getPlayer(nextPlayerId).getCards().size();
+
+    for (unsigned int j = 0; j < numberOfCards; j++)
+    {
+        drawCardTop(Position{-0.5 + static_cast<double>(j) * CARD_SPACE, 0.93});
+    }
+
+    nextPlayerId = (nextPlayerId + 1) % numberOfPlayers;
+    numberOfCards = game.getPlayer(nextPlayerId).getCards().size();
+
+    for (unsigned int j = 0; j < numberOfCards; j++)
+    {
+        drawCardTopHorizontal(Position{0.3, 0.0 + static_cast<double>(j) * CARD_SPACE});
     }
 }
 
