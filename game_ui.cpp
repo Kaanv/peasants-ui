@@ -87,6 +87,7 @@ PollingPlaceId GameUI::startEventPoll()
             drawPopup(text.c_str());
             game.nextRound();
             exchangePlayersCards();
+            game.setStartingPlayer();
             drawCurrentPlayerPopup();
         }
 
