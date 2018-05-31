@@ -87,9 +87,7 @@ PollingPlaceId GameUI::startEventPoll()
             drawPopup(text.c_str());
 
             game.nextRound();
-
-            text = "Player " + std::to_string(game.getCurrentPlayer().getId() + 1) + " turn";
-            drawPopup(text.c_str());
+            drawCurrentPlayerPopup();
         }
 
         if (event.type == SDL_QUIT) return PollingPlaceId_Exit;
@@ -133,9 +131,7 @@ PollingPlaceId GameUI::startEventPoll()
                                     game.getCurrentPlayer().unselectAllCards();
                                     game.nextPlayer();
                                     forceDrawingEverything();
-                                    std::string text =
-                                        "Player " + std::to_string(game.getCurrentPlayer().getId() + 1) + " turn";
-                                    drawPopup(text.c_str());
+                                    drawCurrentPlayerPopup();
                                     break;
                                 }
                                 case ButtonId_ThrowCards:
@@ -145,9 +141,7 @@ PollingPlaceId GameUI::startEventPoll()
                                     game.checkIfPlayerHasEnded();
                                     game.nextPlayer();
                                     forceDrawingEverything();
-                                    std::string text =
-                                        "Player " + std::to_string(game.getCurrentPlayer().getId() + 1) + " turn";
-                                    drawPopup(text.c_str());
+                                    drawCurrentPlayerPopup();
                                 }
                             }
                         }
@@ -433,4 +427,11 @@ void GameUI::drawPopup(std::string text)
     forceDrawButtons();
     SDL_GL_SwapBuffers();
     isPopupActive = true;
+}
+
+void GameUI::drawCurrentPlayerPopup()
+{
+    std::string text =
+        "Player " + std::to_string(game.getCurrentPlayer().getId() + 1) + " turn";
+    drawPopup(text.c_str());
 }

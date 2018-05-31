@@ -36,6 +36,7 @@ private:
                                         unsigned int cardIndex);
     void drawPopup(std::string text);
     void forceDrawButtons();
+    void drawCurrentPlayerPopup();
 
     int numberOfPlayers;
     Game game;
