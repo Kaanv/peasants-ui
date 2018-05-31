@@ -37,6 +37,7 @@ private:
     void drawPopup(std::string text);
     void forceDrawButtons();
     void drawCurrentPlayerPopup();
+    void exchangePlayersCards();
 
     int numberOfPlayers;
     Game game;

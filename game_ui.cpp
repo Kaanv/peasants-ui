@@ -85,8 +85,8 @@ PollingPlaceId GameUI::startEventPoll()
             std::string text =
                 "End of round";
             drawPopup(text.c_str());
-
             game.nextRound();
+            exchangePlayersCards();
             drawCurrentPlayerPopup();
         }
 
@@ -434,4 +434,9 @@ void GameUI::drawCurrentPlayerPopup()
     std::string text =
         "Player " + std::to_string(game.getCurrentPlayer().getId() + 1) + " turn";
     drawPopup(text.c_str());
+}
+
+void GameUI::exchangePlayersCards()
+{
+
 }
