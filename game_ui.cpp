@@ -85,6 +85,8 @@ PollingPlaceId GameUI::startEventPoll()
             std::string text =
                 "End of round";
             drawPopup(text.c_str());
+
+            game.nextRound();
         }
 
         if (event.type == SDL_QUIT) return PollingPlaceId_Exit;
