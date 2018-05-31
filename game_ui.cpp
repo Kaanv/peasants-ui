@@ -87,6 +87,9 @@ PollingPlaceId GameUI::startEventPoll()
             drawPopup(text.c_str());
 
             game.nextRound();
+
+            text = "Player " + std::to_string(game.getCurrentPlayer().getId() + 1) + " turn";
+            drawPopup(text.c_str());
         }
 
         if (event.type == SDL_QUIT) return PollingPlaceId_Exit;
