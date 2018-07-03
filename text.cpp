@@ -13,7 +13,6 @@ void SDL_GL_RenderText(const char *text,
 {
     SDL_Surface *initial;
     SDL_Surface *intermediary;
-    SDL_Rect rect;
     int w,h;
     GLuint texture;
     int width;

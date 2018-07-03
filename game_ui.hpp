@@ -5,6 +5,7 @@
 #include "polling_place.hpp"
 #include "polling_place_id.hpp"
 #include "sdl_gl_wrapper.hpp"
+#include "settings.hpp"
 #include "Game.hpp"
 #include <vector>
 #include <map>
@@ -13,6 +14,7 @@ class GameUI : public PollingPlace
 {
 public:
     GameUI();
+    void setSettings(Settings settings);
 private:
     PollingPlaceId startEventPoll() override;
     void updateScreen() override;
@@ -27,7 +29,7 @@ private:
     void drawTableCards();
     void drawPeasantsInfo();
     void updateCardsSelection(int x, int y);
-    void forceDrawingEverything();
+    void forceDrawingEverything() override;
     void updateSelectedCardSelection(Position glPosition,
                                      const Cards& cards,
                                      unsigned int cardIndex);
@@ -39,6 +41,7 @@ private:
     void drawCurrentPlayerPopup();
     void exchangePlayersCards();
 
+    Settings settings;
     int numberOfPlayers;
     Game game;
     std::map<std::pair<Color, Value>, GLuint> textureMap;

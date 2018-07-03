@@ -9,6 +9,7 @@
 enum MenuButtonId
 {
     ButtonId_NewGame,
+    ButtonId_StartGame,
     ButtonId_MainMenu,
     ButtonId_ExitGame,
     ButtonId_PassTurn,

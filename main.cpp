@@ -3,6 +3,7 @@
 #include "menu.hpp"
 #include "game_ui.hpp"
 #include "sdl_gl_wrapper.hpp"
+#include "settings_menu.hpp"
 #include <ctime>
 
 int main()
@@ -13,13 +14,18 @@ int main()
     PollingPlaceId currentPlace = PollingPlaceId_MainMenu;
     MainMenu mainMenu(10, 10);
     GameUI game;
+    SettingsMenu settingsMenu;
 
     while (currentPlace != PollingPlaceId_Exit)
     {
         switch (currentPlace)
         {
         case PollingPlaceId_Game:
+            game.setSettings(settingsMenu.getSettings());
             currentPlace = game.enter();
+            break;
+        case PollingPlaceId_Settings:
+            currentPlace = settingsMenu.enter();
             break;
         case PollingPlaceId_MainMenu:
         default:

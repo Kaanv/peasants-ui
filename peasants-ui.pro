@@ -24,7 +24,9 @@ SOURCES += main.cpp \
     Deck.cpp \
     Game.cpp \
     Player.cpp \
-    Table.cpp
+    Table.cpp \
+    settings.cpp \
+    settings_menu.cpp
 
 HEADERS += \
     textures.hpp \
@@ -44,4 +46,6 @@ HEADERS += \
     Deck.hpp \
     Game.hpp \
     Player.hpp \
-    Table.hpp
+    Table.hpp \
+    settings.hpp \
+    settings_menu.hpp

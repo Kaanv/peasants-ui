@@ -1,20 +1,21 @@
-#include "menu.hpp"
-#include "sdl_gl_wrapper.hpp"
-#include "constants.hpp"
+#include "settings_menu.hpp"
 
-MainMenu::MainMenu(int x, int y)
+SettingsMenu::SettingsMenu()
 {
-    ownId = PollingPlaceId_MainMenu;
+    ownId = PollingPlaceId_Settings;
     Dimensions defaultButtonDimensions = {0.7, 0.125};
-    this->x = x;
-    this->y = y;
-    buttons.push_back(Button(defaultButtonDimensions, {-0.35, 0.425},
-                             "New game", ButtonId_NewGame));
-    buttons.push_back(Button(defaultButtonDimensions, {-0.35, 0.225},
-                             "Exit game", ButtonId_ExitGame));
+    buttons.push_back(Button(defaultButtonDimensions, {-0.35, 0.025},
+                             "Start game", ButtonId_StartGame));
+    buttons.push_back(Button(defaultButtonDimensions, {-0.35, -0.175},
+                             "Main menu", ButtonId_MainMenu));
 }
 
-PollingPlaceId MainMenu::startEventPoll()
+Settings SettingsMenu::getSettings()
+{
+    return settings;
+}
+
+PollingPlaceId SettingsMenu::startEventPoll()
 {
     while (SDL_PollEvent(&event))
     {
@@ -47,17 +48,17 @@ PollingPlaceId MainMenu::startEventPoll()
                 {
                     switch (button.getButtonId())
                     {
-                        case ButtonId_NewGame: return PollingPlaceId_Settings;
-                        case ButtonId_ExitGame: return PollingPlaceId_Exit;
+                        case ButtonId_StartGame: return PollingPlaceId_Game;
+                        case ButtonId_MainMenu: return PollingPlaceId_MainMenu;
                     }
                 }
             }
         }
     }
-    return PollingPlaceId_MainMenu;
+    return PollingPlaceId_Settings;
 }
 
-void MainMenu::updateScreen()
+void SettingsMenu::updateScreen()
 {
     if(SDL_GetTicks() - lastTicks > 20)
     {
@@ -73,7 +74,7 @@ void MainMenu::updateScreen()
     }
 }
 
-void MainMenu::drawBackground()
+void SettingsMenu::drawBackground()
 {
     Dimensions fullScreen{2.0, 2.0};
     Position rightLeftCorner{-1.0, 1.0};

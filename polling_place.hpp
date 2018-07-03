@@ -8,6 +8,7 @@
 class PollingPlace
 {
 public:
+    PollingPlace();
     PollingPlaceId enter();
 
 protected:
@@ -16,10 +17,13 @@ protected:
     void updateButtonsOnMotion(int x, int y);
     void updateButtonsClickStatus();
     virtual void drawBackground() = 0;
+    virtual void forceDrawingEverything();
 
     std::vector<Button> buttons;
     SDL_Event event;
     PollingPlaceId ownId;
+    bool backgroundNeedsDrawing;
+    int lastTicks;
 };
 
 #endif // POLLING_PLACE_HPP

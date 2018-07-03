@@ -76,6 +76,11 @@ GameUI::GameUI() : numberOfPlayers(4),
     cardTopTexture = getTexture("Images//cards//cardtop.png");
 }
 
+void GameUI::setSettings(Settings settings)
+{
+    this->settings = settings;
+}
+
 PollingPlaceId GameUI::startEventPoll()
 {
     while (SDL_PollEvent(&event))

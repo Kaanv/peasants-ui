@@ -1,8 +1,12 @@
 #include "polling_place.hpp"
 #include "constants.hpp"
 
+PollingPlace::PollingPlace() : lastTicks(0)
+{}
+
 PollingPlaceId PollingPlace::enter()
 {
+    forceDrawingEverything();
     updateScreen();
     PollingPlaceId currentPlace = ownId;
     while (currentPlace == ownId)
@@ -27,5 +31,14 @@ void PollingPlace::updateButtonsClickStatus()
     for (auto& button : buttons)
     {
         button.updateUnderClick();
+    }
+}
+
+void PollingPlace::forceDrawingEverything()
+{
+    backgroundNeedsDrawing = true;
+    for (auto& button : buttons)
+    {
+        button.forceDraw();
     }
 }
