@@ -79,6 +79,7 @@ GameUI::GameUI() : numberOfPlayers(4),
 void GameUI::setSettings(Settings settings)
 {
     this->settings = settings;
+    numberOfPlayers = settings.numberOfPlayers;
 }
 
 PollingPlaceId GameUI::startEventPoll()

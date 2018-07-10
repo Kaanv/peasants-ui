@@ -147,6 +147,12 @@ void SettingsMenu::setSettingsAccordingToButtons()
                     convertCaptionToPlayerType(button.getCaption());
         }
     }
+
+    settings.numberOfPlayers = 0;
+    for (int i = 0; i < 6; i++)
+    {
+        if (settings.playerTypes[i] != PlayerType_None) settings.numberOfPlayers++;
+    }
 }
 
 PlayerType SettingsMenu::convertCaptionToPlayerType(std::string caption)
