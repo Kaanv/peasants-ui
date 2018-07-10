@@ -1,7 +1,17 @@
 #pragma once
 
-class Settings
+#include <array>
+
+enum PlayerType
 {
-public:
+    PlayerType_None,
+    PlayerType_Human,
+    PlayerType_AI
+};
+
+struct Settings
+{
     Settings();
+    int numberOfPlayers;
+    std::array<PlayerType, 6> playerTypes;
 };

@@ -77,7 +77,9 @@ PollingPlaceId SettingsMenu::startEventPoll()
                 {
                     switch (button.getButtonId())
                     {
-                        case ButtonId_StartGame: return PollingPlaceId_Game;
+                        case ButtonId_StartGame:
+                            setSettingsAccordingToButtons();
+                            return PollingPlaceId_Game;
                         case ButtonId_MainMenu: return PollingPlaceId_MainMenu;
                         case ButtonId_PlayerType1:
                         case ButtonId_PlayerType2:
@@ -126,6 +128,31 @@ std::string SettingsMenu::nextCaption(std::string caption)
 {
     if (caption == "Human") return "AI";
     else if (caption == "AI") return "None";
-    else return "Human";
+    return "Human";
+}
+
+void SettingsMenu::setSettingsAccordingToButtons()
+{
+    for (auto& button : buttons)
+    {
+        switch (button.getButtonId())
+        {
+            case ButtonId_PlayerType1:
+            case ButtonId_PlayerType2:
+            case ButtonId_PlayerType3:
+            case ButtonId_PlayerType4:
+            case ButtonId_PlayerType5:
+            case ButtonId_PlayerType6:
+                settings.playerTypes[button.getButtonId() - ButtonId_PlayerType1] =
+                    convertCaptionToPlayerType(button.getCaption());
+        }
+    }
+}
+
+PlayerType SettingsMenu::convertCaptionToPlayerType(std::string caption)
+{
+    if (caption == "Human") return PlayerType_Human;
+    else if (caption == "AI") return PlayerType_AI;
+    return PlayerType_None;
 }
 
