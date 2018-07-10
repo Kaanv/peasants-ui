@@ -42,6 +42,9 @@ public:
     bool isClicked();
     int getButtonId();
     void forceDraw();
+    void setCaption(std::string caption);
+    std::string getCaption();
+    void immediatelyDraw();
 private:
     void drawBorder();
     void drawVerticalBorders();

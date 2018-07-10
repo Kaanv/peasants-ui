@@ -39,6 +39,23 @@ void Button::forceDraw()
     needsDrawing = true;
 }
 
+std::string Button::getCaption()
+{
+    return caption;
+}
+
+void Button::immediatelyDraw()
+{
+    forceDraw();
+    draw();
+    SDL_GL_SwapBuffers();;
+}
+
+void Button::setCaption(std::string caption)
+{
+    this->caption = caption;
+}
+
 void Button::renderCaption()
 {
     SDL_GL_RenderText(caption.c_str(),

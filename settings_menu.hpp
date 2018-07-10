@@ -12,5 +12,6 @@ private:
     PollingPlaceId startEventPoll() override;
     void updateScreen() override;
     void drawBackground() override;
+    std::string nextCaption(std::string caption);
     Settings settings;
 };

@@ -79,6 +79,15 @@ PollingPlaceId SettingsMenu::startEventPoll()
                     {
                         case ButtonId_StartGame: return PollingPlaceId_Game;
                         case ButtonId_MainMenu: return PollingPlaceId_MainMenu;
+                        case ButtonId_PlayerType1:
+                        case ButtonId_PlayerType2:
+                        case ButtonId_PlayerType3:
+                        case ButtonId_PlayerType4:
+                        case ButtonId_PlayerType5:
+                        case ButtonId_PlayerType6:
+                            button.setCaption(nextCaption(button.getCaption()));
+                            button.immediatelyDraw();
+                            break;
                     }
                 }
             }
@@ -112,3 +121,11 @@ void SettingsMenu::drawBackground()
     drawRectangle(fullScreen,
                   rightLeftCorner);
 }
+
+std::string SettingsMenu::nextCaption(std::string caption)
+{
+    if (caption == "Human") return "AI";
+    else if (caption == "AI") return "None";
+    else return "Human";
+}
+
