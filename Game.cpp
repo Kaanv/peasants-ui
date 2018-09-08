@@ -1,5 +1,6 @@
 #include "Game.hpp"
 #include <stdexcept>
+#include <iostream>
 
 Game::Game(int numberOfPlayers) : deck(numberOfPlayers),
                                   cardsValidator(deck.getStartingCard())
@@ -174,5 +175,18 @@ void Game::setPeasantsLevels()
 
 void Game::performAITurn()
 {
-
+    Cards cards= getCurrentPlayer().getCards();
+    std::cout << "AI TURN " << getCurrentPlayer().getId() << std::endl;
+    std::cout << "AI CARDS:" <<std::endl;
+    for (unsigned int i = 0; i < cards.size(); i++)
+    {
+        std::cout << cards[i].value << " " << cards[i].color << std::endl;
+    }
+    cards = getCardsFromTableTop();
+    std::cout << "TABLE CARDS:" <<std::endl;
+    for (unsigned int i = 0; i < cards.size(); i++)
+    {
+        std::cout << cards[i].value << " " << cards[i].color << std::endl;
+    }
+    std::cout << std::flush;
 }
