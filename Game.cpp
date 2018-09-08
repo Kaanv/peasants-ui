@@ -175,18 +175,38 @@ void Game::setPeasantsLevels()
 
 void Game::performAITurn()
 {
+    bool selected = false;
     Cards cards= getCurrentPlayer().getCards();
     std::cout << "AI TURN " << getCurrentPlayer().getId() << std::endl;
     std::cout << "AI CARDS:" <<std::endl;
     for (unsigned int i = 0; i < cards.size(); i++)
     {
+        if (cards[i]== deck.getStartingCard())
+        {
+            getCurrentPlayer().selectCard(i);
+            selected = true;
+        }
         std::cout << cards[i].value << " " << cards[i].color << std::endl;
     }
-    cards = getCardsFromTableTop();
+    Cards tableCards = getCardsFromTableTop();
     std::cout << "TABLE CARDS:" <<std::endl;
-    for (unsigned int i = 0; i < cards.size(); i++)
+    for (unsigned int i = 0; i < tableCards.size(); i++)
     {
-        std::cout << cards[i].value << " " << cards[i].color << std::endl;
+        std::cout << tableCards[i].value << " " << tableCards[i].color << std::endl;
+    }
+
+    if (selected)
+    {
+        throwCards(getCurrentPlayer().getSelectedCards());
+        getCurrentPlayer().removeSelectedCards();
+        checkIfPlayerHasEnded();
+        std::cout << "Thrown starting card" << std::endl;
+    }
+    else
+    {
+        passCurrentPlayerTurn();
+        std::cout << "Passed turn" << std::endl;
     }
     std::cout << std::flush;
+    nextPlayer();
 }

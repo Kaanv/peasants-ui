@@ -99,7 +99,6 @@ PollingPlaceId GameUI::startEventPoll()
         if (isCurrentPlayerAI() and not isPopupActive)
         {
             game.performAITurn();
-            game.nextPlayer();
             forceDrawingEverything();
             drawCurrentPlayerPopup();
         }
