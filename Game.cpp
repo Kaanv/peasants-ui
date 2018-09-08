@@ -172,3 +172,7 @@ void Game::setPeasantsLevels()
     }
 }
 
+void Game::performAITurn()
+{
+
+}

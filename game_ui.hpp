@@ -41,6 +41,7 @@ private:
     void drawCurrentPlayerPopup();
     void exchangePlayersCards();
     void enteringAction() override;
+    bool isCurrentPlayerAI();
 
     Settings settings;
     int numberOfPlayers;

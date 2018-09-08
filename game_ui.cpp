@@ -96,6 +96,13 @@ PollingPlaceId GameUI::startEventPoll()
             game.setStartingPlayer();
             drawCurrentPlayerPopup();
         }
+        if (isCurrentPlayerAI() and not isPopupActive)
+        {
+            game.performAITurn();
+            game.nextPlayer();
+            forceDrawingEverything();
+            drawCurrentPlayerPopup();
+        }
 
         if (event.type == SDL_QUIT) return PollingPlaceId_Exit;
         else if (event.type == SDL_ACTIVEEVENT &&
@@ -438,9 +445,14 @@ void GameUI::drawPopup(std::string text)
 
 void GameUI::drawCurrentPlayerPopup()
 {
-    std::string text =
-        "Player " + std::to_string(game.getCurrentPlayer().getId() + 1) + " turn";
+    std::string text = "Player " + std::to_string(game.getCurrentPlayer().getId() + 1) + " turn";;
+    if (isCurrentPlayerAI()) text = "AI " + text;
     drawPopup(text.c_str());
+}
+
+bool GameUI::isCurrentPlayerAI()
+{
+    return settings.playerTypes[game.getCurrentPlayer().getId()] == PlayerType_AI;
 }
 
 void GameUI::exchangePlayersCards()

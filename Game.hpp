@@ -26,6 +26,7 @@ public:
     Player& getPlayer(unsigned int id);
     unsigned int findOppositePlayerId(int peasantLevel);
     void setStartingPlayer();
+    void performAITurn();
 
 private:
     void resetRound();
