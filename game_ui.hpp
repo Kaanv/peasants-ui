@@ -40,6 +40,7 @@ private:
     void forceDrawButtons();
     void drawCurrentPlayerPopup();
     void exchangePlayersCards();
+    void enteringAction() override;
 
     Settings settings;
     int numberOfPlayers;

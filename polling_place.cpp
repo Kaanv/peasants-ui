@@ -8,6 +8,7 @@ PollingPlaceId PollingPlace::enter()
 {
     forceDrawingEverything();
     updateScreen();
+    enteringAction();
     PollingPlaceId currentPlace = ownId;
     while (currentPlace == ownId)
     {
@@ -41,4 +42,8 @@ void PollingPlace::forceDrawingEverything()
     {
         button.forceDraw();
     }
+}
+
+void PollingPlace::enteringAction()
+{
 }

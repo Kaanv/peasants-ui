@@ -447,3 +447,8 @@ void GameUI::exchangePlayersCards()
 {
 
 }
+
+void GameUI::enteringAction()
+{
+    drawCurrentPlayerPopup();
+}

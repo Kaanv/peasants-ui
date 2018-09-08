@@ -10,7 +10,6 @@ class PollingPlace
 public:
     PollingPlace();
     PollingPlaceId enter();
-
 protected:
     virtual PollingPlaceId startEventPoll() = 0;
     virtual void updateScreen() = 0;
@@ -18,6 +17,7 @@ protected:
     void updateButtonsClickStatus();
     virtual void drawBackground() = 0;
     virtual void forceDrawingEverything();
+    virtual void enteringAction();
 
     std::vector<Button> buttons;
     SDL_Event event;
