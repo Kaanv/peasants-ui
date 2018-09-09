@@ -201,13 +201,31 @@ void Game::performAITurn()
         }
     }
     if (hasStartingCard) AIselectAllStartingValues();
+    else if (tableCards.size() == 1)
+    {
+        for (unsigned int i = 0; i < cards.size(); i++)
+        {
+            if (cards[i] > tableCards[0])
+            {
+                getCurrentPlayer().selectCard(i);
+                selected = true;
+                break;
+            }
+        }
+    }
+
+    Cards selelctedCards = getCurrentPlayer().getSelectedCards();
+    if (selelctedCards.size()) std::cout << "Throwing cards:" << std::endl;
+    for (unsigned int i = 0; i < selelctedCards.size(); i++)
+    {
+        std::cout << selelctedCards[i].value << " " << selelctedCards[i].color << std::endl;
+    }
 
     if (selected)
     {
         throwCards(getCurrentPlayer().getSelectedCards());
         getCurrentPlayer().removeSelectedCards();
         checkIfPlayerHasEnded();
-        std::cout << "Thrown starting card(s)" << std::endl;
     }
     else
     {
