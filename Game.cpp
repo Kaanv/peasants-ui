@@ -176,31 +176,38 @@ void Game::setPeasantsLevels()
 void Game::performAITurn()
 {
     bool selected = false;
+    bool hasStartingCard = false;
     Cards cards= getCurrentPlayer().getCards();
+    Cards tableCards = getCardsFromTableTop();
     std::cout << "AI TURN " << getCurrentPlayer().getId() << std::endl;
     std::cout << "AI CARDS:" <<std::endl;
     for (unsigned int i = 0; i < cards.size(); i++)
     {
-        if (cards[i]== deck.getStartingCard())
-        {
-            getCurrentPlayer().selectCard(i);
-            selected = true;
-        }
         std::cout << cards[i].value << " " << cards[i].color << std::endl;
     }
-    Cards tableCards = getCardsFromTableTop();
     std::cout << "TABLE CARDS:" <<std::endl;
     for (unsigned int i = 0; i < tableCards.size(); i++)
     {
         std::cout << tableCards[i].value << " " << tableCards[i].color << std::endl;
     }
 
+    for (unsigned int i = 0; i < cards.size(); i++)
+    {
+        if (cards[i]== deck.getStartingCard())
+        {
+            getCurrentPlayer().selectCard(i);
+            hasStartingCard = true;
+            selected = true;
+        }
+    }
+    if (hasStartingCard) AIselectAllStartingValues();
+
     if (selected)
     {
         throwCards(getCurrentPlayer().getSelectedCards());
         getCurrentPlayer().removeSelectedCards();
         checkIfPlayerHasEnded();
-        std::cout << "Thrown starting card" << std::endl;
+        std::cout << "Thrown starting card(s)" << std::endl;
     }
     else
     {
@@ -209,4 +216,16 @@ void Game::performAITurn()
     }
     std::cout << std::flush;
     nextPlayer();
+}
+
+void Game::AIselectAllStartingValues()
+{
+    Cards cards= getCurrentPlayer().getCards();
+    for (unsigned int i = 0; i < cards.size(); i++)
+    {
+        if (cards[i].value == deck.getStartingCard().value)
+        {
+            getCurrentPlayer().selectCard(i);
+        }
+    }
 }

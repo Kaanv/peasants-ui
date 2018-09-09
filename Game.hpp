@@ -32,6 +32,8 @@ private:
     void resetRound();
     void setPeasantsLevels();
 
+    void AIselectAllStartingValues();
+
     Players players;
     Deck deck;
     CardsValidator cardsValidator;
