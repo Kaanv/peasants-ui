@@ -1,6 +1,78 @@
 #include "Game.hpp"
 #include <stdexcept>
 #include <iostream>
+#include <regex>
+#include <LuaBridge/LuaBridge.h>
+
+using namespace luabridge;
+
+template <typename T>
+struct EnumWrapper {
+    static inline typename std::enable_if<std::is_enum<T>::value, void>::type
+    push(lua_State* L, T value)
+    {
+        lua_pushinteger(L, static_cast<std::size_t>(value));
+    }
+
+    static inline typename std::enable_if<std::is_enum<T>::value, T>::type
+    get(lua_State* L, int index)
+    {
+        return static_cast<T>(lua_tointeger(L, index));
+    }
+};
+
+template <> struct luabridge::Stack<Value>: EnumWrapper<Value> {};
+template <> struct luabridge::Stack<Color>: EnumWrapper<Color> {};
+
+void History::saveThrowCards(Cards cards, int playerId)
+{
+    history.push_back(HistoryElement{playerId, "THROW", cards});
+}
+
+void History::savePassedTurn(int playerId)
+{
+    history.push_back(HistoryElement{playerId, "PASS TURN", Cards{}});
+}
+
+std::vector<HistoryElement> History::getHistory()
+{
+    return history;
+}
+
+void Game::registerCardClassInLua()
+{
+    getGlobalNamespace(basicAIState).beginNamespace("Peasants")
+       .beginClass<Card>("Card")
+       .addData("value", &Card::value)
+       .addData("color", &Card::color)
+       .addData("selected", &Card::selected)
+       .endClass();
+}
+
+void Game::registerCardsClassInLua()
+{
+    getGlobalNamespace(basicAIState).beginNamespace("Peasants")
+        .beginClass<std::vector<Card>>("Cards")
+        .addFunction<std::vector<Card>::const_reference(std::vector<Card>::*)(std::vector<Card >::size_type) const>("at", &std::vector< Card >::at)
+        .addFunction<long unsigned int (std::vector<Card>::*)() const>("numberOfCards", &std::vector<Card>::size)
+        .endClass();
+}
+
+void Game::registerHistoryClassInLua()
+{
+    getGlobalNamespace(basicAIState).beginNamespace("Peasants")
+        .beginClass<HistoryElement>("HistoryElement")
+        .addData("playerId", &HistoryElement::playerId)
+        .addData("action", &HistoryElement::action)
+        .addData("cards", &HistoryElement::cards)
+        .endClass();
+
+    getGlobalNamespace(basicAIState).beginNamespace("Peasants")
+        .beginClass<std::vector<HistoryElement>>("History")
+        .addFunction<std::vector<HistoryElement>::const_reference(std::vector<HistoryElement>::*)(std::vector<HistoryElement >::size_type) const>("at", &std::vector< HistoryElement >::at)
+        .addFunction<long unsigned int (std::vector<HistoryElement>::*)() const>("lengthOfHistory", &std::vector<HistoryElement>::size)
+        .endClass();
+}
 
 Game::Game(int numberOfPlayers) : deck(numberOfPlayers),
                                   cardsValidator(deck.getStartingCard())
@@ -11,6 +83,15 @@ Game::Game(int numberOfPlayers) : deck(numberOfPlayers),
     }
 
     resetRound();
+
+    basicAIState = luaL_newstate();
+    luaL_dofile(basicAIState, "script.lua");
+    luaL_openlibs(basicAIState);
+    lua_pcall(basicAIState, 0, 0, 0);
+
+    registerCardClassInLua();
+    registerCardsClassInLua();
+    registerHistoryClassInLua();
 }
 
 void Game::distributeCardsFromDeck()
@@ -77,6 +158,7 @@ void Game::throwCards(Cards cards)
 
     table.throwCards(cards);
     passedTurns = 0;
+    saveThrowCardsInHistory(cards);
 }
 
 const Cards& Game::getCardsFromTableTop() const
@@ -89,6 +171,7 @@ void Game::passCurrentPlayerTurn()
     if (getCardsFromTableTop().size())
     {
         passedTurns++;
+        savePassedTurnInHistory();
     }
     else
     {
@@ -171,6 +254,63 @@ void Game::setPeasantsLevels()
 
         if (peasantLevel == 0 and players.size() != 5) peasantLevel--;
     }
+}
+
+void Game::saveThrowCardsInHistory(const Cards& cards)
+{
+    history.saveThrowCards(cards, currentPlayerId);
+}
+
+void Game::savePassedTurnInHistory()
+{
+    history.savePassedTurn(currentPlayerId);
+}
+
+std::vector<std::string> split(const std::string& input, const std::string& regex)
+{
+    std::regex re(regex);
+    std::sregex_token_iterator
+        first{input.begin(), input.end(), re, -1},
+        last;
+    return {first, last};
+}
+
+void Game::performAITurnLua()
+{
+    Cards cards= getCurrentPlayer().getCards();
+    Cards tableCards = getCardsFromTableTop();
+
+    std::cout << "LUA FUNCTION ENTER" << std::endl;
+
+    LuaRef luaAITrun = getGlobal(basicAIState, "ai_turn");
+    std::string command = luaAITrun(cards, tableCards, history.getHistory());
+
+    std::cout << "Command to execute: " << command << std::endl;
+    std::cout << "LUA FUNCTION END" << std::endl;
+
+    if (command == "PASS TURN")
+    {
+        passCurrentPlayerTurn();
+        std::cout << "Passed turn" << std::endl;
+    }
+    else
+    {
+        std::cout << "Splitted command" << std::endl;
+        std::vector<std::string> splittedCommand = split(command, " ");
+        for (const auto& e : splittedCommand)
+        {
+            std::cout << e << std::endl;
+
+            if (e != "THROW")
+            {
+                getCurrentPlayer().selectCard(std::stoi(e));
+            }
+        }
+
+        throwCards(getCurrentPlayer().getSelectedCards());
+    }
+
+    nextPlayer();
 }
 
 void Game::performAITurn()

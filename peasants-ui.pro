@@ -10,6 +10,9 @@ LIBS += -lSDL_image
 LIBS += -lGLEW
 LIBS += -lGLU
 LIBS += -lGL
+LIBS += -llua
+
+INCLUDEPATH += LuaBridge/Source/
 
 SOURCES += main.cpp \
     textures.cpp \
