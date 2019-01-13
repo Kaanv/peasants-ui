@@ -97,6 +97,11 @@ void GameUI::setSettings(Settings settings)
 
 PollingPlaceId GameUI::startEventPoll()
 {
+    if (isGameAIOnly)
+    {
+        game.performAITurnLua();
+    }
+
     while (SDL_PollEvent(&event))
     {
         if (game.hasRoundEnded())
@@ -109,14 +114,11 @@ PollingPlaceId GameUI::startEventPoll()
             game.setStartingPlayer();
             drawCurrentPlayerPopup();
         }
-        if (isCurrentPlayerAI() and not isPopupActive)
+        if (isCurrentPlayerAI() and not isPopupActive and not isGameAIOnly)
         {
             game.performAITurnLua();
-            if (not isGameAIOnly)
-            {
-                forceDrawingEverything();
-                drawCurrentPlayerPopup();
-            }
+            forceDrawingEverything();
+            drawCurrentPlayerPopup();
         }
 
         if (event.type == SDL_QUIT) return PollingPlaceId_Exit;
