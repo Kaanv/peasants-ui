@@ -297,6 +297,7 @@ void Game::performAITurnLua()
     {
         std::cout << "Splitted command" << std::endl;
         std::vector<std::string> splittedCommand = split(command, " ");
+        getCurrentPlayer().unselectAllCards();
         for (const auto& e : splittedCommand)
         {
             std::cout << e << std::endl;
