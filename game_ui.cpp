@@ -76,6 +76,19 @@ GameUI::GameUI() : numberOfPlayers(4),
     cardTopTexture = getTexture("Images//cards//cardtop.png");
 }
 
+void GameUI::calculateIsAIOnlyGame()
+{
+    isGameAIOnly = true;
+    for (int i = 0; i < numberOfPlayers; i++)
+    {
+        if (settings.playerTypes[i] == PlayerType_Human)
+        {
+            isGameAIOnly = false;
+            break;
+        }
+    }
+}
+
 void GameUI::setSettings(Settings settings)
 {
     this->settings = settings;
@@ -99,8 +112,11 @@ PollingPlaceId GameUI::startEventPoll()
         if (isCurrentPlayerAI() and not isPopupActive)
         {
             game.performAITurnLua();
-            forceDrawingEverything();
-            drawCurrentPlayerPopup();
+            if (not isGameAIOnly)
+            {
+                forceDrawingEverything();
+                drawCurrentPlayerPopup();
+            }
         }
 
         if (event.type == SDL_QUIT) return PollingPlaceId_Exit;
@@ -461,5 +477,22 @@ void GameUI::exchangePlayersCards()
 
 void GameUI::enteringAction()
 {
-    drawCurrentPlayerPopup();
+    calculateIsAIOnlyGame();
+    if (isGameAIOnly)
+    {
+        std::string text =
+            "Calculating AI game results...";
+        drawPopup(text.c_str());
+        game.calculateAIGameResults();
+        presentAIGameResults();
+    }
+    else
+    {
+        drawCurrentPlayerPopup();
+    }
+}
+
+void GameUI::presentAIGameResults()
+{
+
 }

@@ -387,3 +387,8 @@ void Game::AIselectAllStartingValues()
         }
     }
 }
+
+void Game::calculateAIGameResults()
+{
+
+}

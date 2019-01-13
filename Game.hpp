@@ -55,6 +55,7 @@ public:
     void savePassedTurnInHistory();
     void performAITurn();
     void performAITurnLua();
+    void calculateAIGameResults();
 
 private:
     void resetRound();

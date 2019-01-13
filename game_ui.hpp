@@ -42,6 +42,8 @@ private:
     void exchangePlayersCards();
     void enteringAction() override;
     bool isCurrentPlayerAI();
+    void calculateIsAIOnlyGame();
+    void presentAIGameResults();
 
     Settings settings;
     int numberOfPlayers;
@@ -51,6 +53,7 @@ private:
     int lastTicks;
     bool backgroundNeedsDrawing;
     bool isPopupActive;
+    bool isGameAIOnly;
 };
 
 #endif // GAME_UI_HPP
