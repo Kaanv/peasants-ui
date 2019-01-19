@@ -4,9 +4,9 @@ number = 0
 
 function ai_turn(cards, tableCards, history)
     command = ""
-    print "TEST AI FUNCTION!"
     print("NUMBER_OF_AI_RUNS " .. number)
     number = number + 1
+    print "AI CARDS"
     print_cards(cards, numberOfCards)
 
     if history:lengthOfHistory() == 0 then
@@ -15,7 +15,10 @@ function ai_turn(cards, tableCards, history)
         print("CARDS ON TABLE: ")
         print_cards(tableCards)
         cards_higher_than_on_table = find_cards_higher_than_given_value(cards, tableCards:numberOfCards(), tableCards:at(0).value)
-        if #cards_higher_than_on_table > 0 then
+        if all_players_passed(history) then
+            print "ALL PASSED"
+            command = "THROW 0"
+        elseif #cards_higher_than_on_table > 0 then
             command = "THROW"
             for i=1, #cards_higher_than_on_table[1] do
                 command = command .. " " .. cards_higher_than_on_table[1][i]
@@ -64,7 +67,6 @@ function get_indexes_of_cards_with_given_value(cards, value)
         card = cards:at(i)
         if (card.value == value) then
             indexes[#indexes + 1] = i
-            print "SOMETHING ADDED!"
         end
     end
     return indexes
@@ -83,5 +85,27 @@ function find_cards_higher_than_given_value(cards, numberOfCards, value)
     end
 
     return return_array
+end
+
+function all_players_passed(history)
+    if history:lengthOfHistory() < 4 then
+        return false
+    else
+        throwFound = false
+        playerId = extractPlayerId(history)
+        for i=1, history:lengthOfHistory() do
+            if history:at(history:lengthOfHistory() - i).playerId == playerId then
+                break
+            elseif history:at(history:lengthOfHistory() - i).action ~= "PASS TURN" then
+                throwFound = true
+                break
+            end
+        end
+        return not throwFound
+    end
+end
+
+function extractPlayerId(history)
+    return (history:at(history:lengthOfHistory() - 1).playerId + 1)%4;
 end
 

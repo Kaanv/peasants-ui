@@ -159,6 +159,8 @@ void Game::throwCards(Cards cards)
     table.throwCards(cards);
     passedTurns = 0;
     saveThrowCardsInHistory(cards);
+    getCurrentPlayer().removeSelectedCards();
+    checkIfPlayerHasEnded();
 }
 
 const Cards& Game::getCardsFromTableTop() const
@@ -365,8 +367,6 @@ void Game::performAITurn()
     if (selected)
     {
         throwCards(getCurrentPlayer().getSelectedCards());
-        getCurrentPlayer().removeSelectedCards();
-        checkIfPlayerHasEnded();
     }
     else
     {
