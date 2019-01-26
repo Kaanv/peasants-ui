@@ -10,6 +10,8 @@ LIBS += -lGLEW
 LIBS += -lGLU
 LIBS += -lGL
 LIBS += -llua
+LIBS += -lboost_system
+LIBS += -lboost_filesystem
 
 INCLUDEPATH += LuaBridge/Source/
 

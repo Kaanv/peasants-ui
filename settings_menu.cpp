@@ -1,4 +1,7 @@
 #include "settings_menu.hpp"
+#include <boost/filesystem.hpp>
+#include <iostream>
+#include <regex>
 
 SettingsMenu::SettingsMenu()
 {
@@ -124,10 +127,62 @@ void SettingsMenu::drawBackground()
                   rightLeftCorner);
 }
 
+std::vector<std::string> getCurDirFileNames()
+{
+    std::vector<std::string> names;
+    boost::filesystem::path current_path(".");
+    std::vector<boost::filesystem::directory_entry> v;
+    if (boost::filesystem::is_directory(current_path))
+    {
+        copy(boost::filesystem::directory_iterator(current_path),
+             boost::filesystem::directory_iterator(), back_inserter(v));
+
+        for (auto it = v.begin(); it != v.end();  ++it)
+        {
+            names.push_back((*it).path().string());
+        }
+    }
+    return names;
+}
+
+std::vector<std::string> createCaptions()
+{
+    std::vector<std::string> captions;
+    captions.push_back("Human");
+
+    std::vector<std::string> fileNames = getCurDirFileNames();
+
+    std::regex luaFileRegex(".*\\.lua");
+
+    for (const auto &e : fileNames)
+    {
+        if (std::regex_search(e, luaFileRegex))
+        {
+            captions.push_back(e);
+        }
+    }
+
+    return captions;
+}
+
 std::string SettingsMenu::nextCaption(std::string caption)
 {
-    if (caption == "Human") return "AI";
-    else if (caption == "AI") return "None";
+    std::vector<std::string> captions = createCaptions();
+
+    for (unsigned int i = 0; i < captions.size(); i++)
+    {
+        if (captions[i] == caption)
+        {
+            if (i != captions.size() - 1)
+            {
+                return captions[i + 1];
+            }
+            else
+            {
+                return captions[0];
+            }
+        }
+    }
     return "Human";
 }
 
