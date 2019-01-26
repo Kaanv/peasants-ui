@@ -39,56 +39,70 @@ std::vector<HistoryElement> History::getHistory()
     return history;
 }
 
+void History::clear()
+{
+    history.clear();
+}
+
 void Game::registerCardClassInLua()
 {
-    getGlobalNamespace(basicAIState).beginNamespace("Peasants")
-       .beginClass<Card>("Card")
-       .addData("value", &Card::value)
-       .addData("color", &Card::color)
-       .addData("selected", &Card::selected)
-       .endClass();
+    for (int i = 0; i < numberOfPlayers; i++)
+    {
+        getGlobalNamespace(aiStates[i]).beginNamespace("Peasants")
+           .beginClass<Card>("Card")
+           .addData("value", &Card::value)
+           .addData("color", &Card::color)
+           .addData("selected", &Card::selected)
+           .endClass();
+    }
 }
 
 void Game::registerCardsClassInLua()
 {
-    getGlobalNamespace(basicAIState).beginNamespace("Peasants")
-        .beginClass<std::vector<Card>>("Cards")
-        .addFunction<std::vector<Card>::const_reference(std::vector<Card>::*)(std::vector<Card >::size_type) const>("at", &std::vector< Card >::at)
-        .addFunction<long unsigned int (std::vector<Card>::*)() const>("numberOfCards", &std::vector<Card>::size)
-        .endClass();
+    for (int i = 0; i < numberOfPlayers; i++)
+    {
+        getGlobalNamespace(aiStates[i]).beginNamespace("Peasants")
+            .beginClass<std::vector<Card>>("Cards")
+            .addFunction<std::vector<Card>::const_reference(std::vector<Card>::*)(std::vector<Card >::size_type) const>("at", &std::vector< Card >::at)
+            .addFunction<long unsigned int (std::vector<Card>::*)() const>("numberOfCards", &std::vector<Card>::size)
+            .endClass();
+    }
 }
 
 void Game::registerHistoryClassInLua()
 {
-    getGlobalNamespace(basicAIState).beginNamespace("Peasants")
-        .beginClass<HistoryElement>("HistoryElement")
-        .addData("playerId", &HistoryElement::playerId)
-        .addData("action", &HistoryElement::action)
-        .addData("cards", &HistoryElement::cards)
-        .endClass();
+    for (int i = 0; i < numberOfPlayers; i++)
+    {
+        getGlobalNamespace(aiStates[i]).beginNamespace("Peasants")
+            .beginClass<HistoryElement>("HistoryElement")
+            .addData("playerId", &HistoryElement::playerId)
+            .addData("action", &HistoryElement::action)
+            .addData("cards", &HistoryElement::cards)
+            .endClass();
 
-    getGlobalNamespace(basicAIState).beginNamespace("Peasants")
-        .beginClass<std::vector<HistoryElement>>("History")
-        .addFunction<std::vector<HistoryElement>::const_reference(std::vector<HistoryElement>::*)(std::vector<HistoryElement >::size_type) const>("at", &std::vector< HistoryElement >::at)
-        .addFunction<long unsigned int (std::vector<HistoryElement>::*)() const>("lengthOfHistory", &std::vector<HistoryElement>::size)
-        .endClass();
+        getGlobalNamespace(aiStates[i]).beginNamespace("Peasants")
+            .beginClass<std::vector<HistoryElement>>("History")
+            .addFunction<std::vector<HistoryElement>::const_reference(std::vector<HistoryElement>::*)(std::vector<HistoryElement >::size_type) const>("at", &std::vector< HistoryElement >::at)
+            .addFunction<long unsigned int (std::vector<HistoryElement>::*)() const>("lengthOfHistory", &std::vector<HistoryElement>::size)
+            .endClass();
+    }
 }
 
 Game::Game(int numberOfPlayers) : deck(numberOfPlayers),
                                   cardsValidator(deck.getStartingCard())
 {
+    this->numberOfPlayers = numberOfPlayers;
     for (int i = 0; i < numberOfPlayers; i++)
     {
         players.push_back(Player(i));
+
+        aiStates.push_back(luaL_newstate());
+        luaL_dofile(aiStates[i], "script.lua");
+        luaL_openlibs(aiStates[i]);
+        lua_pcall(aiStates[i], 0, 0, 0);
     }
 
     resetRound();
-
-    basicAIState = luaL_newstate();
-    luaL_dofile(basicAIState, "script.lua");
-    luaL_openlibs(basicAIState);
-    lua_pcall(basicAIState, 0, 0, 0);
-
     registerCardClassInLua();
     registerCardsClassInLua();
     registerHistoryClassInLua();
@@ -226,6 +240,7 @@ void Game::resetRound()
     passedTurns = 0;
     playersThatEnded.clear();
     table.clearTable();
+    history.clear();
 }
 
 void Game::setPeasantsLevels()
@@ -284,7 +299,7 @@ void Game::performAITurnLua()
 
     std::cout << "LUA FUNCTION ENTER" << std::endl;
 
-    LuaRef luaAITrun = getGlobal(basicAIState, "ai_turn");
+    LuaRef luaAITrun = getGlobal(aiStates[currentPlayerId], "ai_turn");
     std::string command = luaAITrun(cards, tableCards, history.getHistory());
 
     std::cout << "Command to execute: " << command << std::endl;

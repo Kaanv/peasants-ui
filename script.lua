@@ -91,17 +91,15 @@ function all_players_passed(history)
     if history:lengthOfHistory() < 4 then
         return false
     else
-        throwFound = false
         playerId = extractPlayerId(history)
         for i=1, history:lengthOfHistory() do
             if history:at(history:lengthOfHistory() - i).playerId == playerId then
-                break
+                return true
             elseif history:at(history:lengthOfHistory() - i).action ~= "PASS TURN" then
-                throwFound = true
-                break
+                return false
             end
         end
-        return not throwFound
+        return false
     end
 end
 

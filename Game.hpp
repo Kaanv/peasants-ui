@@ -29,6 +29,7 @@ public:
     void saveThrowCards(Cards cards, int playerId);
     void savePassedTurn(int playerId);
     std::vector<HistoryElement> getHistory();
+    void clear();
 private:
     std::vector<HistoryElement> history;
 };
@@ -73,7 +74,8 @@ private:
     unsigned int passedTurns;
     Table table;
     std::vector<int> playersThatEnded;
-    lua_State* basicAIState;
+    std::vector<lua_State*> aiStates;
+    int numberOfPlayers;
 };
 
 #endif
