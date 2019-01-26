@@ -1,10 +1,19 @@
 number = 0
 
+numberOfPlayers = 0
+myPlayerId = 0
+
+function ai_init(playersNumber, playerId)
+    print "INITING"
+    numberOfPlayers = playersNumber
+    myPlayerId = playerId
+end
+
 --ai_turn is a function used to calculate AI move. Don't modify its name
 
 function ai_turn(cards, tableCards, history)
     command = ""
-    print("NUMBER_OF_AI_RUNS " .. number)
+    print("NUMBER_OF_AI" .. myPlayerId .. "_RUNS " .. number)
     number = number + 1
     print "AI CARDS"
     print_cards(cards, numberOfCards)
@@ -88,12 +97,11 @@ function find_cards_higher_than_given_value(cards, numberOfCards, value)
 end
 
 function all_players_passed(history)
-    if history:lengthOfHistory() < 4 then
+    if history:lengthOfHistory() < numberOfPlayers then
         return false
     else
-        playerId = extractPlayerId(history)
         for i=1, history:lengthOfHistory() do
-            if history:at(history:lengthOfHistory() - i).playerId == playerId then
+            if history:at(history:lengthOfHistory() - i).playerId == myPlayerId then
                 return true
             elseif history:at(history:lengthOfHistory() - i).action ~= "PASS TURN" then
                 return false
@@ -103,7 +111,4 @@ function all_players_passed(history)
     end
 end
 
-function extractPlayerId(history)
-    return (history:at(history:lengthOfHistory() - 1).playerId + 1)%4;
-end
 

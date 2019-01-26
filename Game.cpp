@@ -100,6 +100,9 @@ Game::Game(int numberOfPlayers) : deck(numberOfPlayers),
         luaL_dofile(aiStates[i], "basicAI.lua");
         luaL_openlibs(aiStates[i]);
         lua_pcall(aiStates[i], 0, 0, 0);
+
+        LuaRef luaAIInit = getGlobal(aiStates[i], "ai_init");
+        luaAIInit(numberOfPlayers, i);
     }
 
     resetRound();
