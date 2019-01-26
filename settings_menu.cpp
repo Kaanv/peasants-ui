@@ -213,7 +213,6 @@ void SettingsMenu::setSettingsAccordingToButtons()
 PlayerType SettingsMenu::convertCaptionToPlayerType(std::string caption)
 {
     if (caption == "Human") return PlayerType_Human;
-    else if (caption == "AI") return PlayerType_AI;
-    return PlayerType_None;
+    else return PlayerType_AI;
 }
 
