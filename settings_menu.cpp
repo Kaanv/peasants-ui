@@ -161,6 +161,7 @@ std::vector<std::string> createCaptions()
             captions.push_back(e);
         }
     }
+    captions.push_back("None");
 
     return captions;
 }
@@ -213,6 +214,7 @@ void SettingsMenu::setSettingsAccordingToButtons()
 PlayerType SettingsMenu::convertCaptionToPlayerType(std::string caption)
 {
     if (caption == "Human") return PlayerType_Human;
-    else return PlayerType_AI;
+    else if (caption == "None") return PlayerType_None;
+    return PlayerType_AI;
 }
 

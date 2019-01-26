@@ -97,7 +97,7 @@ Game::Game(int numberOfPlayers) : deck(numberOfPlayers),
         players.push_back(Player(i));
 
         aiStates.push_back(luaL_newstate());
-        luaL_dofile(aiStates[i], "basic_ai.lua");
+        luaL_dofile(aiStates[i], "basicAI.lua");
         luaL_openlibs(aiStates[i]);
         lua_pcall(aiStates[i], 0, 0, 0);
     }
