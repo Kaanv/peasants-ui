@@ -2,6 +2,8 @@
 #include "constants.hpp"
 #include "textures.hpp"
 #include "text.hpp"
+#include <iostream>
+#include <algorithm>
 
 namespace
 {
@@ -93,6 +95,7 @@ void GameUI::setSettings(Settings settings)
 {
     this->settings = settings;
     numberOfPlayers = settings.numberOfPlayers;
+    game = Game(numberOfPlayers);
 }
 
 PollingPlaceId GameUI::startEventPoll()
@@ -100,6 +103,19 @@ PollingPlaceId GameUI::startEventPoll()
     if (isGameAIOnly)
     {
         game.performAITurnLua();
+        if (game.hasRoundEnded())
+        {
+            game.nextRound();
+            exchangePlayersCards();
+            std::cout << "END OF ROUND" << std::endl;
+            if (game.getNumberOfEndedRounds() >= 20)
+            {
+                std::string text = "Game ended";
+                drawPopup(text.c_str());
+                presentAIGameResults();
+                return PollingPlaceId_MainMenu;
+            }
+        }
     }
 
     while (SDL_PollEvent(&event))
@@ -111,7 +127,6 @@ PollingPlaceId GameUI::startEventPoll()
             drawPopup(text.c_str());
             game.nextRound();
             exchangePlayersCards();
-            game.setStartingPlayer();
             drawCurrentPlayerPopup();
         }
         if (isCurrentPlayerAI() and not isPopupActive and not isGameAIOnly)
@@ -482,11 +497,8 @@ void GameUI::enteringAction()
     calculateIsAIOnlyGame();
     if (isGameAIOnly)
     {
-        std::string text =
-            "Calculating AI game results...";
+        std::string text = "Calculating AI game results...";
         drawPopup(text.c_str());
-        game.calculateAIGameResults();
-        presentAIGameResults();
     }
     else
     {
@@ -494,7 +506,84 @@ void GameUI::enteringAction()
     }
 }
 
-void GameUI::presentAIGameResults()
+namespace
 {
 
+struct Score
+{
+    int mastersScore;
+    int positiveScore;
+    int playerNumber;
+
+    bool operator==(const Score& score)
+    {
+        return (this->mastersScore == score.mastersScore and
+                this->positiveScore == score.positiveScore);
+    }
+    bool operator>(const Score& score)
+    {
+        return (this->mastersScore > score.mastersScore or
+                (this->mastersScore == score.mastersScore and
+                this->positiveScore > score.positiveScore));
+    }
+    bool operator<(const Score& score)
+    {
+        return (this->mastersScore < score.mastersScore or
+                (this->mastersScore == score.mastersScore and
+                this->positiveScore < score.positiveScore));
+    }
+};
+
+int calculateNumberOfMasterTimes(const LevelsHistory& levelsHistory)
+{
+    int numberOfMasterTimes = 0;
+
+    for (unsigned int i = 0; i < levelsHistory.size(); i++)
+    {
+        if (levelsHistory[i] > 0)
+        {
+            numberOfMasterTimes++;
+        }
+    }
+    return numberOfMasterTimes;
+}
+
+int calculatePositiveScoreAsMaster(const LevelsHistory& levelsHistory)
+{
+    int positiveScore = 0;
+
+    for (unsigned int i = 0; i < levelsHistory.size(); i++)
+    {
+        if (levelsHistory[i] > 0)
+        {
+            positiveScore += levelsHistory[i];
+        }
+    }
+    return positiveScore;
+}
+
+}
+
+void GameUI::presentAIGameResults()
+{
+    std::cout << "RESULTS" << std::endl;
+
+    const std::vector<LevelsHistory>& levelsHistory = game.getLevelsHistory();
+    std::vector<Score> scores;
+
+    for (int i = 0; i < numberOfPlayers; i++)
+    {
+        int numberOfMasterTimes = calculateNumberOfMasterTimes(levelsHistory[i]);
+        int positiveScore = calculatePositiveScoreAsMaster(levelsHistory[i]);
+        scores.push_back(Score{numberOfMasterTimes, positiveScore, i});
+    }
+    std::sort(scores.begin(), scores.end());
+    std::reverse(scores.begin(), scores.end());
+
+    for (unsigned int i = 0; i < scores.size(); i++)
+    {
+        std::cout << "PLAYER " << scores[i].playerNumber << " result:" << std::endl;
+        std::cout << "MASTER TIMES: " << scores[i].mastersScore << std::endl;
+        std::cout << "POSITIVE SCORE: " << scores[i].positiveScore << std::endl;
+    }
 }

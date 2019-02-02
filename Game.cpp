@@ -95,6 +95,7 @@ Game::Game(int numberOfPlayers) : deck(numberOfPlayers),
     for (int i = 0; i < numberOfPlayers; i++)
     {
         players.push_back(Player(i));
+        levelsHistory.push_back(LevelsHistory{});
 
         aiStates.push_back(luaL_newstate());
         luaL_dofile(aiStates[i], "basicAI.lua");
@@ -202,6 +203,9 @@ void Game::nextRound()
 {
     setPeasantsLevels();
     resetRound();
+    numberOfEndedRounds++;
+    setStartingPlayer();
+    addPeasantsLevelsToLevelsHistory();
 }
 
 void Game::checkIfPlayerHasEnded()
@@ -407,7 +411,20 @@ void Game::AIselectAllStartingValues()
     }
 }
 
-void Game::calculateAIGameResults()
+unsigned int Game::getNumberOfEndedRounds()
 {
+    return numberOfEndedRounds;
+}
 
+void Game::addPeasantsLevelsToLevelsHistory()
+{
+    for (int i = 0; i < numberOfPlayers; i++)
+    {
+        levelsHistory[i].push_back(players[i].getPeasantLevel());
+    }
+}
+
+const std::vector<LevelsHistory>& Game::getLevelsHistory()
+{
+    return levelsHistory;
 }

@@ -23,6 +23,8 @@ struct  HistoryElement
     Cards cards;
 };
 
+typedef std::vector<int> LevelsHistory;
+
 class History
 {
 public:
@@ -56,7 +58,8 @@ public:
     void savePassedTurnInHistory();
     void performAITurn();
     void performAITurnLua();
-    void calculateAIGameResults();
+    unsigned int getNumberOfEndedRounds();
+    const std::vector<LevelsHistory>& getLevelsHistory();
 
 private:
     void resetRound();
@@ -65,6 +68,7 @@ private:
     void registerCardClassInLua();
     void registerCardsClassInLua();
     void registerHistoryClassInLua();
+    void addPeasantsLevelsToLevelsHistory();
 
     Players players;
     Deck deck;
@@ -76,6 +80,8 @@ private:
     std::vector<int> playersThatEnded;
     std::vector<lua_State*> aiStates;
     int numberOfPlayers;
+    unsigned int numberOfEndedRounds = 0;
+    std::vector<LevelsHistory> levelsHistory;
 };
 
 #endif
