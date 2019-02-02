@@ -487,9 +487,33 @@ bool GameUI::isCurrentPlayerAI()
     return settings.playerTypes[game.getCurrentPlayer().getId()] == PlayerType_AI;
 }
 
+void GameUI::takeCardsFromPeasants()
+{
+    for (int id = 0; id < numberOfPlayers; id++)
+    {
+        if (game.getPlayer(id).getPeasantLevel() < 0)
+        {
+            Cards cardsToGiveAway;
+
+            for (int j = 0; j > game.getPlayer(id).getPeasantLevel(); j--)
+            {
+                cardsToGiveAway.push_back(game.getPlayer(id).takeBestCard());
+            }
+
+            unsigned int masterId = game.findOppositePlayerId(game.getPlayer(id).getPeasantLevel());
+
+            for (unsigned int j = 0; j < cardsToGiveAway.size(); j++)
+            {
+                game.getPlayer(masterId).insertCard(cardsToGiveAway[j]);
+            }
+        }
+    }
+}
+
 void GameUI::exchangePlayersCards()
 {
-
+    takeCardsFromPeasants();
+    giveCardsToPeasants();
 }
 
 void GameUI::enteringAction()

@@ -39,6 +39,7 @@ private:
     void drawPopup(std::string text);
     void forceDrawButtons();
     void drawCurrentPlayerPopup();
+    void takeCardsFromPeasants();
     void exchangePlayersCards();
     void enteringAction() override;
     bool isCurrentPlayerAI();
