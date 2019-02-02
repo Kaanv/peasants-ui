@@ -40,6 +40,7 @@ private:
     void forceDrawButtons();
     void drawCurrentPlayerPopup();
     void takeCardsFromPeasants();
+    void giveCardsToPeasants();
     void exchangePlayersCards();
     void enteringAction() override;
     bool isCurrentPlayerAI();

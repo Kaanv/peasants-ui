@@ -304,28 +304,20 @@ void Game::performAITurnLua()
     Cards cards= getCurrentPlayer().getCards();
     Cards tableCards = getCardsFromTableTop();
 
-    std::cout << "LUA FUNCTION ENTER" << std::endl;
-
     LuaRef luaAITrun = getGlobal(aiStates[currentPlayerId], "ai_turn");
     std::string command = luaAITrun(cards, tableCards, history.getHistory());
-
-    std::cout << "Command to execute: " << command << std::endl;
-    std::cout << "LUA FUNCTION END" << std::endl;
+    std::cout << "AI PLAYER " << currentPlayerId << " EXECUTE: " << command << std::endl;
 
     if (command == "PASS TURN")
     {
         passCurrentPlayerTurn();
-        std::cout << "Passed turn" << std::endl;
     }
     else
     {
-        std::cout << "Splitted command" << std::endl;
         std::vector<std::string> splittedCommand = split(command, " ");
         getCurrentPlayer().unselectAllCards();
         for (const auto& e : splittedCommand)
         {
-            std::cout << e << std::endl;
-
             if (e != "THROW")
             {
                 getCurrentPlayer().selectCard(std::stoi(e));

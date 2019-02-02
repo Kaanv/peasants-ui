@@ -510,6 +510,11 @@ void GameUI::takeCardsFromPeasants()
     }
 }
 
+void GameUI::giveCardsToPeasants()
+{
+
+}
+
 void GameUI::exchangePlayersCards()
 {
     takeCardsFromPeasants();

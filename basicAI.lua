@@ -4,7 +4,6 @@ numberOfPlayers = 0
 myPlayerId = 0
 
 function ai_init(playersNumber, playerId)
-    print "INITING"
     numberOfPlayers = playersNumber
     myPlayerId = playerId
 end
@@ -13,19 +12,13 @@ end
 
 function ai_turn(cards, tableCards, history)
     command = ""
-    print("NUMBER_OF_AI" .. myPlayerId .. "_RUNS " .. number)
     number = number + 1
-    print "AI CARDS"
-    print_cards(cards, numberOfCards)
 
     if history:lengthOfHistory() == 0 then
         throw_starting_cards(cards)
     else
-        print("CARDS ON TABLE: ")
-        print_cards(tableCards)
         cards_higher_than_on_table = find_cards_higher_than_given_value(cards, tableCards:numberOfCards(), tableCards:at(0).value)
         if all_players_passed(history) then
-            print "ALL PASSED"
             command = "THROW 0"
         elseif #cards_higher_than_on_table > 0 then
             command = "THROW"
