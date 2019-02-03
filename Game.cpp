@@ -362,6 +362,12 @@ void Game::giveCardsToPeasantAsAI(int playerId)
 void Game::giveCardsToPeasantAsHuman(int playerId)
 {
     validateNumberOfCardsToGiveAway(playerId);
+    Cards cardsToGiveAway = players[playerId].getSelectedCards();
+    unsigned int peasantId = findOppositePlayerId(getPlayer(playerId).getPeasantLevel());
+    for (unsigned int i = 0; i < cardsToGiveAway.size(); i++)
+    {
+        getPlayer(peasantId).insertCard(cardsToGiveAway[i]);
+    }
     players[playerId].removeSelectedCards();
 }
 
