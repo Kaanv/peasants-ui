@@ -361,7 +361,18 @@ void Game::giveCardsToPeasantAsAI(int playerId)
 
 void Game::giveCardsToPeasantAsHuman(int playerId)
 {
+    validateNumberOfCardsToGiveAway(playerId);
+    players[playerId].removeSelectedCards();
+}
 
+void Game::validateNumberOfCardsToGiveAway(int playerId)
+{
+    if (players[playerId].getSelectedCards().size() !=
+            static_cast<unsigned int>(players[playerId].getPeasantLevel()))
+    {
+        throw std::runtime_error("Wrong number of cards. Proper: " +
+                                 std::to_string(players[playerId].getPeasantLevel()));
+    }
 }
 
 void Game::performAITurn()

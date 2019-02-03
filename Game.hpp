@@ -62,6 +62,7 @@ public:
     const std::vector<LevelsHistory>& getLevelsHistory();
     void giveCardsToPeasantAsAI(int playerId);
     void giveCardsToPeasantAsHuman(int playerId);
+    void validateNumberOfCardsToGiveAway(int playerId);
 
 private:
     void resetRound();
