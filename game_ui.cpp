@@ -45,6 +45,7 @@ GameUI::GameUI() : numberOfPlayers(4),
                    backgroundNeedsDrawing(true),
                    isPopupActive(false)
 {
+    bool notVisible = false;
     ownId = PollingPlaceId_Game;
     Dimensions defaultButtonDimensions = {0.475, 0.125};
 
@@ -52,6 +53,8 @@ GameUI::GameUI() : numberOfPlayers(4),
                              "Throw cards", ButtonId_ThrowCards));
     buttons.push_back(Button(defaultButtonDimensions, {0.5125, 0.525},
                              "Pass turn", ButtonId_PassTurn));
+    buttons.push_back(Button(defaultButtonDimensions, {0.5125, 0.660},
+                             "Give away", ButtonId_GiveAway, notVisible));
 
     buttons.push_back(Button(defaultButtonDimensions, {0.5125, -0.660},
                              "Main menu", ButtonId_MainMenu));
@@ -137,6 +140,13 @@ PollingPlaceId GameUI::startEventPoll()
             forceDrawingEverything();
             drawCurrentPlayerPopup();
         }
+        if (cardsExchangeActive and drawExchangePopup)
+        {
+            std::string text =
+                "Player " + std::to_string(exchangePlayersIds[0] + 1) + " give cards to your peasant";
+            drawPopup(text.c_str());
+            drawExchangePopup = false;
+        }
 
         if (event.type == SDL_QUIT) return PollingPlaceId_Exit;
         else if (event.type == SDL_ACTIVEEVENT &&
@@ -171,23 +181,43 @@ PollingPlaceId GameUI::startEventPoll()
                         }
                         if (not isPopupActive)
                         {
-                            switch (button.getButtonId())
+                            if (cardsExchangeActive)
                             {
-                                case ButtonId_PassTurn:
+                                switch (button.getButtonId())
                                 {
-                                    game.passCurrentPlayerTurn();
-                                    game.getCurrentPlayer().unselectAllCards();
-                                    game.nextPlayer();
-                                    forceDrawingEverything();
-                                    drawCurrentPlayerPopup();
-                                    break;
+                                    case ButtonId_GiveAway:
+                                    {
+                                        game.giveCardsToPeasantAsHuman(exchangePlayersIds[0]);
+                                        exchangePlayersIds.erase(exchangePlayersIds.begin());
+                                        if (exchangePlayersIds.size() == 0)
+                                        {
+                                            turnOffCardsExchange();
+                                        }
+                                        drawExchangePopup = true;
+                                        break;
+                                    }
                                 }
-                                case ButtonId_ThrowCards:
+                            }
+                            else
+                            {
+                                switch (button.getButtonId())
                                 {
-                                    game.throwCards(game.getCurrentPlayer().getSelectedCards());
-                                    game.nextPlayer();
-                                    forceDrawingEverything();
-                                    drawCurrentPlayerPopup();
+                                    case ButtonId_PassTurn:
+                                    {
+                                        game.passCurrentPlayerTurn();
+                                        game.getCurrentPlayer().unselectAllCards();
+                                        game.nextPlayer();
+                                        forceDrawingEverything();
+                                        drawCurrentPlayerPopup();
+                                        break;
+                                    }
+                                    case ButtonId_ThrowCards:
+                                    {
+                                        game.throwCards(game.getCurrentPlayer().getSelectedCards());
+                                        game.nextPlayer();
+                                        forceDrawingEverything();
+                                        drawCurrentPlayerPopup();
+                                    }
                                 }
                             }
                         }
@@ -319,7 +349,12 @@ void GameUI::drawCards()
 
 void GameUI::drawCurrentPlayerCards()
 {
-    Cards cards = game.getCurrentPlayer().getCards();
+    int playerId = game.getCurrentPlayer().getId();
+    if (cardsExchangeActive)
+    {
+        playerId = exchangePlayersIds[0];
+    }
+    Cards cards = game.getPlayer(playerId).getCards();
     for (unsigned int i = 0; i < cards.size(); i++)
     {
         drawCard(cards[i], Position{-0.5 + static_cast<double>(i) * CARD_SPACE, -0.6});
@@ -329,6 +364,10 @@ void GameUI::drawCurrentPlayerCards()
 void GameUI::drawAnotherPlayerCards()
 {
     int currentPlayerId = game.getCurrentPlayer().getId();
+    if (cardsExchangeActive)
+    {
+        currentPlayerId = exchangePlayersIds[0];
+    }
 
     int nextPlayerId = (currentPlayerId + 1) % numberOfPlayers;
     unsigned int numberOfCards = game.getPlayer(nextPlayerId).getCards().size();
@@ -395,7 +434,12 @@ void GameUI::updateCardsSelection(int x, int y)
     Position glPosition = {static_cast<double>(x) * 2.0 / SCREEN_WIDTH - 1.0,
                            static_cast<double>(-y) * 2.0 / SCREEN_HEIGHT + 1.0};
 
-    Cards cards = game.getCurrentPlayer().getCards();
+    int playerId = game.getCurrentPlayer().getId();
+    if (cardsExchangeActive)
+    {
+        playerId = exchangePlayersIds[0];
+    }
+    Cards cards = game.getPlayer(playerId).getCards();
     for (unsigned int i = 0; i < cards.size(); i++)
     {
         if (cards[i].selected) updateSelectedCardSelection(glPosition,
@@ -510,8 +554,65 @@ void GameUI::takeCardsFromPeasants()
     }
 }
 
+void GameUI::turnOnCardsExchange()
+{
+    cardsExchangeActive = true;
+    for (auto& button : buttons)
+    {
+        switch (button.getButtonId())
+        {
+            case ButtonId_PassTurn:
+            {
+                button.isVisible = false;
+                break;
+            }
+            case ButtonId_ThrowCards:
+            {
+                button.isVisible = false;
+                break;
+            }
+            case ButtonId_GiveAway:
+            {
+                button.isVisible = true;
+                break;
+            }
+        }
+    }
+}
+
+void GameUI::turnOffCardsExchange()
+{
+    cardsExchangeActive = false;
+    for (auto& button : buttons)
+    {
+        switch (button.getButtonId())
+        {
+            case ButtonId_PassTurn:
+            {
+                button.isVisible = true;
+                break;
+            }
+            case ButtonId_ThrowCards:
+            {
+                button.isVisible = true;
+                break;
+            }
+            case ButtonId_GiveAway:
+            {
+                button.isVisible = false;
+                break;
+            }
+        }
+    }
+}
+
 void GameUI::giveCardsToPeasants()
 {
+    if (not isGameAIOnly)
+    {
+        turnOnCardsExchange();
+    }
+
     for (int id = 0; id < numberOfPlayers; id++)
     {
         if (game.getPlayer(id).getPeasantLevel() > 0)
@@ -519,6 +620,10 @@ void GameUI::giveCardsToPeasants()
             if (settings.playerTypes[id] == PlayerType_AI)
             {
                 game.giveCardsToPeasantAsAI(id);
+            }
+            else
+            {
+                exchangePlayersIds.push_back(id);
             }
         }
     }

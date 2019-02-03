@@ -40,6 +40,8 @@ private:
     void forceDrawButtons();
     void drawCurrentPlayerPopup();
     void takeCardsFromPeasants();
+    void turnOnCardsExchange();
+    void turnOffCardsExchange();
     void giveCardsToPeasants();
     void exchangePlayersCards();
     void enteringAction() override;
@@ -56,6 +58,9 @@ private:
     bool backgroundNeedsDrawing;
     bool isPopupActive;
     bool isGameAIOnly;
+    bool cardsExchangeActive = false;
+    bool drawExchangePopup = true;
+    std::vector<int> exchangePlayersIds;
 };
 
 #endif // GAME_UI_HPP

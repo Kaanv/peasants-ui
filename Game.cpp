@@ -359,6 +359,11 @@ void Game::giveCardsToPeasantAsAI(int playerId)
     }
 }
 
+void Game::giveCardsToPeasantAsHuman(int playerId)
+{
+
+}
+
 void Game::performAITurn()
 {
     bool selected = false;

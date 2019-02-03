@@ -5,7 +5,8 @@
 Button::Button(Dimensions dimensions,
                Position positon,
                std::string caption,
-               int buttonId)
+               int buttonId,
+               bool isVisible)
     : font(TTF_OpenFont("Fonts//font.ttf", 40)),
       textColor({255, 255, 255, 0}),
       lineTexture(getTexture("Images//buttonline.png")),
@@ -17,11 +18,12 @@ Button::Button(Dimensions dimensions,
     this->position = positon;
     this->caption = caption;
     this->buttonId = buttonId;
+    this->isVisible = isVisible;
 }
 
 void Button::draw()
 {
-    if (needsDrawing)
+    if (needsDrawing and isVisible)
     {
         if (isUnderMouseMotion) glColor3f(0.0, 0.2, 0.4);
         else glColor3f(0.0, 0.2, 0.6);

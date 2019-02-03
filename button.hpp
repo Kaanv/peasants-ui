@@ -26,7 +26,8 @@ enum MenuButtonId
     ButtonId_PlayerName3,
     ButtonId_PlayerName4,
     ButtonId_PlayerName5,
-    ButtonId_PlayerName6
+    ButtonId_PlayerName6,
+    ButtonId_GiveAway
 };
 
 class Button
@@ -35,7 +36,8 @@ public:
     Button(Dimensions dimensions,
            Position positon,
            std::string caption,
-           int buttonId = 0);
+           int buttonId = 0,
+           bool isVisible = true);
     void draw();
     void updateMotion(const Position &position);
     void updateUnderClick();
@@ -45,6 +47,8 @@ public:
     void setCaption(std::string caption);
     std::string getCaption();
     void immediatelyDraw();
+
+    bool isVisible;
 private:
     void drawBorder();
     void drawVerticalBorders();

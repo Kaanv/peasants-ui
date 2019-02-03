@@ -61,6 +61,7 @@ public:
     unsigned int getNumberOfEndedRounds();
     const std::vector<LevelsHistory>& getLevelsHistory();
     void giveCardsToPeasantAsAI(int playerId);
+    void giveCardsToPeasantAsHuman(int playerId);
 
 private:
     void resetRound();
