@@ -185,8 +185,6 @@ PollingPlaceId GameUI::startEventPoll()
                                 case ButtonId_ThrowCards:
                                 {
                                     game.throwCards(game.getCurrentPlayer().getSelectedCards());
-                                    game.getCurrentPlayer().removeSelectedCards();
-                                    game.checkIfPlayerHasEnded();
                                     game.nextPlayer();
                                     forceDrawingEverything();
                                     drawCurrentPlayerPopup();
