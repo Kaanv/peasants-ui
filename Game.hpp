@@ -60,6 +60,7 @@ public:
     void performAITurnLua();
     unsigned int getNumberOfEndedRounds();
     const std::vector<LevelsHistory>& getLevelsHistory();
+    void giveCardsToPeasantAsAI(int playerId);
 
 private:
     void resetRound();

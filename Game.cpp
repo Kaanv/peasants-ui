@@ -116,6 +116,8 @@ void Game::distributeCardsFromDeck()
 {
     for (unsigned int i = 0; i < players.size(); i++)
     {
+        players[i].resetCards();
+
         for (int j = 0; j < 8; j++)
         {
             players[i].insertCard(deck.takeCard());
@@ -328,6 +330,33 @@ void Game::performAITurnLua()
     }
 
     nextPlayer();
+}
+
+void Game::giveCardsToPeasantAsAI(int playerId)
+{
+    Cards cards= players[playerId].getCards();
+    LuaRef luaAIGiveCardsToPeasant =
+        getGlobal(aiStates[playerId], "give_cards_to_peasant");
+    std::string command =luaAIGiveCardsToPeasant(cards,
+                                                 getPlayer(playerId).getPeasantLevel());
+    std::vector<std::string> splittedCommand = split(command, " ");
+    std::vector<int> cardsToGiveAwayIndiecies;
+    for (int i = 0; i < getPlayer(playerId).getPeasantLevel(); i++)
+    {
+        cardsToGiveAwayIndiecies.push_back(std::stoi(splittedCommand[i]));
+    }
+    std::sort(cardsToGiveAwayIndiecies.begin(), cardsToGiveAwayIndiecies.end());
+    Cards cardsToGiveAway;
+    for (int i = cardsToGiveAwayIndiecies.size() - 1; i >= 0 ; i--)
+    {
+        cardsToGiveAway.push_back(getPlayer(playerId).takeCard(cardsToGiveAwayIndiecies[i]));
+    }
+    unsigned int peasantId = findOppositePlayerId(getPlayer(playerId).getPeasantLevel());
+
+    for (unsigned int i = 0; i < cardsToGiveAway.size(); i++)
+    {
+        getPlayer(peasantId).insertCard(cardsToGiveAway[i]);
+    }
 }
 
 void Game::performAITurn()

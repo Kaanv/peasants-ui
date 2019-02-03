@@ -122,3 +122,8 @@ int Player::getId()
     return playerId;
 }
 
+void Player::resetCards()
+{
+    cards.clear();
+}
+

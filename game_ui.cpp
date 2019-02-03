@@ -107,6 +107,7 @@ PollingPlaceId GameUI::startEventPoll()
         {
             game.nextRound();
             exchangePlayersCards();
+            game.setStartingPlayer();
             std::cout << "END OF ROUND" << std::endl;
             if (game.getNumberOfEndedRounds() >= 20)
             {
@@ -127,6 +128,7 @@ PollingPlaceId GameUI::startEventPoll()
             drawPopup(text.c_str());
             game.nextRound();
             exchangePlayersCards();
+            game.setStartingPlayer();
             drawCurrentPlayerPopup();
         }
         if (isCurrentPlayerAI() and not isPopupActive and not isGameAIOnly)
@@ -512,7 +514,16 @@ void GameUI::takeCardsFromPeasants()
 
 void GameUI::giveCardsToPeasants()
 {
-
+    for (int id = 0; id < numberOfPlayers; id++)
+    {
+        if (game.getPlayer(id).getPeasantLevel() > 0)
+        {
+            if (settings.playerTypes[id] == PlayerType_AI)
+            {
+                game.giveCardsToPeasantAsAI(id);
+            }
+        }
+    }
 }
 
 void GameUI::exchangePlayersCards()

@@ -3,6 +3,8 @@ number = 0
 numberOfPlayers = 0
 myPlayerId = 0
 
+--ai_init is a function that gives you initial data. Don't modify its name
+
 function ai_init(playersNumber, playerId)
     numberOfPlayers = playersNumber
     myPlayerId = playerId
@@ -30,6 +32,29 @@ function ai_turn(cards, tableCards, history)
         end
     end
     return command
+end
+
+--give_cards_to_peasant is a function used when you are master to swap cards with your peasant. Don't modify its name
+
+function give_cards_to_peasant(cards, peasantLevel)
+    index1 = find_smallest_card_except_index(cards)
+    index2 = find_smallest_card_except_index(cards, index1)
+    return index1 .. " " .. index2
+end
+
+function find_smallest_card_except_index(cards, index)
+    smallest = cards:at(0)
+    smallest_index = 0
+
+    for i=1, cards:numberOfCards() - 1 do
+        card = cards:at(i)
+        if (card.value < smallest.value and (index == nil or index ~= i)) then
+            smallest = card
+            smallest_index = i
+        end
+    end
+
+    return smallest_index
 end
 
 function throw_starting_cards(cards, numberOfCards)
