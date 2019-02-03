@@ -205,7 +205,7 @@ PollingPlaceId GameUI::startEventPoll()
                                     case ButtonId_PassTurn:
                                     {
                                         game.passCurrentPlayerTurn();
-                                        game.getCurrentPlayer().unselectAllCards();
+                                        getCurrentPlayer().unselectAllCards();
                                         game.nextPlayer();
                                         forceDrawingEverything();
                                         drawCurrentPlayerPopup();
@@ -213,7 +213,7 @@ PollingPlaceId GameUI::startEventPoll()
                                     }
                                     case ButtonId_ThrowCards:
                                     {
-                                        game.throwCards(game.getCurrentPlayer().getSelectedCards());
+                                        game.throwCards(getCurrentPlayer().getSelectedCards());
                                         game.nextPlayer();
                                         forceDrawingEverything();
                                         drawCurrentPlayerPopup();
@@ -363,11 +363,7 @@ void GameUI::drawCurrentPlayerCards()
 
 void GameUI::drawAnotherPlayerCards()
 {
-    int currentPlayerId = game.getCurrentPlayer().getId();
-    if (cardsExchangeActive)
-    {
-        currentPlayerId = exchangePlayersIds[0];
-    }
+    int currentPlayerId = getCurrentPlayerId();
 
     int nextPlayerId = (currentPlayerId + 1) % numberOfPlayers;
     unsigned int numberOfCards = game.getPlayer(nextPlayerId).getCards().size();
@@ -434,12 +430,7 @@ void GameUI::updateCardsSelection(int x, int y)
     Position glPosition = {static_cast<double>(x) * 2.0 / SCREEN_WIDTH - 1.0,
                            static_cast<double>(-y) * 2.0 / SCREEN_HEIGHT + 1.0};
 
-    int playerId = game.getCurrentPlayer().getId();
-    if (cardsExchangeActive)
-    {
-        playerId = exchangePlayersIds[0];
-    }
-    Cards cards = game.getPlayer(playerId).getCards();
+    Cards cards = getCurrentPlayer().getCards();
     for (unsigned int i = 0; i < cards.size(); i++)
     {
         if (cards[i].selected) updateSelectedCardSelection(glPosition,
@@ -464,7 +455,7 @@ void GameUI::updateSelectedCardSelection(Position glPosition,
         glPosition.y <= cardY and
         glPosition.y >= cardY - CARD_HEIGHT)
     {
-        game.getCurrentPlayer().unselectCard(cardIndex);
+        getCurrentPlayer().unselectCard(cardIndex);
         forceDrawingEverything();
     }
 }
@@ -482,7 +473,7 @@ void GameUI::updateNotSelectedCardSelection(Position glPosition,
         glPosition.y <= cardY and
         glPosition.y >= cardY - CARD_HEIGHT)
     {
-        game.getCurrentPlayer().selectCard(cardIndex);
+        getCurrentPlayer().selectCard(cardIndex);
         forceDrawingEverything();
     }
 }
@@ -521,14 +512,14 @@ void GameUI::drawPopup(std::string text)
 
 void GameUI::drawCurrentPlayerPopup()
 {
-    std::string text = "Player " + std::to_string(game.getCurrentPlayer().getId() + 1) + " turn";;
+    std::string text = "Player " + std::to_string(getCurrentPlayerId() + 1) + " turn";;
     if (isCurrentPlayerAI()) text = "AI " + text;
     drawPopup(text.c_str());
 }
 
 bool GameUI::isCurrentPlayerAI()
 {
-    return settings.playerTypes[game.getCurrentPlayer().getId()] == PlayerType_AI;
+    return settings.playerTypes[getCurrentPlayerId()] == PlayerType_AI;
 }
 
 void GameUI::takeCardsFromPeasants()
@@ -578,6 +569,7 @@ void GameUI::turnOnCardsExchange()
             }
         }
     }
+    forceDrawingEverything();
 }
 
 void GameUI::turnOffCardsExchange()
@@ -604,6 +596,7 @@ void GameUI::turnOffCardsExchange()
             }
         }
     }
+    forceDrawingEverything();
 }
 
 void GameUI::giveCardsToPeasants()
@@ -729,4 +722,20 @@ void GameUI::presentAIGameResults()
         std::cout << "MASTER TIMES: " << scores[i].mastersScore << std::endl;
         std::cout << "POSITIVE SCORE: " << scores[i].positiveScore << std::endl;
     }
+}
+
+int GameUI::getCurrentPlayerId()
+{
+    int playerId = game.getCurrentPlayer().getId();
+    if (cardsExchangeActive)
+    {
+        playerId = exchangePlayersIds[0];
+    }
+    return playerId;
+}
+
+Player& GameUI::getCurrentPlayer()
+{
+    int playerId = getCurrentPlayerId();
+    return game.getPlayer(playerId);
 }

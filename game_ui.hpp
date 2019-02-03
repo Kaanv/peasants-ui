@@ -48,6 +48,8 @@ private:
     bool isCurrentPlayerAI();
     void calculateIsAIOnlyGame();
     void presentAIGameResults();
+    int getCurrentPlayerId();
+    Player& getCurrentPlayer();
 
     Settings settings;
     int numberOfPlayers;
