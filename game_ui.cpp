@@ -94,6 +94,20 @@ void GameUI::calculateIsAIOnlyGame()
     }
 }
 
+void GameUI::calculateIsGameOneHumanOnly()
+{
+    int numberOfHumanFound = 0;
+    for (int i = 0; i < numberOfPlayers; i++)
+    {
+        if (settings.playerTypes[i] == PlayerType_Human)
+        {
+            numberOfHumanFound++;
+            humanPlayer = i;
+        }
+    }
+    isGameOneHumanOnly = (numberOfHumanFound == 1);
+}
+
 void GameUI::setSettings(Settings settings)
 {
     this->settings = settings;
@@ -122,7 +136,7 @@ PollingPlaceId GameUI::startEventPoll()
         }
     }
 
-    while (SDL_PollEvent(&event))
+    do
     {
         if (game.hasRoundEnded())
         {
@@ -134,11 +148,15 @@ PollingPlaceId GameUI::startEventPoll()
             game.setStartingPlayer();
             drawCurrentPlayerPopup();
         }
-        if (isCurrentPlayerAI() and not isPopupActive and not isGameAIOnly)
+        if (isCurrentPlayerAI() and not isGameAIOnly)
         {
             game.performAITurnLua();
             forceDrawingEverything();
-            drawCurrentPlayerPopup();
+            if (not isGameOneHumanOnly)
+            {
+                drawCurrentPlayerPopup();
+            }
+            updateScreen();
         }
         if (cardsExchangeActive and drawExchangePopup)
         {
@@ -147,7 +165,11 @@ PollingPlaceId GameUI::startEventPoll()
             drawPopup(text.c_str());
             drawExchangePopup = false;
         }
+    }
+    while (isCurrentPlayerAI() and not isGameAIOnly and isGameOneHumanOnly);
 
+    while (SDL_PollEvent(&event))
+    {
         if (event.type == SDL_QUIT) return PollingPlaceId_Exit;
         else if (event.type == SDL_ACTIVEEVENT &&
                  event.active.state & SDL_APPACTIVE &&
@@ -261,25 +283,23 @@ void GameUI::updateScreen()
         forceDrawButtons();
         SDL_GL_SwapBuffers();
     }
-    else if(SDL_GetTicks() - lastTicks > 20)
+
+    if (backgroundNeedsDrawing)
     {
-        if (backgroundNeedsDrawing)
-        {
-            drawBackground();
-            drawButtonPanel();
-            drawCards();
-            drawPeasantsInfo();
-        }
-
-        for (auto& button : buttons)
-        {
-            if (button.getButtonId() != ButtonId_PopupOk) button.draw();
-        }
-
-        SDL_GL_SwapBuffers();
-        lastTicks = SDL_GetTicks();
-        backgroundNeedsDrawing = false;
+        drawBackground();
+        drawButtonPanel();
+        drawCards();
+        drawPeasantsInfo();
     }
+
+    for (auto& button : buttons)
+    {
+        if (button.getButtonId() != ButtonId_PopupOk) button.draw();
+    }
+
+    SDL_GL_SwapBuffers();
+    lastTicks = SDL_GetTicks();
+    backgroundNeedsDrawing = false;
 }
 
 void GameUI::drawBackground()
@@ -350,6 +370,7 @@ void GameUI::drawCards()
 void GameUI::drawCurrentPlayerCards()
 {
     int playerId = game.getCurrentPlayer().getId();
+    if (isGameOneHumanOnly) playerId = humanPlayer;
     if (cardsExchangeActive)
     {
         playerId = exchangePlayersIds[0];
@@ -364,6 +385,7 @@ void GameUI::drawCurrentPlayerCards()
 void GameUI::drawAnotherPlayerCards()
 {
     int currentPlayerId = getCurrentPlayerId();
+    if (isGameOneHumanOnly) currentPlayerId = humanPlayer;
 
     int nextPlayerId = (currentPlayerId + 1) % numberOfPlayers;
     unsigned int numberOfCards = game.getPlayer(nextPlayerId).getCards().size();
@@ -514,7 +536,7 @@ void GameUI::drawCurrentPlayerPopup()
 {
     std::string text = "Player " + std::to_string(getCurrentPlayerId() + 1) + " turn";;
     if (isCurrentPlayerAI()) text = "AI " + text;
-    drawPopup(text.c_str());
+    if (not isGameOneHumanOnly) drawPopup(text.c_str());
 }
 
 bool GameUI::isCurrentPlayerAI()
@@ -601,7 +623,7 @@ void GameUI::turnOffCardsExchange()
 
 void GameUI::giveCardsToPeasants()
 {
-    if (not isGameAIOnly)
+    if (not isGameAIOnly and isHumanAMaster())
     {
         turnOnCardsExchange();
     }
@@ -631,6 +653,7 @@ void GameUI::exchangePlayersCards()
 void GameUI::enteringAction()
 {
     calculateIsAIOnlyGame();
+    calculateIsGameOneHumanOnly();
     if (isGameAIOnly)
     {
         std::string text = "Calculating AI game results...";
@@ -738,4 +761,14 @@ Player& GameUI::getCurrentPlayer()
 {
     int playerId = getCurrentPlayerId();
     return game.getPlayer(playerId);
+}
+
+bool GameUI::isHumanAMaster()
+{
+    for (int i = 0; i < numberOfPlayers; i++)
+    {
+        if (game.getPlayer(i).getPeasantLevel() > 0 and
+            settings.playerTypes[i] == PlayerType_Human) return true;
+    }
+    return false;
 }

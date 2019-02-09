@@ -6,9 +6,9 @@ PollingPlace::PollingPlace() : lastTicks(0)
 
 PollingPlaceId PollingPlace::enter()
 {
+    enteringAction();
     forceDrawingEverything();
     updateScreen();
-    enteringAction();
     PollingPlaceId currentPlace = ownId;
     while (currentPlace == ownId)
     {
