@@ -471,3 +471,8 @@ const std::vector<LevelsHistory>& Game::getLevelsHistory()
 {
     return levelsHistory;
 }
+
+History& Game::getHistory()
+{
+    return history;
+}

@@ -8,11 +8,6 @@
 namespace
 {
 
-const double CARD_WIDTH = 0.17;
-const double CARD_HEIGHT = 0.3;
-const double CARD_SPACE = 0.06;
-const double CARD_SELECT_HEIGHT = 0.05;
-
 std::map<Color, std::string> colorMap
 {
     {hearts, "hearts"},
@@ -49,16 +44,16 @@ GameUI::GameUI() : numberOfPlayers(4),
     ownId = PollingPlaceId_Game;
     Dimensions defaultButtonDimensions = {0.475, 0.125};
 
-    buttons.push_back(Button(defaultButtonDimensions, {0.5125, 0.660},
+    buttons.push_back(Button(defaultButtonDimensions, {0.5125, 0.95},
                              "Throw cards", ButtonId_ThrowCards));
-    buttons.push_back(Button(defaultButtonDimensions, {0.5125, 0.525},
+    buttons.push_back(Button(defaultButtonDimensions, {0.5125, 0.84},
                              "Pass turn", ButtonId_PassTurn));
-    buttons.push_back(Button(defaultButtonDimensions, {0.5125, 0.660},
+    buttons.push_back(Button(defaultButtonDimensions, {0.5125, 0.95},
                              "Give away", ButtonId_GiveAway, notVisible));
 
-    buttons.push_back(Button(defaultButtonDimensions, {0.5125, -0.660},
+    buttons.push_back(Button(defaultButtonDimensions, {0.5125, -0.675},
                              "Main menu", ButtonId_MainMenu));
-    buttons.push_back(Button(defaultButtonDimensions, {0.5125, -0.795},
+    buttons.push_back(Button(defaultButtonDimensions, {0.5125, -0.825},
                              "Exit game", ButtonId_ExitGame));
     buttons.push_back(Button(defaultButtonDimensions, {-0.4875, 0.1},
                              "OK", ButtonId_PopupOk));
@@ -291,6 +286,7 @@ void GameUI::updateScreen()
             drawButtonPanel();
             drawCards();
             drawPeasantsInfo();
+            drawPastTurnsInfo();
         }
 
         for (auto& button : buttons)
@@ -326,7 +322,7 @@ void GameUI::drawButtonPanel()
                   position);
 }
 
-void GameUI::drawCard(Card card, Position position)
+void GameUI::drawCard(Card card, Position position, double width, double height)
 {
     GLuint texture = textureMap[std::make_pair<Color, Value>(
                                     static_cast<Color>(card.color),
@@ -334,7 +330,7 @@ void GameUI::drawCard(Card card, Position position)
     turnOnTextureMode(texture);
 
     drawTexturedRectangle(
-        {CARD_WIDTH, CARD_HEIGHT},
+        {width, height},
         {position.x, card.selected ? position.y : position.y - CARD_SELECT_HEIGHT});
 
     turnOffTextureMode();
@@ -432,7 +428,7 @@ void GameUI::drawPeasantsInfo()
                       font,
                       textColor,
                       0.75,
-                      0.2,
+                      0.68,
                       0.1);
 
     for (int i = 0; i < numberOfPlayers; i++)
@@ -444,7 +440,56 @@ void GameUI::drawPeasantsInfo()
                           font,
                           textColor,
                           0.75,
-                          0.13 - i * 0.06,
+                          0.61 - i * 0.06,
+                          0.1);
+    }
+}
+
+void GameUI::drawPastTurnsInfo()
+{
+    TTF_Font* font(TTF_OpenFont("Fonts//font.ttf", 40));
+    SDL_Color textColor({255, 255, 255, 0});
+
+    SDL_GL_RenderText("Past turns:",
+                      font,
+                      textColor,
+                      0.75,
+                      0.2,
+                      0.1);
+
+    History& history = game.getHistory();
+
+    for (int i = 0; i < numberOfPlayers and i < static_cast<int>(history.getHistory().size()); i++)
+    {
+        HistoryElement currentHistory = history.getHistory()[history.getHistory().size() - i - 1];
+        std::string text =
+            "Player " + std::to_string(currentHistory.playerId + 1) + ": ";
+
+        double smallFactor = 2.31;
+        if (currentHistory.action == "PASS TURN")
+        {
+            SDL_GL_RenderText("PASS",
+                              font,
+                              textColor,
+                              0.85,
+                              0.09 - i * (CARD_HEIGHT/smallFactor),
+                              0.1);
+        }
+        else
+        {
+            for (unsigned int j = 0; j < currentHistory.cards.size(); j++)
+            {
+                drawCard(currentHistory.cards[j],
+                         Position{0.78 + static_cast<double>(j) * CARD_SPACE/smallFactor, 0.13 - i * (CARD_HEIGHT/smallFactor)},
+                         CARD_WIDTH/smallFactor, CARD_HEIGHT/smallFactor);
+            }
+        }
+
+        SDL_GL_RenderText(text.c_str(),
+                          font,
+                          textColor,
+                          0.65,
+                          0.09 - i * (CARD_HEIGHT/smallFactor),
                           0.1);
     }
 }
@@ -513,6 +558,10 @@ void GameUI::forceDrawingEverything()
 
 void GameUI::drawPopup(std::string text)
 {
+    drawBackground();
+    drawButtonPanel();
+    drawPeasantsInfo();
+    drawPastTurnsInfo();
     Dimensions fullScreen{1.5, 2.0};
     Position rightLeftCorner{-1.0, 1.0};
 

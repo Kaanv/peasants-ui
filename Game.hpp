@@ -63,6 +63,7 @@ public:
     void giveCardsToPeasantAsAI(int playerId);
     void giveCardsToPeasantAsHuman(int playerId);
     void validateNumberOfCardsToGiveAway(int playerId);
+    History& getHistory();
 
 private:
     void resetRound();

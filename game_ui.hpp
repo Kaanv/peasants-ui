@@ -10,6 +10,11 @@
 #include <vector>
 #include <map>
 
+const double CARD_WIDTH = 0.17;
+const double CARD_HEIGHT = 0.3;
+const double CARD_SPACE = 0.06;
+const double CARD_SELECT_HEIGHT = 0.05;
+
 class GameUI : public PollingPlace
 {
 public:
@@ -20,7 +25,8 @@ private:
     void updateScreen() override;
     void drawBackground() override;
     void drawButtonPanel();
-    void drawCard(Card card, Position position);
+    void drawCard(Card card, Position position,
+                  double width=CARD_WIDTH, double height=CARD_HEIGHT);
     void drawCardTop(Position position);
     void drawCardTopHorizontal(Position position);
     void drawCards();
@@ -28,6 +34,7 @@ private:
     void drawAnotherPlayerCards();
     void drawTableCards();
     void drawPeasantsInfo();
+    void drawPastTurnsInfo();
     void updateCardsSelection(int x, int y);
     void forceDrawingEverything() override;
     void updateSelectedCardSelection(Position glPosition,
