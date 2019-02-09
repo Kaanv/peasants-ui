@@ -123,10 +123,8 @@ PollingPlaceId GameUI::startEventPoll()
             std::cout << "END OF ROUND" << std::endl;
             if (game.getNumberOfEndedRounds() >= 20)
             {
-                std::string text = "Game ended";
-                drawPopup(text.c_str());
-                presentGameResults();
-                return PollingPlaceId_MainMenu;
+                createGameResults();
+                return PollingPlaceId_Results;
             }
         }
     }
@@ -143,10 +141,8 @@ PollingPlaceId GameUI::startEventPoll()
             game.setStartingPlayer();
             if (game.getNumberOfEndedRounds() >= 20)
             {
-                std::string text = "Game ended";
-                drawPopup(text.c_str());
-                presentGameResults();
-                return PollingPlaceId_MainMenu;
+                createGameResults();
+                return PollingPlaceId_Results;
             }
             drawCurrentPlayerPopup();
         }
@@ -726,31 +722,6 @@ void GameUI::enteringAction()
 namespace
 {
 
-struct Score
-{
-    int mastersScore;
-    int positiveScore;
-    int playerNumber;
-
-    bool operator==(const Score& score)
-    {
-        return (this->mastersScore == score.mastersScore and
-                this->positiveScore == score.positiveScore);
-    }
-    bool operator>(const Score& score)
-    {
-        return (this->mastersScore > score.mastersScore or
-                (this->mastersScore == score.mastersScore and
-                this->positiveScore > score.positiveScore));
-    }
-    bool operator<(const Score& score)
-    {
-        return (this->mastersScore < score.mastersScore or
-                (this->mastersScore == score.mastersScore and
-                this->positiveScore < score.positiveScore));
-    }
-};
-
 int calculateNumberOfMasterTimes(const LevelsHistory& levelsHistory)
 {
     int numberOfMasterTimes = 0;
@@ -781,12 +752,10 @@ int calculatePositiveScoreAsMaster(const LevelsHistory& levelsHistory)
 
 }
 
-void GameUI::presentGameResults()
+void GameUI::createGameResults()
 {
-    std::cout << "RESULTS" << std::endl;
-
     const std::vector<LevelsHistory>& levelsHistory = game.getLevelsHistory();
-    std::vector<Score> scores;
+    scores.clear();
 
     for (int i = 0; i < numberOfPlayers; i++)
     {
@@ -796,13 +765,6 @@ void GameUI::presentGameResults()
     }
     std::sort(scores.begin(), scores.end());
     std::reverse(scores.begin(), scores.end());
-
-    for (unsigned int i = 0; i < scores.size(); i++)
-    {
-        std::cout << "PLAYER " << scores[i].playerNumber << " result:" << std::endl;
-        std::cout << "MASTER TIMES: " << scores[i].mastersScore << std::endl;
-        std::cout << "POSITIVE SCORE: " << scores[i].positiveScore << std::endl;
-    }
 }
 
 int GameUI::getCurrentPlayerId()
@@ -829,4 +791,9 @@ bool GameUI::isHumanAMaster()
             settings.playerTypes[i] == PlayerType_Human) return true;
     }
     return false;
+}
+
+Scores GameUI::getGameResults()
+{
+    return scores;
 }

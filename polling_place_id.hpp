@@ -6,6 +6,7 @@ enum PollingPlaceId
     PollingPlaceId_MainMenu,
     PollingPlaceId_Game,
     PollingPlaceId_Settings,
+    PollingPlaceId_Results,
     PollingPlaceId_Exit
 };
 

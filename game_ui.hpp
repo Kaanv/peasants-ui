@@ -1,5 +1,4 @@
-#ifndef GAME_UI_HPP
-#define GAME_UI_HPP
+#pragma once
 
 #include "button.hpp"
 #include "polling_place.hpp"
@@ -7,6 +6,7 @@
 #include "sdl_gl_wrapper.hpp"
 #include "settings.hpp"
 #include "Game.hpp"
+#include "score.hpp"
 #include <vector>
 #include <map>
 
@@ -20,6 +20,7 @@ class GameUI : public PollingPlace
 public:
     GameUI();
     void setSettings(Settings settings);
+    Scores getGameResults();
 private:
     PollingPlaceId startEventPoll() override;
     void updateScreen() override;
@@ -55,7 +56,7 @@ private:
     bool isCurrentPlayerAI();
     void calculateIsAIOnlyGame();
     void calculateIsGameOneHumanOnly();
-    void presentGameResults();
+    void createGameResults();
     int getCurrentPlayerId();
     Player& getCurrentPlayer();
     bool isHumanAMaster();
@@ -74,6 +75,5 @@ private:
     bool cardsExchangeActive = false;
     bool drawExchangePopup = true;
     std::vector<int> exchangePlayersIds;
+    Scores scores;
 };
-
-#endif // GAME_UI_HPP

@@ -30,7 +30,8 @@ SOURCES += main.cpp \
     Player.cpp \
     Table.cpp \
     settings.cpp \
-    settings_menu.cpp
+    settings_menu.cpp \
+    results_menu.cpp
 
 HEADERS += \
     textures.hpp \
@@ -52,4 +53,6 @@ HEADERS += \
     Player.hpp \
     Table.hpp \
     settings.hpp \
-    settings_menu.hpp
+    settings_menu.hpp \
+    results_menu.hpp \
+    score.hpp
