@@ -283,18 +283,20 @@ void GameUI::updateScreen()
         forceDrawButtons();
         SDL_GL_SwapBuffers();
     }
-
-    if (backgroundNeedsDrawing)
+    else
     {
-        drawBackground();
-        drawButtonPanel();
-        drawCards();
-        drawPeasantsInfo();
-    }
+        if (backgroundNeedsDrawing)
+        {
+            drawBackground();
+            drawButtonPanel();
+            drawCards();
+            drawPeasantsInfo();
+        }
 
-    for (auto& button : buttons)
-    {
-        if (button.getButtonId() != ButtonId_PopupOk) button.draw();
+        for (auto& button : buttons)
+        {
+            if (button.getButtonId() != ButtonId_PopupOk) button.draw();
+        }
     }
 
     SDL_GL_SwapBuffers();
