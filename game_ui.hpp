@@ -55,7 +55,7 @@ private:
     bool isCurrentPlayerAI();
     void calculateIsAIOnlyGame();
     void calculateIsGameOneHumanOnly();
-    void presentAIGameResults();
+    void presentGameResults();
     int getCurrentPlayerId();
     Player& getCurrentPlayer();
     bool isHumanAMaster();

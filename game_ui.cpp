@@ -125,7 +125,7 @@ PollingPlaceId GameUI::startEventPoll()
             {
                 std::string text = "Game ended";
                 drawPopup(text.c_str());
-                presentAIGameResults();
+                presentGameResults();
                 return PollingPlaceId_MainMenu;
             }
         }
@@ -141,6 +141,13 @@ PollingPlaceId GameUI::startEventPoll()
             game.nextRound();
             exchangePlayersCards();
             game.setStartingPlayer();
+            if (game.getNumberOfEndedRounds() >= 20)
+            {
+                std::string text = "Game ended";
+                drawPopup(text.c_str());
+                presentGameResults();
+                return PollingPlaceId_MainMenu;
+            }
             drawCurrentPlayerPopup();
         }
         if (isCurrentPlayerAI() and not isGameAIOnly)
@@ -774,7 +781,7 @@ int calculatePositiveScoreAsMaster(const LevelsHistory& levelsHistory)
 
 }
 
-void GameUI::presentAIGameResults()
+void GameUI::presentGameResults()
 {
     std::cout << "RESULTS" << std::endl;
 
