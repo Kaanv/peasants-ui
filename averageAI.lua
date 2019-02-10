@@ -19,12 +19,18 @@ function ai_turn(cards, tableCards, history)
     else
         cards_higher_than_on_table = find_cards_higher_than_given_value(cards, tableCards:numberOfCards(), tableCards:at(0).value)
         if all_players_passed(history) then
-            index1 = find_smallest_card_except_index(cards)
-            command = "THROW " .. index1
+            index = find_smallest_card_except_index(cards)
+            indexes = find_all_cards_of_given_value(cards, cards:at(index).value)
+            command = "THROW"
+            for i=1, #indexes do
+                command = command .. " " .. indexes[i]
+            end
         elseif #cards_higher_than_on_table > 0 then
             command = "THROW"
-            for i=1, #cards_higher_than_on_table[1] do
-                command = command .. " " .. cards_higher_than_on_table[1][i]
+            index = choose_smallest_value_out_of_card_indexes(cards, cards_higher_than_on_table)
+            indexes = cards_higher_than_on_table[index]
+            for i=1, #indexes do
+                command = command .. " " .. indexes[i]
             end
         else
             command = "PASS TURN"
@@ -122,6 +128,20 @@ function find_cards_higher_than_given_value(cards, numberOfCards, value)
     return return_array
 end
 
+function choose_smallest_value_out_of_card_indexes(cards, cards_indexes)
+    smallest_index = 1
+    smallest_value = cards:at(cards_indexes[smallest_index][1]).value;
+
+    for i=1, #cards_indexes do
+        if cards:at(cards_indexes[i][1]).value < smallest_value then
+            smallest_index = i
+            smallest_value = cards:at(cards_indexes[i][1]).value
+        end
+    end
+
+    return smallest_index
+end
+
 function all_players_passed(history)
     if history:lengthOfHistory() < numberOfPlayers then
         return false
@@ -137,4 +157,15 @@ function all_players_passed(history)
     end
 end
 
+function find_all_cards_of_given_value(cards, value)
+    card_indexes = {}
+
+    for i=0, cards:numberOfCards() - 1 do
+        if cards:at(i).value == value then
+            card_indexes[#card_indexes + 1] = i
+        end
+    end
+
+    return card_indexes
+end
 

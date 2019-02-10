@@ -12,7 +12,7 @@ SettingsMenu::SettingsMenu()
     buttons.push_back(Button(defaultButtonDimensions, {-0.35, -0.7},
                              "Main menu", ButtonId_MainMenu));
 
-    Dimensions playerTypeButtonDimensions = {0.5, 0.125};
+    Dimensions playerTypeButtonDimensions = {0.95, 0.125};
     buttons.push_back(Button(playerTypeButtonDimensions, {-0.75, 0.7},
                              "Human", ButtonId_PlayerType1));
     buttons.push_back(Button(playerTypeButtonDimensions, {-0.75, 0.55},
@@ -27,18 +27,18 @@ SettingsMenu::SettingsMenu()
                              "None", ButtonId_PlayerType6));
 
 
-    Dimensions playerNameButtonDimensions = {0.95, 0.125};
-    buttons.push_back(Button(playerNameButtonDimensions, {-0.15, 0.7},
+    Dimensions playerNameButtonDimensions = {0.5, 0.125};
+    buttons.push_back(Button(playerNameButtonDimensions, {0.35, 0.7},
                              "Player 1", ButtonId_PlayerName1));
-    buttons.push_back(Button(playerNameButtonDimensions, {-0.15, 0.55},
+    buttons.push_back(Button(playerNameButtonDimensions, {0.35, 0.55},
                              "Player 2", ButtonId_PlayerName2));
-    buttons.push_back(Button(playerNameButtonDimensions, {-0.15, 0.4},
+    buttons.push_back(Button(playerNameButtonDimensions, {0.35, 0.4},
                              "Player 3", ButtonId_PlayerName3));
-    buttons.push_back(Button(playerNameButtonDimensions, {-0.15, 0.25},
+    buttons.push_back(Button(playerNameButtonDimensions, {0.35, 0.25},
                              "Player 4", ButtonId_PlayerName4));
-    buttons.push_back(Button(playerNameButtonDimensions, {-0.15, 0.1},
+    buttons.push_back(Button(playerNameButtonDimensions, {0.35, 0.1},
                              "Player 5", ButtonId_PlayerName5));
-    buttons.push_back(Button(playerNameButtonDimensions, {-0.15, -0.05},
+    buttons.push_back(Button(playerNameButtonDimensions, {0.35, -0.05},
                              "Player 6", ButtonId_PlayerName6));
 }
 
