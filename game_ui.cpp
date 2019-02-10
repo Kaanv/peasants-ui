@@ -118,7 +118,7 @@ PollingPlaceId GameUI::startEventPoll()
         {
             std::cout << "END OF ROUND" << std::endl;
             processEndOfRound();
-            if (game->getNumberOfEndedRounds() >= 20)
+            if (game->getNumberOfEndedRounds() >= 1000)
             {
                 createGameResults();
                 return PollingPlaceId_Results;
