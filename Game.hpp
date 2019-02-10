@@ -65,6 +65,7 @@ public:
     void giveCardsToPeasantAsHuman(int playerId);
     void validateNumberOfCardsToGiveAway(int playerId);
     History& getHistory();
+    void indicatePeasantLevel(int playerIndex);
 
 private:
     void resetRound();

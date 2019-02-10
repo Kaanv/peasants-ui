@@ -1,5 +1,3 @@
-number = 0
-
 numberOfPlayers = 0
 myPlayerId = 0
 
@@ -15,7 +13,6 @@ end
 
 function ai_turn(cards, tableCards, history)
     command = ""
-    number = number + 1
 
     if history:lengthOfHistory() == 0 then
         throw_starting_cards(cards)
@@ -33,6 +30,12 @@ function ai_turn(cards, tableCards, history)
         end
     end
     return command
+end
+
+--indicate_peasant_level is a function that indicates peasant level after each round. Don't modify its name
+
+function indicate_peasant_level(peasantLevel)
+
 end
 
 --give_cards_to_peasant is a function used when you are master to swap cards with your peasant. Don't modify its name

@@ -1,5 +1,3 @@
-number = 0
-
 numberOfPlayers = 0
 myPlayerId = 0
 
@@ -15,14 +13,14 @@ end
 
 function ai_turn(cards, tableCards, history)
     command = ""
-    number = number + 1
 
     if history:lengthOfHistory() == 0 then
         throw_starting_cards(cards)
     else
         cards_higher_than_on_table = find_cards_higher_than_given_value(cards, tableCards:numberOfCards(), tableCards:at(0).value)
         if all_players_passed(history) then
-            command = "THROW 0"
+            index1 = find_smallest_card_except_index(cards)
+            command = "THROW " .. index1
         elseif #cards_higher_than_on_table > 0 then
             command = "THROW"
             for i=1, #cards_higher_than_on_table[1] do
@@ -33,6 +31,12 @@ function ai_turn(cards, tableCards, history)
         end
     end
     return command
+end
+
+--indicate_peasant_level is a function that indicates peasant level after each round. Don't modify its name
+
+function indicate_peasant_level(peasantLevel)
+
 end
 
 --give_cards_to_peasant is a function used when you are master to swap cards with your peasant. Don't modify its name

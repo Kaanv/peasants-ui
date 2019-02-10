@@ -488,3 +488,10 @@ History& Game::getHistory()
 {
     return history;
 }
+
+void Game::indicatePeasantLevel(int playerIndex)
+{
+    LuaRef indicateLevel =
+        getGlobal(aiStates[playerIndex], "indicate_peasant_level");
+    indicateLevel(getPlayer(playerIndex).getPeasantLevel());
+}

@@ -61,6 +61,7 @@ private:
     int getCurrentPlayerId();
     Player& getCurrentPlayer();
     bool isHumanAMaster();
+    void processEndOfRound();
 
     Settings settings;
     int numberOfPlayers;

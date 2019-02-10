@@ -116,10 +116,8 @@ PollingPlaceId GameUI::startEventPoll()
         game->performAITurnLua();
         if (game->hasRoundEnded())
         {
-            game->nextRound();
-            exchangePlayersCards();
-            game->setStartingPlayer();
             std::cout << "END OF ROUND" << std::endl;
+            processEndOfRound();
             if (game->getNumberOfEndedRounds() >= 20)
             {
                 createGameResults();
@@ -135,9 +133,7 @@ PollingPlaceId GameUI::startEventPoll()
             std::string text =
                 "End of round";
             drawPopup(text.c_str());
-            game->nextRound();
-            exchangePlayersCards();
-            game->setStartingPlayer();
+            processEndOfRound();
             if (game->getNumberOfEndedRounds() >= 20)
             {
                 createGameResults();
@@ -790,6 +786,20 @@ bool GameUI::isHumanAMaster()
             settings.playerTypes[i] == PlayerType_Human) return true;
     }
     return false;
+}
+
+void GameUI::processEndOfRound()
+{
+    game->nextRound();
+    for (int i = 0; i < numberOfPlayers; i++)
+    {
+        if (settings.playerTypes[i] == PlayerType_AI)
+        {
+            game->indicatePeasantLevel(i);
+        }
+    }
+    exchangePlayersCards();
+    game->setStartingPlayer();
 }
 
 Scores GameUI::getGameResults()
