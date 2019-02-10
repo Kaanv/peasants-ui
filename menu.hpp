@@ -15,6 +15,7 @@ private:
     PollingPlaceId startEventPoll() override;
     void updateScreen() override;
     void drawBackground() override;
+    void drawTitle();
 
     int x, y;
 };

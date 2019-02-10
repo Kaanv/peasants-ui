@@ -39,16 +39,17 @@ end
 function give_cards_to_peasant(cards, peasantLevel)
     index1 = find_smallest_card_except_index(cards)
     index2 = find_smallest_card_except_index(cards, index1)
-    return index1 .. " " .. index2
+    index3 = find_smallest_card_except_index(cards, index1, index2)
+    return index1 .. " " .. index2 .. " " .. index3
 end
 
-function find_smallest_card_except_index(cards, index)
+function find_smallest_card_except_index(cards, index, index2)
     smallest = cards:at(0)
     smallest_index = 0
 
     for i=1, cards:numberOfCards() - 1 do
         card = cards:at(i)
-        if (card.value < smallest.value and (index == nil or index ~= i)) then
+        if (card.value < smallest.value and (index == nil or index ~= i or index2 ~= i)) then
             smallest = card
             smallest_index = i
         end
@@ -62,7 +63,9 @@ function throw_starting_cards(cards, numberOfCards)
 
     for i=0, cards:numberOfCards() - 1 do
         card = cards:at(i)
-        if (card.value == 7) then
+        if (numberOfPlayers == 4 and card.value == 7 or
+            numberOfPlayers == 5 and card.value == 5 or
+            numberOfPlayers == 6 and card.value == 3) then
             command = command .. " " .. i
         end
     end

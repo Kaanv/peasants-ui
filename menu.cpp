@@ -1,6 +1,7 @@
 #include "menu.hpp"
 #include "sdl_gl_wrapper.hpp"
 #include "constants.hpp"
+#include "text.hpp"
 
 MainMenu::MainMenu(int x, int y)
 {
@@ -66,7 +67,7 @@ void MainMenu::updateScreen()
         {
             button.draw();
         }
-
+        drawTitle();
         SDL_GL_SwapBuffers();
         lastTicks = SDL_GetTicks();
         backgroundNeedsDrawing = false;
@@ -81,4 +82,17 @@ void MainMenu::drawBackground()
     glColor3f(0.1, 0.1, 0.5);
     drawRectangle(fullScreen,
                   rightLeftCorner);
+}
+
+void MainMenu::drawTitle()
+{
+    TTF_Font* font(TTF_OpenFont("Fonts//font.ttf", 100));
+    SDL_Color textColor({255, 255, 255, 0});
+
+    SDL_GL_RenderText("PEASANTS",
+                      font,
+                      textColor,
+                      0.0,
+                      0.9,
+                      0.2);
 }
