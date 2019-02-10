@@ -8,6 +8,7 @@
 #include "CardsValidator.hpp"
 #include <vector>
 #include <string>
+#include "settings.hpp"
 
 extern "C"
 {
@@ -39,7 +40,7 @@ private:
 class Game
 {
 public:
-    Game(int numberOfPlayers);
+    Game(Settings settings);
 
     void distributeCardsFromDeck();
     int findStartingPlayer();

@@ -6,7 +6,7 @@ myPlayerId = 0
 --ai_init is a function that gives you initial data. Don't modify its name
 
 function ai_init(playersNumber, playerId)
-    print "I AM BASIC AI!"
+    print "I AM AVERAGE AI!"
     numberOfPlayers = playersNumber
     myPlayerId = playerId
 end

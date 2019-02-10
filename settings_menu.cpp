@@ -201,6 +201,8 @@ void SettingsMenu::setSettingsAccordingToButtons()
             case ButtonId_PlayerType6:
                 settings.playerTypes[button.getButtonId() - ButtonId_PlayerType1] =
                     convertCaptionToPlayerType(button.getCaption());
+                settings.aiTypes[button.getButtonId() - ButtonId_PlayerType1] =
+                    button.getCaption();
         }
     }
 

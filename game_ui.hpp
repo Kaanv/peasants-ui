@@ -9,6 +9,7 @@
 #include "score.hpp"
 #include <vector>
 #include <map>
+#include <memory>
 
 const double CARD_WIDTH = 0.17;
 const double CARD_HEIGHT = 0.3;
@@ -63,7 +64,7 @@ private:
 
     Settings settings;
     int numberOfPlayers;
-    Game game;
+    std::unique_ptr<Game> game;
     std::map<std::pair<Color, Value>, GLuint> textureMap;
     GLuint cardTopTexture;
     int lastTicks;

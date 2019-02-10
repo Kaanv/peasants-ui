@@ -35,7 +35,6 @@ std::map<Value, std::string> valueMap
 }
 
 GameUI::GameUI() : numberOfPlayers(4),
-                   game(numberOfPlayers),
                    lastTicks(0),
                    backgroundNeedsDrawing(true),
                    isPopupActive(false)
@@ -107,21 +106,21 @@ void GameUI::setSettings(Settings settings)
 {
     this->settings = settings;
     numberOfPlayers = settings.numberOfPlayers;
-    game = Game(numberOfPlayers);
+    game = std::make_unique<Game>(settings);
 }
 
 PollingPlaceId GameUI::startEventPoll()
 {
     if (isGameAIOnly)
     {
-        game.performAITurnLua();
-        if (game.hasRoundEnded())
+        game->performAITurnLua();
+        if (game->hasRoundEnded())
         {
-            game.nextRound();
+            game->nextRound();
             exchangePlayersCards();
-            game.setStartingPlayer();
+            game->setStartingPlayer();
             std::cout << "END OF ROUND" << std::endl;
-            if (game.getNumberOfEndedRounds() >= 20)
+            if (game->getNumberOfEndedRounds() >= 20)
             {
                 createGameResults();
                 return PollingPlaceId_Results;
@@ -131,15 +130,15 @@ PollingPlaceId GameUI::startEventPoll()
 
     do
     {
-        if (game.hasRoundEnded())
+        if (game->hasRoundEnded())
         {
             std::string text =
                 "End of round";
             drawPopup(text.c_str());
-            game.nextRound();
+            game->nextRound();
             exchangePlayersCards();
-            game.setStartingPlayer();
-            if (game.getNumberOfEndedRounds() >= 20)
+            game->setStartingPlayer();
+            if (game->getNumberOfEndedRounds() >= 20)
             {
                 createGameResults();
                 return PollingPlaceId_Results;
@@ -148,7 +147,7 @@ PollingPlaceId GameUI::startEventPoll()
         }
         if (isCurrentPlayerAI() and not isGameAIOnly)
         {
-            game.performAITurnLua();
+            game->performAITurnLua();
             forceDrawingEverything();
             if (not isGameOneHumanOnly)
             {
@@ -207,7 +206,7 @@ PollingPlaceId GameUI::startEventPoll()
                                 {
                                     case ButtonId_GiveAway:
                                     {
-                                        game.giveCardsToPeasantAsHuman(exchangePlayersIds[0]);
+                                        game->giveCardsToPeasantAsHuman(exchangePlayersIds[0]);
                                         exchangePlayersIds.erase(exchangePlayersIds.begin());
                                         if (exchangePlayersIds.size() == 0)
                                         {
@@ -224,17 +223,17 @@ PollingPlaceId GameUI::startEventPoll()
                                 {
                                     case ButtonId_PassTurn:
                                     {
-                                        game.passCurrentPlayerTurn();
+                                        game->passCurrentPlayerTurn();
                                         getCurrentPlayer().unselectAllCards();
-                                        game.nextPlayer();
+                                        game->nextPlayer();
                                         forceDrawingEverything();
                                         drawCurrentPlayerPopup();
                                         break;
                                     }
                                     case ButtonId_ThrowCards:
                                     {
-                                        game.throwCards(getCurrentPlayer().getSelectedCards());
-                                        game.nextPlayer();
+                                        game->throwCards(getCurrentPlayer().getSelectedCards());
+                                        game->nextPlayer();
                                         forceDrawingEverything();
                                         drawCurrentPlayerPopup();
                                     }
@@ -370,13 +369,13 @@ void GameUI::drawCards()
 
 void GameUI::drawCurrentPlayerCards()
 {
-    int playerId = game.getCurrentPlayer().getId();
+    int playerId = game->getCurrentPlayer().getId();
     if (isGameOneHumanOnly) playerId = humanPlayer;
     if (cardsExchangeActive)
     {
         playerId = exchangePlayersIds[0];
     }
-    Cards cards = game.getPlayer(playerId).getCards();
+    Cards cards = game->getPlayer(playerId).getCards();
     for (unsigned int i = 0; i < cards.size(); i++)
     {
         drawCard(cards[i], Position{-0.5 + static_cast<double>(i) * CARD_SPACE, -0.6});
@@ -389,7 +388,7 @@ void GameUI::drawAnotherPlayerCards()
     if (isGameOneHumanOnly) currentPlayerId = humanPlayer;
 
     int nextPlayerId = (currentPlayerId + 1) % numberOfPlayers;
-    unsigned int numberOfCards = game.getPlayer(nextPlayerId).getCards().size();
+    unsigned int numberOfCards = game->getPlayer(nextPlayerId).getCards().size();
 
     for (unsigned int j = 0; j < numberOfCards; j++)
     {
@@ -397,7 +396,7 @@ void GameUI::drawAnotherPlayerCards()
     }
 
     nextPlayerId = (nextPlayerId + 1) % numberOfPlayers;
-    numberOfCards = game.getPlayer(nextPlayerId).getCards().size();
+    numberOfCards = game->getPlayer(nextPlayerId).getCards().size();
 
     for (unsigned int j = 0; j < numberOfCards; j++)
     {
@@ -405,7 +404,7 @@ void GameUI::drawAnotherPlayerCards()
     }
 
     nextPlayerId = (nextPlayerId + 1) % numberOfPlayers;
-    numberOfCards = game.getPlayer(nextPlayerId).getCards().size();
+    numberOfCards = game->getPlayer(nextPlayerId).getCards().size();
 
     for (unsigned int j = 0; j < numberOfCards; j++)
     {
@@ -415,7 +414,7 @@ void GameUI::drawAnotherPlayerCards()
 
 void GameUI::drawTableCards()
 {
-    const Cards& cards = game.getCardsFromTableTop();
+    const Cards& cards = game->getCardsFromTableTop();
     for (unsigned int i = 0; i < cards.size(); i++)
     {
         drawCard(cards[i], Position{-0.4 + static_cast<double>(i) * CARD_SPACE, 0.2});
@@ -438,7 +437,7 @@ void GameUI::drawPeasantsInfo()
     {
         std::string text =
             "Player " + std::to_string(i + 1) + ": " +
-            std::to_string(game.getPlayer(i).getPeasantLevel());
+            std::to_string(game->getPlayer(i).getPeasantLevel());
         SDL_GL_RenderText(text.c_str(),
                           font,
                           textColor,
@@ -460,7 +459,7 @@ void GameUI::drawPastTurnsInfo()
                       0.2,
                       0.1);
 
-    History& history = game.getHistory();
+    History& history = game->getHistory();
 
     for (int i = 0; i < numberOfPlayers and i < static_cast<int>(history.getHistory().size()); i++)
     {
@@ -602,20 +601,20 @@ void GameUI::takeCardsFromPeasants()
 {
     for (int id = 0; id < numberOfPlayers; id++)
     {
-        if (game.getPlayer(id).getPeasantLevel() < 0)
+        if (game->getPlayer(id).getPeasantLevel() < 0)
         {
             Cards cardsToGiveAway;
 
-            for (int j = 0; j > game.getPlayer(id).getPeasantLevel(); j--)
+            for (int j = 0; j > game->getPlayer(id).getPeasantLevel(); j--)
             {
-                cardsToGiveAway.push_back(game.getPlayer(id).takeBestCard());
+                cardsToGiveAway.push_back(game->getPlayer(id).takeBestCard());
             }
 
-            unsigned int masterId = game.findOppositePlayerId(game.getPlayer(id).getPeasantLevel());
+            unsigned int masterId = game->findOppositePlayerId(game->getPlayer(id).getPeasantLevel());
 
             for (unsigned int j = 0; j < cardsToGiveAway.size(); j++)
             {
-                game.getPlayer(masterId).insertCard(cardsToGiveAway[j]);
+                game->getPlayer(masterId).insertCard(cardsToGiveAway[j]);
             }
         }
     }
@@ -684,11 +683,11 @@ void GameUI::giveCardsToPeasants()
 
     for (int id = 0; id < numberOfPlayers; id++)
     {
-        if (game.getPlayer(id).getPeasantLevel() > 0)
+        if (game->getPlayer(id).getPeasantLevel() > 0)
         {
             if (settings.playerTypes[id] == PlayerType_AI)
             {
-                game.giveCardsToPeasantAsAI(id);
+                game->giveCardsToPeasantAsAI(id);
             }
             else
             {
@@ -754,7 +753,7 @@ int calculatePositiveScoreAsMaster(const LevelsHistory& levelsHistory)
 
 void GameUI::createGameResults()
 {
-    const std::vector<LevelsHistory>& levelsHistory = game.getLevelsHistory();
+    const std::vector<LevelsHistory>& levelsHistory = game->getLevelsHistory();
     scores.clear();
 
     for (int i = 0; i < numberOfPlayers; i++)
@@ -769,7 +768,7 @@ void GameUI::createGameResults()
 
 int GameUI::getCurrentPlayerId()
 {
-    int playerId = game.getCurrentPlayer().getId();
+    int playerId = game->getCurrentPlayer().getId();
     if (cardsExchangeActive)
     {
         playerId = exchangePlayersIds[0];
@@ -780,14 +779,14 @@ int GameUI::getCurrentPlayerId()
 Player& GameUI::getCurrentPlayer()
 {
     int playerId = getCurrentPlayerId();
-    return game.getPlayer(playerId);
+    return game->getPlayer(playerId);
 }
 
 bool GameUI::isHumanAMaster()
 {
     for (int i = 0; i < numberOfPlayers; i++)
     {
-        if (game.getPlayer(i).getPeasantLevel() > 0 and
+        if (game->getPlayer(i).getPeasantLevel() > 0 and
             settings.playerTypes[i] == PlayerType_Human) return true;
     }
     return false;
