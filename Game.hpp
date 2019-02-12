@@ -57,7 +57,6 @@ public:
     void setStartingPlayer();
     void saveThrowCardsInHistory(const Cards& cards);
     void savePassedTurnInHistory();
-    void performAITurn();
     void performAITurnLua();
     unsigned int getNumberOfEndedRounds();
     const std::vector<LevelsHistory>& getLevelsHistory();
@@ -70,7 +69,6 @@ public:
 private:
     void resetRound();
     void setPeasantsLevels();
-    void AIselectAllStartingValues();
     void registerCardClassInLua();
     void registerCardsClassInLua();
     void registerHistoryClassInLua();
