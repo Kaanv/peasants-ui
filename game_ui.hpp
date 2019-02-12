@@ -62,6 +62,8 @@ private:
     Player& getCurrentPlayer();
     bool isHumanAMaster();
     void processEndOfRound();
+    void throwStartingCards();
+    void handleIllegalAITurn();
 
     Settings settings;
     int numberOfPlayers;

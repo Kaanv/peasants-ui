@@ -109,11 +109,54 @@ void GameUI::setSettings(Settings settings)
     game = std::make_unique<Game>(settings);
 }
 
+namespace
+{
+int getStartingCardValue(int numberOfPlayers)
+{
+    if (numberOfPlayers == 4) return seven;
+    else if (numberOfPlayers == 5) return five;
+    return three;
+}
+}
+
+void GameUI::throwStartingCards()
+{
+    Cards cards= game->getCurrentPlayer().getCards();
+    game->getCurrentPlayer().unselectAllCards();
+    for (unsigned int i = 0; i < cards.size(); i++)
+    {
+        if (cards[i].value == getStartingCardValue(settings.numberOfPlayers))
+        {
+            game->getCurrentPlayer().selectCard(i);
+        }
+    }
+    game->throwCards(getCurrentPlayer().getSelectedCards());
+    game->nextPlayer();
+}
+
+void GameUI::handleIllegalAITurn()
+{
+    std::cout << "ILLEGAL AI " << game->getCurrentPlayer().getId() + 1 << " MOVE.";
+    if (game->getCardsFromTableTop().size() == 0)
+    {
+        throwStartingCards();
+        std::cout << " THROWING STARTING CARDS" << std::endl;
+    }
+    else
+    {
+        game->passCurrentPlayerTurn();
+        getCurrentPlayer().unselectAllCards();
+        std::cout << " PASSING TURN" << std::endl;
+    }
+    game->nextPlayer();
+}
+
 PollingPlaceId GameUI::startEventPoll()
 {
     if (isGameAIOnly)
     {
-        game->performAITurnLua();
+        try { game->performAITurnLua(); }
+        catch(...) { handleIllegalAITurn(); }
         if (game->hasRoundEnded())
         {
             std::cout << "END OF ROUND" << std::endl;
@@ -143,7 +186,8 @@ PollingPlaceId GameUI::startEventPoll()
         }
         if (isCurrentPlayerAI() and not isGameAIOnly)
         {
-            game->performAITurnLua();
+            try { game->performAITurnLua(); }
+            catch(...) { handleIllegalAITurn(); }
             forceDrawingEverything();
             if (not isGameOneHumanOnly)
             {
