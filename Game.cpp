@@ -346,17 +346,42 @@ void Game::performAITurnLua()
 
 void Game::giveCardsToPeasantAsAI(int playerId)
 {
-    Cards cards= players[playerId].getCards();
-    LuaRef luaAIGiveCardsToPeasant =
-        getGlobal(aiStates[playerId], "give_cards_to_peasant");
-    std::string command =luaAIGiveCardsToPeasant(cards,
-                                                 getPlayer(playerId).getPeasantLevel());
-    std::vector<std::string> splittedCommand = split(command, " ");
     std::vector<int> cardsToGiveAwayIndiecies;
-    for (int i = 0; i < getPlayer(playerId).getPeasantLevel(); i++)
+    Cards cards= players[playerId].getCards();
+
+    try
     {
-        cardsToGiveAwayIndiecies.push_back(std::stoi(splittedCommand[i]));
+        LuaRef luaAIGiveCardsToPeasant =
+            getGlobal(aiStates[playerId], "give_cards_to_peasant");
+        std::string command =luaAIGiveCardsToPeasant(cards,
+                                                     getPlayer(playerId).getPeasantLevel());
+        std::vector<std::string> splittedCommand = split(command, " ");
+        for (int i = 0; i < getPlayer(playerId).getPeasantLevel(); i++)
+        {
+            cardsToGiveAwayIndiecies.push_back(std::stoi(splittedCommand[i]));
+        }
     }
+    catch(...)
+    {
+        std::cout << "ILLEGAL COMMAND IN give_cards_to_peasant FUNCTION\n"
+                     "GIVING AWAY RANDOM CARDS" << std::endl;
+        cardsToGiveAwayIndiecies.clear();
+        for (int i = 0; i < getPlayer(playerId).getPeasantLevel(); i++)
+        {
+            cardsToGiveAwayIndiecies.push_back(i);
+        }
+    }
+    if (static_cast<int>(cardsToGiveAwayIndiecies.size()) <
+            getPlayer(playerId).getPeasantLevel())
+    {
+        std::cout << "NOT ENOUGH CARDS IN give_cards_to_peasant FUNCTION\n"
+                     "GIVING AWAY ADDITIONAL RANDOM CARDS" << std::endl;
+        for (int i = cardsToGiveAwayIndiecies.size(); i < getPlayer(playerId).getPeasantLevel(); i++)
+        {
+            cardsToGiveAwayIndiecies.push_back(i);
+        }
+    }
+
     std::sort(cardsToGiveAwayIndiecies.begin(), cardsToGiveAwayIndiecies.end());
     Cards cardsToGiveAway;
     for (int i = cardsToGiveAwayIndiecies.size() - 1; i >= 0 ; i--)
