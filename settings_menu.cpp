@@ -1,44 +1,46 @@
 #include "settings_menu.hpp"
 #include <boost/filesystem.hpp>
-#include <iostream>
 #include <regex>
+#include "text.hpp"
 
 SettingsMenu::SettingsMenu()
 {
     ownId = PollingPlaceId_Settings;
     Dimensions defaultButtonDimensions = {0.7, 0.125};
-    buttons.push_back(Button(defaultButtonDimensions, {-0.35, -0.5},
+    buttons.push_back(Button(defaultButtonDimensions, {-0.35, -0.6},
                              "Start game", ButtonId_StartGame));
-    buttons.push_back(Button(defaultButtonDimensions, {-0.35, -0.7},
+    buttons.push_back(Button(defaultButtonDimensions, {-0.35, -0.75},
                              "Main menu", ButtonId_MainMenu));
+    buttons.push_back(Button(defaultButtonDimensions, {-0.35, -0.25},
+                             "20", ButtonId_Rounds));
 
     Dimensions playerTypeButtonDimensions = {0.95, 0.125};
-    buttons.push_back(Button(playerTypeButtonDimensions, {-0.75, 0.7},
+    buttons.push_back(Button(playerTypeButtonDimensions, {-0.75, 0.8},
                              "Human", ButtonId_PlayerType1));
-    buttons.push_back(Button(playerTypeButtonDimensions, {-0.75, 0.55},
+    buttons.push_back(Button(playerTypeButtonDimensions, {-0.75, 0.65},
                              "Human", ButtonId_PlayerType2));
-    buttons.push_back(Button(playerTypeButtonDimensions, {-0.75, 0.4},
+    buttons.push_back(Button(playerTypeButtonDimensions, {-0.75, 0.5},
                              "Human", ButtonId_PlayerType3));
-    buttons.push_back(Button(playerTypeButtonDimensions, {-0.75, 0.25},
+    buttons.push_back(Button(playerTypeButtonDimensions, {-0.75, 0.35},
                              "Human", ButtonId_PlayerType4));
-    buttons.push_back(Button(playerTypeButtonDimensions, {-0.75, 0.1},
+    buttons.push_back(Button(playerTypeButtonDimensions, {-0.75, 0.2},
                              "None", ButtonId_PlayerType5));
-    buttons.push_back(Button(playerTypeButtonDimensions, {-0.75, -0.05},
+    buttons.push_back(Button(playerTypeButtonDimensions, {-0.75, 0.05},
                              "None", ButtonId_PlayerType6));
 
 
     Dimensions playerNameButtonDimensions = {0.5, 0.125};
-    buttons.push_back(Button(playerNameButtonDimensions, {0.35, 0.7},
+    buttons.push_back(Button(playerNameButtonDimensions, {0.35, 0.8},
                              "Player 1", ButtonId_PlayerName1));
-    buttons.push_back(Button(playerNameButtonDimensions, {0.35, 0.55},
+    buttons.push_back(Button(playerNameButtonDimensions, {0.35, 0.65},
                              "Player 2", ButtonId_PlayerName2));
-    buttons.push_back(Button(playerNameButtonDimensions, {0.35, 0.4},
+    buttons.push_back(Button(playerNameButtonDimensions, {0.35, 0.5},
                              "Player 3", ButtonId_PlayerName3));
-    buttons.push_back(Button(playerNameButtonDimensions, {0.35, 0.25},
+    buttons.push_back(Button(playerNameButtonDimensions, {0.35, 0.35},
                              "Player 4", ButtonId_PlayerName4));
-    buttons.push_back(Button(playerNameButtonDimensions, {0.35, 0.1},
+    buttons.push_back(Button(playerNameButtonDimensions, {0.35, 0.2},
                              "Player 5", ButtonId_PlayerName5));
-    buttons.push_back(Button(playerNameButtonDimensions, {0.35, -0.05},
+    buttons.push_back(Button(playerNameButtonDimensions, {0.35, 0.05},
                              "Player 6", ButtonId_PlayerName6));
 }
 
@@ -61,7 +63,6 @@ PollingPlaceId SettingsMenu::startEventPoll()
             {
                 button.forceDraw();
             }
-            backgroundNeedsDrawing = true;
             updateScreen();
         }
         else if (event.type == SDL_MOUSEMOTION)
@@ -93,6 +94,10 @@ PollingPlaceId SettingsMenu::startEventPoll()
                             button.setCaption(nextCaption(button.getCaption()));
                             button.immediatelyDraw();
                             break;
+                        case ButtonId_Rounds:
+                            button.setCaption(nextRoundsCaption(button.getCaption()));
+                            button.immediatelyDraw();
+                            break;
                     }
                 }
             }
@@ -101,19 +106,56 @@ PollingPlaceId SettingsMenu::startEventPoll()
     return PollingPlaceId_Settings;
 }
 
+namespace
+{
+
+void drawMenuTitles()
+{
+    TTF_Font* font(TTF_OpenFont("Fonts//font.ttf", 50));
+    SDL_Color textColor({255, 255, 255, 0});
+
+    SDL_GL_RenderText("Player type:",
+                      font,
+                      textColor,
+                      -0.275,
+                      0.9,
+                      0.1);
+
+    SDL_GL_RenderText("Player number:",
+                      font,
+                      textColor,
+                      0.6,
+                      0.9,
+                      0.1);
+
+    SDL_GL_RenderText("Rounds number:",
+                      font,
+                      textColor,
+                      0.0,
+                      -0.15,
+                      0.1);
+}
+
+}
+
 void SettingsMenu::updateScreen()
 {
     if(SDL_GetTicks() - lastTicks > 20)
     {
-        if (backgroundNeedsDrawing) drawBackground();
+        drawBackground();
+        for (auto& button : buttons)
+        {
+            button.forceDraw();
+        }
         for (auto& button : buttons)
         {
             button.draw();
         }
 
+        drawMenuTitles();
+
         SDL_GL_SwapBuffers();
         lastTicks = SDL_GetTicks();
-        backgroundNeedsDrawing = false;
     }
 }
 
@@ -187,6 +229,27 @@ std::string SettingsMenu::nextCaption(std::string caption)
     return "Human";
 }
 
+std::string SettingsMenu::nextRoundsCaption(std::string caption)
+{
+    std::vector<std::string> captions{"20", "50", "1000"};
+
+    for (unsigned int i = 0; i < captions.size(); i++)
+    {
+        if (captions[i] == caption)
+        {
+            if (i != captions.size() - 1)
+            {
+                return captions[i + 1];
+            }
+            else
+            {
+                return captions[0];
+            }
+        }
+    }
+    return "ERROR";
+}
+
 void SettingsMenu::setSettingsAccordingToButtons()
 {
     for (auto& button : buttons)
@@ -203,6 +266,10 @@ void SettingsMenu::setSettingsAccordingToButtons()
                     convertCaptionToPlayerType(button.getCaption());
                 settings.aiTypes[button.getButtonId() - ButtonId_PlayerType1] =
                     button.getCaption();
+                break;
+            case ButtonId_Rounds:
+                settings.numberOfRounds = std::stoi(button.getCaption());
+                break;
         }
     }
 

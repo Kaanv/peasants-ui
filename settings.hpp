@@ -15,4 +15,5 @@ struct Settings
     int numberOfPlayers;
     std::array<PlayerType, 6> playerTypes;
     std::array<std::string, 6> aiTypes;
+    unsigned int numberOfRounds;
 };

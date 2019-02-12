@@ -13,6 +13,7 @@ private:
     void updateScreen() override;
     void drawBackground() override;
     std::string nextCaption(std::string caption);
+    std::string nextRoundsCaption(std::string caption);
     void setSettingsAccordingToButtons();
     PlayerType convertCaptionToPlayerType(std::string caption);
     Settings settings;
