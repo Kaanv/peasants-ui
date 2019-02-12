@@ -116,7 +116,7 @@ Game::Game(Settings settings) : deck(settings.numberOfPlayers),
             }
             catch(...)
             {
-                std::cout << "ERROR IN ai_init FUNCTION" << std::endl;
+                std::cout << "ERROR IN ai_init FUNCTION FOR AI " << i + 1  << std::endl;
             }
         }
         else
@@ -370,7 +370,7 @@ void Game::giveCardsToPeasantAsAI(int playerId)
     }
     catch(...)
     {
-        std::cout << "ILLEGAL COMMAND IN give_cards_to_peasant FUNCTION\n"
+        std::cout << "ILLEGAL COMMAND IN give_cards_to_peasant FUNCTION FOR AI " << playerId + 1 << "\n"
                      "GIVING AWAY RANDOM CARDS" << std::endl;
         cardsToGiveAwayIndiecies.clear();
         for (int i = 0; i < getPlayer(playerId).getPeasantLevel(); i++)
@@ -381,7 +381,7 @@ void Game::giveCardsToPeasantAsAI(int playerId)
     if (static_cast<int>(cardsToGiveAwayIndiecies.size()) <
             getPlayer(playerId).getPeasantLevel())
     {
-        std::cout << "NOT ENOUGH CARDS IN give_cards_to_peasant FUNCTION\n"
+        std::cout << "NOT ENOUGH CARDS IN give_cards_to_peasant FUNCTION FOR AI " << playerId + 1  << "\n"
                      "GIVING AWAY ADDITIONAL RANDOM CARDS" << std::endl;
         for (int i = cardsToGiveAwayIndiecies.size(); i < getPlayer(playerId).getPeasantLevel(); i++)
         {
@@ -458,6 +458,6 @@ void Game::indicatePeasantLevel(int playerIndex)
     }
     catch(...)
     {
-        std::cout << "ERROR IN indicate_peasant_level FUNCTION" << std::endl;
+        std::cout << "ERROR IN indicate_peasant_level FUNCTION FOR AI " << playerIndex+ 1  << std::endl;
     }
 }
