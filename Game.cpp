@@ -109,8 +109,15 @@ Game::Game(Settings settings) : deck(settings.numberOfPlayers),
             luaL_openlibs(aiStates[i]);
             lua_pcall(aiStates[i], 0, 0, 0);
 
-            LuaRef luaAIInit = getGlobal(aiStates[i], "ai_init");
-            luaAIInit(settings.numberOfPlayers, i);
+            try
+            {
+                LuaRef luaAIInit = getGlobal(aiStates[i], "ai_init");
+                luaAIInit(settings.numberOfPlayers, i);
+            }
+            catch(...)
+            {
+                std::cout << "ERROR IN ai_init FUNCTION" << std::endl;
+            }
         }
         else
         {
@@ -443,7 +450,14 @@ History& Game::getHistory()
 
 void Game::indicatePeasantLevel(int playerIndex)
 {
-    LuaRef indicateLevel =
-        getGlobal(aiStates[playerIndex], "indicate_peasant_level");
-    indicateLevel(getPlayer(playerIndex).getPeasantLevel());
+    try
+    {
+        LuaRef indicateLevel =
+            getGlobal(aiStates[playerIndex], "indicate_peasant_level");
+        indicateLevel(getPlayer(playerIndex).getPeasantLevel());
+    }
+    catch(...)
+    {
+        std::cout << "ERROR IN indicate_peasant_level FUNCTION" << std::endl;
+    }
 }

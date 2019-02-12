@@ -5,7 +5,7 @@ cardsInGame = {}
 
 --ai_init is a function that gives you initial data. Don't modify its name
 
-function ai_init(playersNumber, playerId)
+function ai_isnit(playersNumber, playerId)
     print "I AM HARD AI!"
     numberOfPlayers = playersNumber
     myPlayerId = playerId
