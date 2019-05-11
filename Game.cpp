@@ -97,6 +97,7 @@ Game::Game(Settings settings) : deck(settings.numberOfPlayers),
                                 cardsValidator(deck.getStartingCard())
 {
     this->numberOfPlayers = settings.numberOfPlayers;
+    this->settings = settings;
     for (int i = 0; i < numberOfPlayers; i++)
     {
         players.push_back(Player(i));
@@ -225,8 +226,16 @@ void Game::nextRound()
     setPeasantsLevels();
     resetRound();
     numberOfEndedRounds++;
-    setStartingPlayer();
     addPeasantsLevelsToLevelsHistory();
+    for (int i = 0; i < numberOfPlayers; i++)
+    {
+        if (settings.playerTypes[i] == PlayerType_AI)
+        {
+            indicatePeasantLevel(i);
+        }
+    }
+    exchangePlayersCards();
+    setStartingPlayer();
 }
 
 void Game::checkIfPlayerHasEnded()
@@ -460,4 +469,89 @@ void Game::indicatePeasantLevel(int playerIndex)
     {
         std::cout << "ERROR IN indicate_peasant_level FUNCTION FOR AI " << playerIndex+ 1  << std::endl;
     }
+}
+
+namespace
+{
+int getStartingCardValue(int numberOfPlayers)
+{
+    if (numberOfPlayers == 4) return seven;
+    else if (numberOfPlayers == 5) return five;
+    return three;
+}
+}
+
+void Game::throwStartingCards()
+{
+    Cards cards= getCurrentPlayer().getCards();
+    getCurrentPlayer().unselectAllCards();
+    for (unsigned int i = 0; i < cards.size(); i++)
+    {
+        if (cards[i].value == getStartingCardValue(settings.numberOfPlayers))
+        {
+            getCurrentPlayer().selectCard(i);
+        }
+    }
+    throwCards(getCurrentPlayer().getSelectedCards());
+    nextPlayer();
+}
+
+void Game::handleIllegalAITurn()
+{
+    std::cout << "ILLEGAL AI " << getCurrentPlayer().getId() + 1 << " MOVE.";
+    if (getCardsFromTableTop().size() == 0)
+    {
+        throwStartingCards();
+        std::cout << " THROWING STARTING CARDS" << std::endl;
+    }
+    else
+    {
+        passCurrentPlayerTurn();
+        getCurrentPlayer().unselectAllCards();
+        std::cout << " PASSING TURN" << std::endl;
+    }
+    nextPlayer();
+}
+
+void Game::takeCardsFromPeasants()
+{
+    for (int id = 0; id < numberOfPlayers; id++)
+    {
+        if (players[id].getPeasantLevel() < 0)
+        {
+            Cards cardsToGiveAway;
+
+            for (int j = 0; j > players[id].getPeasantLevel(); j--)
+            {
+                cardsToGiveAway.push_back(players[id].takeBestCard());
+            }
+
+            unsigned int masterId = findOppositePlayerId(players[id].getPeasantLevel());
+
+            for (unsigned int j = 0; j < cardsToGiveAway.size(); j++)
+            {
+                players[masterId].insertCard(cardsToGiveAway[j]);
+            }
+        }
+    }
+}
+
+void Game::giveCardsToPeasants()
+{
+    for (int id = 0; id < numberOfPlayers; id++)
+    {
+        if (players[id].getPeasantLevel() > 0)
+        {
+            if (settings.playerTypes[id] == PlayerType_AI)
+            {
+                giveCardsToPeasantAsAI(id);
+            }
+        }
+    }
+}
+
+void Game::exchangePlayersCards()
+{
+    takeCardsFromPeasants();
+    giveCardsToPeasants();
 }

@@ -109,54 +109,12 @@ void GameUI::setSettings(Settings settings)
     game = std::make_unique<Game>(settings);
 }
 
-namespace
-{
-int getStartingCardValue(int numberOfPlayers)
-{
-    if (numberOfPlayers == 4) return seven;
-    else if (numberOfPlayers == 5) return five;
-    return three;
-}
-}
-
-void GameUI::throwStartingCards()
-{
-    Cards cards= game->getCurrentPlayer().getCards();
-    game->getCurrentPlayer().unselectAllCards();
-    for (unsigned int i = 0; i < cards.size(); i++)
-    {
-        if (cards[i].value == getStartingCardValue(settings.numberOfPlayers))
-        {
-            game->getCurrentPlayer().selectCard(i);
-        }
-    }
-    game->throwCards(getCurrentPlayer().getSelectedCards());
-    game->nextPlayer();
-}
-
-void GameUI::handleIllegalAITurn()
-{
-    std::cout << "ILLEGAL AI " << game->getCurrentPlayer().getId() + 1 << " MOVE.";
-    if (game->getCardsFromTableTop().size() == 0)
-    {
-        throwStartingCards();
-        std::cout << " THROWING STARTING CARDS" << std::endl;
-    }
-    else
-    {
-        game->passCurrentPlayerTurn();
-        getCurrentPlayer().unselectAllCards();
-        std::cout << " PASSING TURN" << std::endl;
-    }
-    game->nextPlayer();
-}
-
 PollingPlaceId GameUI::startEventPoll()
 {
     if (isGameAIOnly)
     {
         try { game->performAITurnLua(); }
-        catch(...) { handleIllegalAITurn(); }
+        catch(...) { game->handleIllegalAITurn(); }
         if (game->hasRoundEnded())
         {
             std::cout << "END OF ROUND" << std::endl;
@@ -187,7 +145,7 @@ PollingPlaceId GameUI::startEventPoll()
         if (isCurrentPlayerAI() and not isGameAIOnly)
         {
             try { game->performAITurnLua(); }
-            catch(...) { handleIllegalAITurn(); }
+            catch(...) { game->handleIllegalAITurn(); }
             forceDrawingEverything();
             if (not isGameOneHumanOnly)
             {
@@ -637,29 +595,6 @@ bool GameUI::isCurrentPlayerAI()
     return settings.playerTypes[getCurrentPlayerId()] == PlayerType_AI;
 }
 
-void GameUI::takeCardsFromPeasants()
-{
-    for (int id = 0; id < numberOfPlayers; id++)
-    {
-        if (game->getPlayer(id).getPeasantLevel() < 0)
-        {
-            Cards cardsToGiveAway;
-
-            for (int j = 0; j > game->getPlayer(id).getPeasantLevel(); j--)
-            {
-                cardsToGiveAway.push_back(game->getPlayer(id).takeBestCard());
-            }
-
-            unsigned int masterId = game->findOppositePlayerId(game->getPlayer(id).getPeasantLevel());
-
-            for (unsigned int j = 0; j < cardsToGiveAway.size(); j++)
-            {
-                game->getPlayer(masterId).insertCard(cardsToGiveAway[j]);
-            }
-        }
-    }
-}
-
 void GameUI::turnOnCardsExchange()
 {
     cardsExchangeActive = true;
@@ -714,33 +649,20 @@ void GameUI::turnOffCardsExchange()
     forceDrawingEverything();
 }
 
-void GameUI::giveCardsToPeasants()
+void GameUI::handleUIPartOfCardsExchange()
 {
     if (not isGameAIOnly and isHumanAMaster())
     {
         turnOnCardsExchange();
     }
-
     for (int id = 0; id < numberOfPlayers; id++)
     {
-        if (game->getPlayer(id).getPeasantLevel() > 0)
+        if (settings.playerTypes[id] == PlayerType_Human and
+            game->getPlayer(id).getPeasantLevel() > 0)
         {
-            if (settings.playerTypes[id] == PlayerType_AI)
-            {
-                game->giveCardsToPeasantAsAI(id);
-            }
-            else
-            {
-                exchangePlayersIds.push_back(id);
-            }
+            exchangePlayersIds.push_back(id);
         }
     }
-}
-
-void GameUI::exchangePlayersCards()
-{
-    takeCardsFromPeasants();
-    giveCardsToPeasants();
 }
 
 void GameUI::enteringAction()
@@ -835,15 +757,7 @@ bool GameUI::isHumanAMaster()
 void GameUI::processEndOfRound()
 {
     game->nextRound();
-    for (int i = 0; i < numberOfPlayers; i++)
-    {
-        if (settings.playerTypes[i] == PlayerType_AI)
-        {
-            game->indicatePeasantLevel(i);
-        }
-    }
-    exchangePlayersCards();
-    game->setStartingPlayer();
+    handleUIPartOfCardsExchange();
 }
 
 Scores GameUI::getGameResults()

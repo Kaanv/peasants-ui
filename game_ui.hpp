@@ -48,11 +48,8 @@ private:
     void drawPopup(std::string text);
     void forceDrawButtons();
     void drawCurrentPlayerPopup();
-    void takeCardsFromPeasants();
     void turnOnCardsExchange();
     void turnOffCardsExchange();
-    void giveCardsToPeasants();
-    void exchangePlayersCards();
     void enteringAction() override;
     bool isCurrentPlayerAI();
     void calculateIsAIOnlyGame();
@@ -62,8 +59,7 @@ private:
     Player& getCurrentPlayer();
     bool isHumanAMaster();
     void processEndOfRound();
-    void throwStartingCards();
-    void handleIllegalAITurn();
+    void handleUIPartOfCardsExchange();
 
     Settings settings;
     int numberOfPlayers;

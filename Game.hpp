@@ -42,8 +42,6 @@ class Game
 public:
     Game(Settings settings);
 
-    void distributeCardsFromDeck();
-    int findStartingPlayer();
     bool hasRoundEnded();
     Player& getCurrentPlayer();
     void nextPlayer();
@@ -51,28 +49,35 @@ public:
     const Cards& getCardsFromTableTop() const;
     void passCurrentPlayerTurn();
     void nextRound();
-    void checkIfPlayerHasEnded();
     Player& getPlayer(unsigned int id);
-    unsigned int findOppositePlayerId(int peasantLevel);
-    void setStartingPlayer();
-    void saveThrowCardsInHistory(const Cards& cards);
-    void savePassedTurnInHistory();
     void performAITurnLua();
     unsigned int getNumberOfEndedRounds();
     const std::vector<LevelsHistory>& getLevelsHistory();
-    void giveCardsToPeasantAsAI(int playerId);
     void giveCardsToPeasantAsHuman(int playerId);
-    void validateNumberOfCardsToGiveAway(int playerId);
     History& getHistory();
-    void indicatePeasantLevel(int playerIndex);
+    void handleIllegalAITurn();
 
 private:
     void resetRound();
     void setPeasantsLevels();
+    void setStartingPlayer();
     void registerCardClassInLua();
     void registerCardsClassInLua();
     void registerHistoryClassInLua();
     void addPeasantsLevelsToLevelsHistory();
+    void distributeCardsFromDeck();
+    void checkIfPlayerHasEnded();
+    int findStartingPlayer();
+    void takeCardsFromPeasants();
+    void giveCardsToPeasants();
+    void exchangePlayersCards();
+    unsigned int findOppositePlayerId(int peasantLevel);
+    void saveThrowCardsInHistory(const Cards& cards);
+    void savePassedTurnInHistory();
+    void giveCardsToPeasantAsAI(int playerId);
+    void validateNumberOfCardsToGiveAway(int playerId);
+    void indicatePeasantLevel(int playerIndex);
+    void throwStartingCards();
 
     Players players;
     Deck deck;
@@ -86,6 +91,7 @@ private:
     int numberOfPlayers;
     unsigned int numberOfEndedRounds = 0;
     std::vector<LevelsHistory> levelsHistory;
+    Settings settings;
 };
 
 #endif
