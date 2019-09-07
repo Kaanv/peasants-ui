@@ -222,7 +222,6 @@ PollingPlaceId GameUI::startEventPoll()
                                     case ButtonId_PassTurn:
                                     {
                                         game->passCurrentPlayerTurn();
-                                        getCurrentPlayer().unselectAllCards();
                                         game->nextPlayer();
                                         forceDrawingEverything();
                                         drawCurrentPlayerPopup();
@@ -230,7 +229,7 @@ PollingPlaceId GameUI::startEventPoll()
                                     }
                                     case ButtonId_ThrowCards:
                                     {
-                                        game->throwCards(getCurrentPlayer().getSelectedCards());
+                                        game->throwSelectedCards();
                                         game->nextPlayer();
                                         forceDrawingEverything();
                                         drawCurrentPlayerPopup();
@@ -457,7 +456,7 @@ void GameUI::drawPastTurnsInfo()
                       0.2,
                       0.1);
 
-    History& history = game->getHistory();
+    const History& history = game->getHistory();
 
     for (int i = 0; i < numberOfPlayers and i < static_cast<int>(history.getHistory().size()); i++)
     {

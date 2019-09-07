@@ -34,7 +34,7 @@ void History::savePassedTurn(int playerId)
     history.push_back(HistoryElement{playerId, "PASS TURN", Cards{}});
 }
 
-std::vector<HistoryElement> History::getHistory()
+const std::vector<HistoryElement> History::getHistory() const
 {
     return history;
 }
@@ -145,7 +145,7 @@ void Game::distributeCardsFromDeck()
     }
 }
 
-int Game::findStartingPlayer()
+int Game::findStartingPlayer() const
 {
     Card startingCard = deck.getStartingCard();
 
@@ -165,12 +165,12 @@ int Game::findStartingPlayer()
     return 0;
 }
 
-bool Game::hasRoundEnded()
+bool Game::hasRoundEnded() const
 {
     return playersThatEnded.size() >= players.size() - 1;
 }
 
-Player& Game::getCurrentPlayer()
+const Player &Game::getCurrentPlayer() const
 {
     return players[currentPlayerId];
 }
@@ -185,8 +185,9 @@ void Game::nextPlayer()
     }
 }
 
-void Game::throwCards(Cards cards)
+void Game::throwSelectedCards()
 {
+    const Cards cards = getCurrentPlayer().getSelectedCards();
     if (passedTurns >= players.size() - 1 - playersThatEnded.size())
     {
         cardsValidator.checkIfCardsHaveSameValue(cards);
@@ -199,8 +200,8 @@ void Game::throwCards(Cards cards)
     table.throwCards(cards);
     passedTurns = 0;
     saveThrowCardsInHistory(cards);
-    getCurrentPlayer().removeSelectedCards();
-    checkIfPlayerHasEnded();
+    players[currentPlayerId].removeSelectedCards();
+    addPlayerToPlayersThatEndedListIfPossible();
 }
 
 const Cards& Game::getCardsFromTableTop() const
@@ -214,6 +215,7 @@ void Game::passCurrentPlayerTurn()
     {
         passedTurns++;
         savePassedTurnInHistory();
+        players[currentPlayerId].unselectAllCards();
     }
     else
     {
@@ -238,7 +240,7 @@ void Game::nextRound()
     setStartingPlayer();
 }
 
-void Game::checkIfPlayerHasEnded()
+void Game::addPlayerToPlayersThatEndedListIfPossible()
 {
     if (players[currentPlayerId].hasEnded())
     {
@@ -251,7 +253,7 @@ Player &Game::getPlayer(unsigned int id)
     return players[id];
 }
 
-unsigned int Game::findOppositePlayerId(int peasantLevel)
+unsigned int Game::findOppositePlayerId(int peasantLevel) const
 {
     for (unsigned i = 0; i < players.size(); i++)
     {
@@ -345,16 +347,16 @@ void Game::performAITurnLua()
     else
     {
         std::vector<std::string> splittedCommand = split(command, " ");
-        getCurrentPlayer().unselectAllCards();
+        players[currentPlayerId].unselectAllCards();
         for (const auto& e : splittedCommand)
         {
             if (e != "THROW")
             {
-                getCurrentPlayer().selectCard(std::stoi(e));
+                players[currentPlayerId].selectCard(std::stoi(e));
             }
         }
 
-        throwCards(getCurrentPlayer().getSelectedCards());
+        throwSelectedCards();
     }
 
     nextPlayer();
@@ -424,7 +426,7 @@ void Game::giveCardsToPeasantAsHuman(int playerId)
     players[playerId].removeSelectedCards();
 }
 
-void Game::validateNumberOfCardsToGiveAway(int playerId)
+void Game::validateNumberOfCardsToGiveAway(int playerId) const
 {
     if (players[playerId].getSelectedCards().size() !=
             static_cast<unsigned int>(players[playerId].getPeasantLevel()))
@@ -434,7 +436,7 @@ void Game::validateNumberOfCardsToGiveAway(int playerId)
     }
 }
 
-unsigned int Game::getNumberOfEndedRounds()
+unsigned int Game::getNumberOfEndedRounds() const
 {
     return numberOfEndedRounds;
 }
@@ -447,12 +449,12 @@ void Game::addPeasantsLevelsToLevelsHistory()
     }
 }
 
-const std::vector<LevelsHistory>& Game::getLevelsHistory()
+const std::vector<LevelsHistory>& Game::getLevelsHistory() const
 {
     return levelsHistory;
 }
 
-History& Game::getHistory()
+const History &Game::getHistory() const
 {
     return history;
 }
@@ -484,15 +486,15 @@ int getStartingCardValue(int numberOfPlayers)
 void Game::throwStartingCards()
 {
     Cards cards= getCurrentPlayer().getCards();
-    getCurrentPlayer().unselectAllCards();
+    players[currentPlayerId].unselectAllCards();
     for (unsigned int i = 0; i < cards.size(); i++)
     {
         if (cards[i].value == getStartingCardValue(settings.numberOfPlayers))
         {
-            getCurrentPlayer().selectCard(i);
+            players[currentPlayerId].selectCard(i);
         }
     }
-    throwCards(getCurrentPlayer().getSelectedCards());
+    throwSelectedCards();
     nextPlayer();
 }
 
@@ -507,7 +509,7 @@ void Game::handleIllegalAITurn()
     else
     {
         passCurrentPlayerTurn();
-        getCurrentPlayer().unselectAllCards();
+        players[currentPlayerId].unselectAllCards();
         std::cout << " PASSING TURN" << std::endl;
     }
     nextPlayer();

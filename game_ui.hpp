@@ -56,7 +56,7 @@ private:
     void calculateIsGameOneHumanOnly();
     void createGameResults();
     int getCurrentPlayerId();
-    Player& getCurrentPlayer();
+    Player &getCurrentPlayer();
     bool isHumanAMaster();
     void processEndOfRound();
     void handleUIPartOfCardsExchange();

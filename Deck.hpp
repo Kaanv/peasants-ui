@@ -10,9 +10,9 @@ public:
     Deck(int numberOfPlayers);
     void shuffleCards();
     Card takeCard();
-    Cards getCards();
+    Cards getCards() const;
     void resetDeck(int numberOfPlayers);
-    Card getStartingCard();
+    Card getStartingCard() const;
 
 private:
     Card createStartingCard(int numberOfPlayers);

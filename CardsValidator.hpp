@@ -6,14 +6,14 @@
 class CardsValidator
 {
 public:
-    CardsValidator(Card startingCard);
-    void checkIfCardsCouldBeThrown(Cards cards, Cards cardsOnTableTop);
-    void checkIfCardsHaveSameValue(Cards cards);
+    CardsValidator(Card _startingCard);
+    void checkIfCardsCouldBeThrown(Cards cards, Cards cardsOnTableTop) const;
+    void checkIfCardsHaveSameValue(Cards cards) const;
 
 private:
-    void validateGameStartingCards(Cards cards);
+    void validateGameStartingCards(Cards cards) const;
 
-    Card startingCard;
+    const Card startingCard;
 };
 
 #endif

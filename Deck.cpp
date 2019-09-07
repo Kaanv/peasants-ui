@@ -21,7 +21,7 @@ Card Deck::takeCard()
     return lastCard;
 }
 
-Cards Deck::getCards()
+Cards Deck::getCards() const
 {
     return cards;
 }
@@ -43,7 +43,7 @@ void Deck::resetDeck(int numberOfPlayers)
     shuffleCards();
 }
 
-Card Deck::getStartingCard()
+Card Deck::getStartingCard() const
 {
     return startingCard;
 }

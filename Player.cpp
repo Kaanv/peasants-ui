@@ -1,13 +1,12 @@
 #include "Player.hpp"
 #include <iostream>
 
-Player::Player(int playerId)
+Player::Player(int _playerId) : playerId(_playerId)
 {
-    this->playerId = playerId;
     peasantLevel = 0;
 }
 
-Cards Player::getCards()
+Cards Player::getCards() const
 {
     return cards;
 }
@@ -43,7 +42,7 @@ void Player::unselectAllCards()
     }
 }
 
-Cards Player::getSelectedCards()
+Cards Player::getSelectedCards() const
 {
     Cards selectedCards;
 
@@ -69,7 +68,7 @@ void Player::removeSelectedCards()
     }
 }
 
-bool Player::hasEnded()
+bool Player::hasEnded() const
 {
     return not cards.size();
 }
@@ -79,7 +78,7 @@ void Player::setPeasantLevel(int peasantLevel)
     this->peasantLevel = peasantLevel;
 }
 
-int Player::getPeasantLevel()
+int Player::getPeasantLevel() const
 {
     return peasantLevel;
 }
@@ -117,7 +116,7 @@ Card Player::takeCard(unsigned int cardId)
     return card;
 }
 
-int Player::getId()
+int Player::getId() const
 {
     return playerId;
 }

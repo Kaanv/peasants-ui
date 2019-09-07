@@ -1,12 +1,11 @@
 #include "CardsValidator.hpp"
 #include <stdexcept>
 
-CardsValidator::CardsValidator(Card startingCard)
+CardsValidator::CardsValidator(Card _startingCard) : startingCard(_startingCard)
 {
-    this->startingCard = startingCard;
 }
 
-void CardsValidator::checkIfCardsCouldBeThrown(Cards cards, Cards cardsOnTableTop)
+void CardsValidator::checkIfCardsCouldBeThrown(Cards cards, Cards cardsOnTableTop) const
 {
     if (not cardsOnTableTop.size())
     {
@@ -29,7 +28,7 @@ void CardsValidator::checkIfCardsCouldBeThrown(Cards cards, Cards cardsOnTableTo
     }
 }
 
-void CardsValidator::checkIfCardsHaveSameValue(Cards cards)
+void CardsValidator::checkIfCardsHaveSameValue(Cards cards) const
 {
     for (unsigned int i = 1; i < cards.size(); i++)
     {
@@ -40,7 +39,7 @@ void CardsValidator::checkIfCardsHaveSameValue(Cards cards)
     }
 }
 
-void CardsValidator::validateGameStartingCards(Cards cards)
+void CardsValidator::validateGameStartingCards(Cards cards) const
 {
     bool startingCardFound = false;
 

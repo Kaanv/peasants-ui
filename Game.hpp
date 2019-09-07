@@ -31,7 +31,7 @@ class History
 public:
     void saveThrowCards(Cards cards, int playerId);
     void savePassedTurn(int playerId);
-    std::vector<HistoryElement> getHistory();
+    const std::vector<HistoryElement> getHistory() const;
     void clear();
 private:
     std::vector<HistoryElement> history;
@@ -42,19 +42,19 @@ class Game
 public:
     Game(Settings settings);
 
-    bool hasRoundEnded();
-    Player& getCurrentPlayer();
+    bool hasRoundEnded() const;
+    const Player& getCurrentPlayer() const;
     void nextPlayer();
-    void throwCards(Cards cards);
+    void throwSelectedCards();
     const Cards& getCardsFromTableTop() const;
     void passCurrentPlayerTurn();
     void nextRound();
-    Player& getPlayer(unsigned int id);
+    Player &getPlayer(unsigned int id);
     void performAITurnLua();
-    unsigned int getNumberOfEndedRounds();
-    const std::vector<LevelsHistory>& getLevelsHistory();
+    unsigned int getNumberOfEndedRounds() const;
+    const std::vector<LevelsHistory>& getLevelsHistory() const;
     void giveCardsToPeasantAsHuman(int playerId);
-    History& getHistory();
+    const History& getHistory() const;
     void handleIllegalAITurn();
 
 private:
@@ -66,22 +66,22 @@ private:
     void registerHistoryClassInLua();
     void addPeasantsLevelsToLevelsHistory();
     void distributeCardsFromDeck();
-    void checkIfPlayerHasEnded();
-    int findStartingPlayer();
+    void addPlayerToPlayersThatEndedListIfPossible();
+    int findStartingPlayer() const;
     void takeCardsFromPeasants();
     void giveCardsToPeasants();
     void exchangePlayersCards();
-    unsigned int findOppositePlayerId(int peasantLevel);
+    unsigned int findOppositePlayerId(int peasantLevel) const;
     void saveThrowCardsInHistory(const Cards& cards);
     void savePassedTurnInHistory();
     void giveCardsToPeasantAsAI(int playerId);
-    void validateNumberOfCardsToGiveAway(int playerId);
+    void validateNumberOfCardsToGiveAway(int playerId) const;
     void indicatePeasantLevel(int playerIndex);
     void throwStartingCards();
 
     Players players;
     Deck deck;
-    CardsValidator cardsValidator;
+    const CardsValidator cardsValidator;
     History history;
     int currentPlayerId;
     unsigned int passedTurns;
