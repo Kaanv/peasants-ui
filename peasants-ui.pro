@@ -57,4 +57,5 @@ HEADERS += \
     settings_menu.hpp \
     results_menu.hpp \
     score.hpp \
-    net_join_menu.hpp
+    net_join_menu.hpp \
+    network_client.hpp

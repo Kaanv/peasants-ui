@@ -6,6 +6,7 @@
 #include "settings_menu.hpp"
 #include "results_menu.hpp"
 #include "net_join_menu.hpp"
+#include "network_client.hpp"
 #include <ctime>
 
 int main()
@@ -19,6 +20,17 @@ int main()
     GameUI game;
     SettingsMenu settingsMenu;
     NetJoinMenu netJoinMenu;
+
+    try
+    {
+        intializeSdlNetwork();
+        NetworkClient netClient;
+        netClient.connectToHost("127.0.0.1", "22222");
+    }
+    catch(NetworkException e)
+    {
+        std::cout << "Network error: " << e.what() << std::endl;
+    }
 
     while (currentPlace != PollingPlaceId_Exit)
     {
