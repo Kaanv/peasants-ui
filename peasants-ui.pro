@@ -31,7 +31,8 @@ SOURCES += main.cpp \
     Table.cpp \
     settings.cpp \
     settings_menu.cpp \
-    results_menu.cpp
+    results_menu.cpp \
+    net_join_menu.cpp
 
 HEADERS += \
     textures.hpp \
@@ -55,4 +56,5 @@ HEADERS += \
     settings.hpp \
     settings_menu.hpp \
     results_menu.hpp \
-    score.hpp
+    score.hpp \
+    net_join_menu.hpp

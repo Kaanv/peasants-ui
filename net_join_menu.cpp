@@ -1,23 +1,33 @@
-#include "menu.hpp"
+#include "net_join_menu.hpp"
 #include "sdl_gl_wrapper.hpp"
 #include "constants.hpp"
 #include "text.hpp"
 
-MainMenu::MainMenu()
+NetJoinMenu::NetJoinMenu()
 {
-    ownId = PollingPlaceId_MainMenu;
+    ownId = PollingPlaceId_NetworkGameJoining;
     Dimensions defaultButtonDimensions = {0.7, 0.125};
-    buttons.push_back(Button(defaultButtonDimensions, {-0.35, 0.425},
-                             "New local game", ButtonId_NewLocalGame));
-    buttons.push_back(Button(defaultButtonDimensions, {-0.35, 0.225},
-                             "New network game", ButtonId_NewNetworkGame));
-    buttons.push_back(Button(defaultButtonDimensions, {-0.35, 0.025},
-                             "Join network game", ButtonId_JoinNetworkGame));
-    buttons.push_back(Button(defaultButtonDimensions, {-0.35, -0.175},
-                             "Exit game", ButtonId_ExitGame));
+    buttons.push_back(Button(defaultButtonDimensions, {-0.35, -0.6},
+                             "Join game", ButtonId_JoinNetworkGame));
+    buttons.push_back(Button(defaultButtonDimensions, {-0.35, -0.75},
+                             "Main menu", ButtonId_MainMenu));
+
+    buttons.push_back(Button(defaultButtonDimensions, {-0.75, 0.4},
+                             "Name", ButtonId_PlayerType2));
+    buttons.push_back(Button(defaultButtonDimensions, {-0.75, 0.25},
+                             "IP address", ButtonId_PlayerType1));
+    buttons.push_back(Button(defaultButtonDimensions, {-0.75, 0.1},
+                             "Port", ButtonId_PlayerType2));
+
+    buttons.push_back(Button(defaultButtonDimensions, {0.1, 0.4},
+                             "Player", ButtonId_PlayerType1));
+    buttons.push_back(Button(defaultButtonDimensions, {0.1, 0.25},
+                             "127.0.0.1", ButtonId_PlayerType2));
+    buttons.push_back(Button(defaultButtonDimensions, {0.1, 0.1},
+                             "22222", ButtonId_PlayerType2));
 }
 
-PollingPlaceId MainMenu::startEventPoll()
+PollingPlaceId NetJoinMenu::startEventPoll()
 {
     while (SDL_PollEvent(&event))
     {
@@ -50,19 +60,17 @@ PollingPlaceId MainMenu::startEventPoll()
                 {
                     switch (button.getButtonId())
                     {
-                        case ButtonId_NewLocalGame: return PollingPlaceId_Settings;
-                        case ButtonId_NewNetworkGame: return PollingPlaceId_NetworkGameSettings;
-                        case ButtonId_JoinNetworkGame: return PollingPlaceId_NetworkGameJoining;
-                        case ButtonId_ExitGame: return PollingPlaceId_Exit;
+                        case ButtonId_JoinNetworkGame: return PollingPlaceId_MainMenu;
+                        case ButtonId_MainMenu: return PollingPlaceId_MainMenu;
                     }
                 }
             }
         }
     }
-    return PollingPlaceId_MainMenu;
+    return PollingPlaceId_NetworkGameJoining;
 }
 
-void MainMenu::updateScreen()
+void NetJoinMenu::updateScreen()
 {
     if(SDL_GetTicks() - lastTicks > 20)
     {
@@ -78,7 +86,7 @@ void MainMenu::updateScreen()
     }
 }
 
-void MainMenu::drawBackground()
+void NetJoinMenu::drawBackground()
 {
     Dimensions fullScreen{2.0, 2.0};
     Position rightLeftCorner{-1.0, 1.0};
@@ -88,15 +96,16 @@ void MainMenu::drawBackground()
                   rightLeftCorner);
 }
 
-void MainMenu::drawTitle()
+void NetJoinMenu::drawTitle()
 {
     TTF_Font* font(TTF_OpenFont("Fonts//font.ttf", 100));
     SDL_Color textColor({255, 255, 255, 0});
 
-    SDL_GL_RenderText("PEASANTS",
+    SDL_GL_RenderText("Join network game",
                       font,
                       textColor,
                       0.0,
                       0.9,
-                      0.2);
+                      0.13);
 }
+

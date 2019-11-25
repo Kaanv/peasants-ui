@@ -8,7 +8,9 @@
 
 enum MenuButtonId
 {
-    ButtonId_NewGame,
+    ButtonId_NewLocalGame,
+    ButtonId_NewNetworkGame,
+    ButtonId_JoinNetworkGame,
     ButtonId_StartGame,
     ButtonId_MainMenu,
     ButtonId_ExitGame,

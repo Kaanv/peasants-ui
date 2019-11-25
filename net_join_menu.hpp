@@ -1,5 +1,5 @@
-#ifndef MENU_HPP
-#define MENU_HPP
+#ifndef NET_JOIN_MENU
+#define NET_JOIN_MENU
 
 #include "button.hpp"
 #include "polling_place.hpp"
@@ -7,10 +7,10 @@
 #include "sdl_gl_wrapper.hpp"
 #include <vector>
 
-class MainMenu : public PollingPlace
+class NetJoinMenu : public PollingPlace
 {
 public:
-    MainMenu();
+    NetJoinMenu();
 private:
     PollingPlaceId startEventPoll() override;
     void updateScreen() override;
@@ -18,4 +18,4 @@ private:
     void drawTitle();
 };
 
-#endif // MENU_HPP
+#endif // NET_JOIN_MENU
