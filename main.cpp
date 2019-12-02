@@ -26,6 +26,7 @@ int main()
         intializeSdlNetwork();
         NetworkClient netClient;
         netClient.connectToHost("127.0.0.1", "22222");
+        netClient.sendMessage("I am player one!");
     }
     catch(NetworkException e)
     {
