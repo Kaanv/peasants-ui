@@ -7,6 +7,7 @@
 #include "results_menu.hpp"
 #include "net_join_menu.hpp"
 #include "network_client.hpp"
+#include "wait_menu.hpp"
 #include <ctime>
 
 int main()
@@ -20,6 +21,7 @@ int main()
     GameUI game;
     SettingsMenu settingsMenu;
     NetJoinMenu netJoinMenu;
+    WaitMenu waitMenu;
 
     try
     {
@@ -50,6 +52,9 @@ int main()
             break;
         case PollingPlaceId_NetworkGameJoining:
             currentPlace = netJoinMenu.enter();
+            break;
+        case PollingPlaceId_WaitMenu:
+            currentPlace = waitMenu.enter();
             break;
         case PollingPlaceId_MainMenu:
         default:

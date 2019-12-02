@@ -32,7 +32,8 @@ SOURCES += main.cpp \
     settings.cpp \
     settings_menu.cpp \
     results_menu.cpp \
-    net_join_menu.cpp
+    net_join_menu.cpp \
+    wait_menu.cpp
 
 HEADERS += \
     textures.hpp \
@@ -58,4 +59,5 @@ HEADERS += \
     results_menu.hpp \
     score.hpp \
     net_join_menu.hpp \
-    network_client.hpp
+    network_client.hpp \
+    wait_menu.hpp

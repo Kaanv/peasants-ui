@@ -30,6 +30,7 @@ enum MenuButtonId
     ButtonId_PlayerName5,
     ButtonId_PlayerName6,
     ButtonId_GiveAway,
+    ButtonId_CancelGame,
     ButtonId_Rounds
 };
 

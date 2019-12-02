@@ -1,33 +1,19 @@
-#include "net_join_menu.hpp"
+#include "wait_menu.hpp"
 #include "sdl_gl_wrapper.hpp"
 #include "constants.hpp"
 #include "text.hpp"
 
-NetJoinMenu::NetJoinMenu()
+WaitMenu::WaitMenu()
 {
-    ownId = PollingPlaceId_NetworkGameJoining;
+    ownId = PollingPlaceId_WaitMenu;
     Dimensions defaultButtonDimensions = {0.7, 0.125};
     buttons.push_back(Button(defaultButtonDimensions, {-0.35, -0.6},
-                             "Join game", ButtonId_JoinNetworkGame));
+                             "Cancel game", ButtonId_CancelGame));
     buttons.push_back(Button(defaultButtonDimensions, {-0.35, -0.75},
                              "Main menu", ButtonId_MainMenu));
-
-    buttons.push_back(Button(defaultButtonDimensions, {-0.75, 0.4},
-                             "Name", ButtonId_PlayerType2));
-    buttons.push_back(Button(defaultButtonDimensions, {-0.75, 0.25},
-                             "IP address", ButtonId_PlayerType1));
-    buttons.push_back(Button(defaultButtonDimensions, {-0.75, 0.1},
-                             "Port", ButtonId_PlayerType2));
-
-    buttons.push_back(Button(defaultButtonDimensions, {0.1, 0.4},
-                             "Player", ButtonId_PlayerType1));
-    buttons.push_back(Button(defaultButtonDimensions, {0.1, 0.25},
-                             "127.0.0.1", ButtonId_PlayerType2));
-    buttons.push_back(Button(defaultButtonDimensions, {0.1, 0.1},
-                             "22222", ButtonId_PlayerType2));
 }
 
-PollingPlaceId NetJoinMenu::startEventPoll()
+PollingPlaceId WaitMenu::startEventPoll()
 {
     while (SDL_PollEvent(&event))
     {
@@ -60,17 +46,17 @@ PollingPlaceId NetJoinMenu::startEventPoll()
                 {
                     switch (button.getButtonId())
                     {
-                        case ButtonId_JoinNetworkGame: return PollingPlaceId_WaitMenu;
+                        case ButtonId_CancelGame: return PollingPlaceId_NetworkGameJoining;
                         case ButtonId_MainMenu: return PollingPlaceId_MainMenu;
                     }
                 }
             }
         }
     }
-    return PollingPlaceId_NetworkGameJoining;
+    return PollingPlaceId_WaitMenu;
 }
 
-void NetJoinMenu::updateScreen()
+void WaitMenu::updateScreen()
 {
     if(SDL_GetTicks() - lastTicks > 20)
     {
@@ -86,7 +72,7 @@ void NetJoinMenu::updateScreen()
     }
 }
 
-void NetJoinMenu::drawBackground()
+void WaitMenu::drawBackground()
 {
     Dimensions fullScreen{2.0, 2.0};
     Position rightLeftCorner{-1.0, 1.0};
@@ -96,12 +82,12 @@ void NetJoinMenu::drawBackground()
                   rightLeftCorner);
 }
 
-void NetJoinMenu::drawTitle()
+void WaitMenu::drawTitle()
 {
     TTF_Font* font(TTF_OpenFont("Fonts//font.ttf", 100));
     SDL_Color textColor({255, 255, 255, 0});
 
-    SDL_GL_RenderText("Join network game",
+    SDL_GL_RenderText("Waiting for the host to start the game",
                       font,
                       textColor,
                       0.0,
