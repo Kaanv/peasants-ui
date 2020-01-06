@@ -15,19 +15,29 @@ class NetworkServer
 {
 public:
     NetworkServer();
+    void startServer();
 
 private:
     void resolveHost();
+    void openServerSocket();
 
     IPaddress ip;
     Uint32 ipaddr;
     Uint16 port;
+    std::string host;
+    TCPsocket server;
 };
 
 NetworkServer::NetworkServer()
 {
     port = static_cast<Uint16>(22222);
+}
+
+void NetworkServer::startServer()
+{
     resolveHost();
+    host = SDLNet_ResolveIP(&ip);
+    openServerSocket();
 }
 
 void NetworkServer::resolveHost()
@@ -36,6 +46,17 @@ void NetworkServer::resolveHost()
     {
         throw(NetworkException(std::string("SDLNet_ResolveHost: ") +
                                std::string(SDLNet_GetError())));
+    }
+}
+
+void NetworkServer::openServerSocket()
+{
+    server = SDLNet_TCP_Open(&ip);
+    if (!server)
+    {
+        throw(NetworkException(std::string("SDLNet_TCP_Open: ") +
+                               std::string(SDLNet_GetError())));
+        printf("SDLNet_TCP_Open: %s\n",SDLNet_GetError());
     }
 }
 
@@ -55,6 +76,7 @@ int main()
     WaitMenu waitMenu;
 
     NetworkServer netServer;
+    netServer.startServer();
 
     try
     {
