@@ -20,15 +20,13 @@ int main()
     ResultsMenu resultsMenu;
     GameUI game;
     SettingsMenu settingsMenu;
-    NetJoinMenu netJoinMenu;
+    NetworkClient netClient;
+    NetJoinMenu netJoinMenu(netClient);
     WaitMenu waitMenu;
 
     try
     {
         intializeSdlNetwork();
-        NetworkClient netClient;
-        netClient.connectToHost("127.0.0.1", "22222");
-        netClient.sendMessage("I am player one!");
     }
     catch(NetworkException e)
     {

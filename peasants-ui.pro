@@ -33,7 +33,8 @@ SOURCES += main.cpp \
     settings_menu.cpp \
     results_menu.cpp \
     net_join_menu.cpp \
-    wait_menu.cpp
+    wait_menu.cpp \
+    network_client.cpp
 
 HEADERS += \
     textures.hpp \

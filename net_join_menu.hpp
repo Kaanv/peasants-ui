@@ -5,17 +5,20 @@
 #include "polling_place.hpp"
 #include "polling_place_id.hpp"
 #include "sdl_gl_wrapper.hpp"
+#include "network_client.hpp"
 #include <vector>
 
 class NetJoinMenu : public PollingPlace
 {
 public:
-    NetJoinMenu();
+    NetJoinMenu(NetworkClient& netClient_);
 private:
     PollingPlaceId startEventPoll() override;
     void updateScreen() override;
     void drawBackground() override;
     void drawTitle();
+
+    NetworkClient& netClient;
 };
 
 #endif // NET_JOIN_MENU

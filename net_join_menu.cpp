@@ -3,7 +3,7 @@
 #include "constants.hpp"
 #include "text.hpp"
 
-NetJoinMenu::NetJoinMenu()
+NetJoinMenu::NetJoinMenu(NetworkClient& netClient_) : netClient(netClient_)
 {
     ownId = PollingPlaceId_NetworkGameJoining;
     Dimensions defaultButtonDimensions = {0.7, 0.125};
@@ -60,7 +60,17 @@ PollingPlaceId NetJoinMenu::startEventPoll()
                 {
                     switch (button.getButtonId())
                     {
-                        case ButtonId_JoinNetworkGame: return PollingPlaceId_WaitMenu;
+                        case ButtonId_JoinNetworkGame:
+                            try
+                            {
+                                netClient.connectToHost("127.0.0.1", "22222");
+                                netClient.sendMessage("I am player one!");
+                            }
+                            catch(NetworkException e)
+                            {
+                                std::cout << "Network error: " << e.what() << std::endl;
+                            }
+                            return PollingPlaceId_WaitMenu;
                         case ButtonId_MainMenu: return PollingPlaceId_MainMenu;
                     }
                 }
