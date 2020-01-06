@@ -11,6 +11,34 @@
 #include "net_create_menu.hpp"
 #include <ctime>
 
+class NetworkServer
+{
+public:
+    NetworkServer();
+
+private:
+    void resolveHost();
+
+    IPaddress ip;
+    Uint32 ipaddr;
+    Uint16 port;
+};
+
+NetworkServer::NetworkServer()
+{
+    port = static_cast<Uint16>(22222);
+    resolveHost();
+}
+
+void NetworkServer::resolveHost()
+{
+    if (SDLNet_ResolveHost(&ip, NULL, port) == -1)
+    {
+        throw(NetworkException(std::string("SDLNet_ResolveHost: ") +
+                               std::string(SDLNet_GetError())));
+    }
+}
+
 int main()
 {
     std::srand(std::time(0));
@@ -25,6 +53,8 @@ int main()
     NetJoinMenu netJoinMenu(netClient);
     NetCreateMenu netCreateMenu;
     WaitMenu waitMenu;
+
+    NetworkServer netServer;
 
     try
     {
