@@ -10,6 +10,7 @@
 #include "wait_menu.hpp"
 #include "net_create_menu.hpp"
 #include <ctime>
+#include "SDL/SDL_thread.h"
 
 class NetworkServer
 {
@@ -33,11 +34,26 @@ NetworkServer::NetworkServer()
     port = static_cast<Uint16>(22222);
 }
 
+int i = 0;
+int serverLoop(void*)
+{
+    while (true)
+    {
+        std::cout << i << std::endl;
+        i++;
+        SDL_Delay(1000);
+    }
+
+    return 0;
+}
+
 void NetworkServer::startServer()
 {
     resolveHost();
     host = SDLNet_ResolveIP(&ip);
     openServerSocket();
+
+    SDL_CreateThread(serverLoop, NULL);
 }
 
 void NetworkServer::resolveHost()
