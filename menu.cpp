@@ -51,7 +51,7 @@ PollingPlaceId MainMenu::startEventPoll()
                     switch (button.getButtonId())
                     {
                         case ButtonId_NewLocalGame: return PollingPlaceId_Settings;
-                        case ButtonId_NewNetworkGame: return PollingPlaceId_NetworkGameSettings;
+                        case ButtonId_NewNetworkGame: return PollingPlaceId_NetworkGameCreating;
                         case ButtonId_JoinNetworkGame: return PollingPlaceId_NetworkGameJoining;
                         case ButtonId_ExitGame: return PollingPlaceId_Exit;
                     }

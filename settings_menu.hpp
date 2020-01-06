@@ -8,8 +8,9 @@ class SettingsMenu : public PollingPlace
 public:
     SettingsMenu();
     Settings getSettings();
-private:
+protected:
     PollingPlaceId startEventPoll() override;
+private:
     void updateScreen() override;
     void drawBackground() override;
     std::string nextCaption(std::string caption);
