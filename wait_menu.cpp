@@ -60,12 +60,15 @@ void WaitMenu::updateScreen()
 {
     if(SDL_GetTicks() - lastTicks > 20)
     {
-        if (backgroundNeedsDrawing) drawBackground();
+        if (backgroundNeedsDrawing)
+        {
+            drawBackground();
+            drawTitle();
+        }
         for (auto& button : buttons)
         {
             button.draw();
         }
-        drawTitle();
         SDL_GL_SwapBuffers();
         lastTicks = SDL_GetTicks();
         backgroundNeedsDrawing = false;
