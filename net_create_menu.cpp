@@ -1,5 +1,10 @@
 #include "net_create_menu.hpp"
 
+NetCreateMenu::NetCreateMenu()
+{
+
+}
+
 PollingPlaceId NetCreateMenu::startEventPoll()
 {
     PollingPlaceId result = SettingsMenu::startEventPoll();

@@ -2,22 +2,8 @@
 #define NETWORKCLIENT_HPP
 
 #include "SDL/SDL_net.h"
+#include "network_common.hpp"
 #include <iostream>
-
-void intializeSdlNetwork();
-
-class NetworkException : public std::exception
-{
-public:
-    NetworkException(std::string e_) : e(e_) {}
-
-    const char* what() const throw()
-    {
-        return e.c_str();
-    }
-private:
-    std::string e;
-};
 
 class NetworkClient
 {

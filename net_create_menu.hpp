@@ -5,6 +5,9 @@
 
 class NetCreateMenu : public SettingsMenu
 {
+public:
+    NetCreateMenu();
+private:
     PollingPlaceId startEventPoll() override;
 };
 

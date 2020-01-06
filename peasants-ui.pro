@@ -35,7 +35,8 @@ SOURCES += main.cpp \
     net_join_menu.cpp \
     wait_menu.cpp \
     network_client.cpp \
-    net_create_menu.cpp
+    net_create_menu.cpp \
+    network_common.cpp
 
 HEADERS += \
     textures.hpp \
@@ -63,4 +64,5 @@ HEADERS += \
     net_join_menu.hpp \
     network_client.hpp \
     wait_menu.hpp \
-    net_create_menu.hpp
+    net_create_menu.hpp \
+    network_common.hpp
