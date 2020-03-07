@@ -39,6 +39,29 @@ SOURCES += main.cpp \
     network_common.cpp
 
 HEADERS += \
+    LuaBridge/List.h \
+    LuaBridge/LuaBridge.h \
+    LuaBridge/Map.h \
+    LuaBridge/RefCountedObject.h \
+    LuaBridge/RefCountedPtr.h \
+    LuaBridge/UnorderedMap.h \
+    LuaBridge/Vector.h \
+    LuaBridge/detail/CFunctions.h \
+    LuaBridge/detail/ClassInfo.h \
+    LuaBridge/detail/Config.h \
+    LuaBridge/detail/Constructor.h \
+    LuaBridge/detail/FuncTraits.h \
+    LuaBridge/detail/Iterator.h \
+    LuaBridge/detail/LuaException.h \
+    LuaBridge/detail/LuaHelpers.h \
+    LuaBridge/detail/LuaRef.h \
+    LuaBridge/detail/Namespace.h \
+    LuaBridge/detail/Security.h \
+    LuaBridge/detail/Stack.h \
+    LuaBridge/detail/TypeList.h \
+    LuaBridge/detail/TypeTraits.h \
+    LuaBridge/detail/Userdata.h \
+    LuaBridge/detail/dump.h \
     textures.hpp \
     text.hpp \
     dimensions.hpp \

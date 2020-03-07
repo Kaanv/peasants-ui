@@ -23,7 +23,6 @@ private:
     void openServerSocket();
 
     IPaddress ip;
-    Uint32 ipaddr;
     Uint16 port;
     std::string host;
     TCPsocket server;
@@ -34,9 +33,9 @@ NetworkServer::NetworkServer()
     port = static_cast<Uint16>(22222);
 }
 
-int i = 0;
 int serverLoop(void*)
 {
+    static int i = 0;
     while (true)
     {
         std::cout << i << std::endl;
@@ -53,12 +52,12 @@ void NetworkServer::startServer()
     host = SDLNet_ResolveIP(&ip);
     openServerSocket();
 
-    SDL_CreateThread(serverLoop, NULL);
+    SDL_CreateThread(serverLoop, nullptr);
 }
 
 void NetworkServer::resolveHost()
 {
-    if (SDLNet_ResolveHost(&ip, NULL, port) == -1)
+    if (SDLNet_ResolveHost(&ip, nullptr, port) == -1)
     {
         throw(NetworkException(std::string("SDLNet_ResolveHost: ") +
                                std::string(SDLNet_GetError())));
@@ -72,13 +71,12 @@ void NetworkServer::openServerSocket()
     {
         throw(NetworkException(std::string("SDLNet_TCP_Open: ") +
                                std::string(SDLNet_GetError())));
-        printf("SDLNet_TCP_Open: %s\n",SDLNet_GetError());
     }
 }
 
 int main()
 {
-    std::srand(std::time(0));
+    std::srand(static_cast<unsigned int>(std::time(nullptr)));
     Resolution resolution{800, 600};
     SDL_Surface *screen = init(resolution.x, resolution.y);
     PollingPlaceId currentPlace = PollingPlaceId_MainMenu;
@@ -98,7 +96,7 @@ int main()
     {
         intializeSdlNetwork();
     }
-    catch(NetworkException e)
+    catch(const NetworkException& e)
     {
         std::cout << "Network error: " << e.what() << std::endl;
     }

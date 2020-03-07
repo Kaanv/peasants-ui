@@ -46,7 +46,7 @@ void History::clear()
 
 void Game::registerCardClassInLua()
 {
-    for (int i = 0; i < numberOfPlayers; i++)
+    for (unsigned int i = 0; i < numberOfPlayers; i++)
     {
         if (aiStates[i])
         getGlobalNamespace(aiStates[i]).beginNamespace("Peasants")
@@ -65,7 +65,7 @@ void Game::registerCardsClassInLua()
         if (aiStates[i])
         getGlobalNamespace(aiStates[i]).beginNamespace("Peasants")
             .beginClass<std::vector<Card>>("Cards")
-            .addFunction<std::vector<Card>::const_reference(std::vector<Card>::*)(std::vector<Card >::size_type) const>("at", &std::vector< Card >::at)
+            .addFunction<std::vector<Card>::const_reference(std::vector<Card>::*)(std::vector<Card>::size_type) const>("at", &std::vector<Card>::at)
             .addFunction<long unsigned int (std::vector<Card>::*)() const>("numberOfCards", &std::vector<Card>::size)
             .endClass();
     }

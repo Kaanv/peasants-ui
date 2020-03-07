@@ -88,7 +88,7 @@ private:
     Table table;
     std::vector<int> playersThatEnded;
     std::vector<lua_State*> aiStates;
-    int numberOfPlayers;
+    unsigned int numberOfPlayers;
     unsigned int numberOfEndedRounds = 0;
     std::vector<LevelsHistory> levelsHistory;
     Settings settings;
