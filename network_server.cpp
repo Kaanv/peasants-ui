@@ -3,6 +3,7 @@
 namespace
 {
 bool serverStarted = false;
+TCPsocket server;
 }
 
 NetworkServer::NetworkServer()
@@ -10,14 +11,29 @@ NetworkServer::NetworkServer()
     port = static_cast<Uint16>(22222);
 }
 
+#define MAXLEN 1024
+
+TCPsocket client;
+
 int serverLoop(void*)
 {
-    static int i = 0;
+    int i = 0;
     while (true)
     {
         std::cout << i << std::endl;
         i++;
         SDL_Delay(1000);
+
+        if (!client) client = SDLNet_TCP_Accept(server);
+        if (!client)
+        {
+          SDL_Delay(100);
+          continue;
+        }
+
+        char msg[MAXLEN];
+        int len = SDLNet_TCP_Recv(client, msg, MAXLEN-1);
+        if (len > 0) std::cout << "RECEIVED " << msg << std::endl;
     }
 
     return 0;

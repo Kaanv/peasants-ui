@@ -27,7 +27,7 @@ int main()
     NetworkServer netServer;
     NetJoinMenu netJoinMenu(netClient);
     NetCreateMenu netCreateMenu(netServer);
-    WaitMenu waitMenu;
+    WaitMenu waitMenu(netClient);
 
     try
     {

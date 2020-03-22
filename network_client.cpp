@@ -22,23 +22,7 @@ void NetworkClient::connectToHost(std::string ip,
 void NetworkClient::sendMessage(std::string message) const
 {
     if (not message.size()) throw(NetworkException("Empty message"));
-
-    sendLengthOfTheString(message.size() + 1);
     sendString(message);
-}
-
-void NetworkClient::sendLengthOfTheString(Uint32 len) const
-{
-    len = SDL_SwapBE32(len);
-
-    Uint32 result = SDLNet_TCP_Send(socket,
-                                    &len,
-                                    sizeof(len));
-    if (result < sizeof(len))
-        throw(NetworkException(std::string("SDLNet_TCP_Send: ") +
-              std::string(SDLNet_GetError())));
-
-    len = SDL_SwapBE32(len);
 }
 
 void NetworkClient::sendString(std::string message) const

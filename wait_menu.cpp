@@ -3,7 +3,7 @@
 #include "constants.hpp"
 #include "text.hpp"
 
-WaitMenu::WaitMenu()
+WaitMenu::WaitMenu(NetworkClient& netClient_) : netClient(netClient_)
 {
     ownId = PollingPlaceId_WaitMenu;
     Dimensions defaultButtonDimensions = {0.7, 0.125};
@@ -17,6 +17,7 @@ PollingPlaceId WaitMenu::startEventPoll()
 {
     while (SDL_PollEvent(&event))
     {
+        netClient.sendMessage("WAITING");
         if (event.type == SDL_QUIT) return PollingPlaceId_Exit;
         else if (event.type == SDL_ACTIVEEVENT &&
                  event.active.state & SDL_APPACTIVE &&

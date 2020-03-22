@@ -21,7 +21,6 @@ public:
     void sendMessage(std::string message) const;
 
 private:
-    void sendLengthOfTheString(Uint32 len) const;
     void sendString(std::string message) const;
 
     IPaddress ipAddress;

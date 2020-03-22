@@ -16,5 +16,4 @@ private:
     IPaddress ip;
     Uint16 port;
     std::string host;
-    TCPsocket server;
 };
