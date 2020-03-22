@@ -22,8 +22,8 @@ void PollingPlace::updateButtonsOnMotion(int x, int y)
 {
     for (auto& button : buttons)
     {
-        button.updateMotion({static_cast<float>(x) * 2.0 / SCREEN_WIDTH - 1.0,
-                             static_cast<float>(-y) * 2.0 / SCREEN_HEIGHT + 1.0});
+        button.updateMotion({static_cast<double>(x) * 2.0 / SCREEN_WIDTH - 1.0,
+                             static_cast<double>(-y) * 2.0 / SCREEN_HEIGHT + 1.0});
     }
     updateScreen();
 }

@@ -1,5 +1,4 @@
-#ifndef POLLING_PLACE_HPP
-#define POLLING_PLACE_HPP
+#pragma once
 
 #include "button.hpp"
 #include "polling_place_id.hpp"
@@ -24,7 +23,5 @@ protected:
     SDL_Event event;
     PollingPlaceId ownId;
     bool backgroundNeedsDrawing;
-    int lastTicks;
+    unsigned int lastTicks;
 };
-
-#endif // POLLING_PLACE_HPP

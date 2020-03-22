@@ -65,12 +65,13 @@ PollingPlaceId NetJoinMenu::startEventPoll()
                             {
                                 netClient.connectToHost("127.0.0.1", "22222");
                                 netClient.sendMessage("I am player one!");
+                                return PollingPlaceId_WaitMenu;
                             }
-                            catch(NetworkException e)
+                            catch(const NetworkException& e)
                             {
                                 std::cout << "Network error: " << e.what() << std::endl;
+                                return PollingPlaceId_NetworkGameJoining;
                             }
-                            return PollingPlaceId_WaitMenu;
                         case ButtonId_MainMenu: return PollingPlaceId_MainMenu;
                     }
                 }
@@ -104,7 +105,7 @@ void NetJoinMenu::drawBackground()
     Dimensions fullScreen{2.0, 2.0};
     Position rightLeftCorner{-1.0, 1.0};
 
-    glColor3f(0.1, 0.1, 0.5);
+    glColor3d(0.1, 0.1, 0.5);
     drawRectangle(fullScreen,
                   rightLeftCorner);
 }
@@ -118,7 +119,7 @@ void NetJoinMenu::drawTitle()
                       font,
                       textColor,
                       0.0,
-                      0.9,
-                      0.13);
+                      static_cast<float>(0.9),
+                      static_cast<float>(0.13));
 }
 
