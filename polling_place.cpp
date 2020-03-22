@@ -1,7 +1,8 @@
 #include "polling_place.hpp"
 #include "constants.hpp"
 
-PollingPlace::PollingPlace() : lastTicks(0)
+PollingPlace::PollingPlace() : backgroundNeedsDrawing(true),
+                               lastTicks(0)
 {}
 
 PollingPlaceId PollingPlace::enter()

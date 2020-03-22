@@ -35,8 +35,6 @@ std::map<Value, std::string> valueMap
 }
 
 GameUI::GameUI() : numberOfPlayers(4),
-                   lastTicks(0),
-                   backgroundNeedsDrawing(true),
                    isPopupActive(false)
 {
     bool notVisible = false;

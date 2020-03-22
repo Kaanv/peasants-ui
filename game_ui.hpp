@@ -66,8 +66,6 @@ private:
     std::unique_ptr<Game> game;
     std::map<std::pair<Color, Value>, GLuint> textureMap;
     GLuint cardTopTexture;
-    int lastTicks;
-    bool backgroundNeedsDrawing;
     bool isPopupActive;
     bool isGameAIOnly;
     bool isGameOneHumanOnly;

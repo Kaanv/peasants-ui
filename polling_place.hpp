@@ -9,6 +9,7 @@ class PollingPlace
 {
 public:
     PollingPlace();
+    virtual ~PollingPlace() = default;
     PollingPlaceId enter();
 protected:
     virtual PollingPlaceId startEventPoll() = 0;
