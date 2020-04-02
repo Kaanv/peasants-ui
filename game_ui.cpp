@@ -76,7 +76,7 @@ GameUI::GameUI() : numberOfPlayers(4),
 void GameUI::calculateIsAIOnlyGame()
 {
     isGameAIOnly = true;
-    for (int i = 0; i < numberOfPlayers; i++)
+    for (unsigned int i = 0; i < numberOfPlayers; i++)
     {
         if (settings.playerTypes[i] == PlayerType_Human)
         {
@@ -89,7 +89,7 @@ void GameUI::calculateIsAIOnlyGame()
 void GameUI::calculateIsGameOneHumanOnly()
 {
     int numberOfHumanFound = 0;
-    for (int i = 0; i < numberOfPlayers; i++)
+    for (unsigned int i = 0; i < numberOfPlayers; i++)
     {
         if (settings.playerTypes[i] == PlayerType_Human)
         {
@@ -309,12 +309,12 @@ void GameUI::drawBackground()
 
 void GameUI::drawButtonPanel()
 {
-    float width = 0.5;
+    double width = 0.5;
 
     Dimensions fullVertical{width, 2.0};
     Position position{1.0 - width, 1.0};
 
-    glColor3f(0.1, 0.1, 0.5);
+    glColor3d(0.1, 0.1, 0.5);
     drawRectangle(fullVertical,
                   position);
 }
@@ -364,7 +364,7 @@ void GameUI::drawCards()
 
 void GameUI::drawCurrentPlayerCards()
 {
-    int playerId = game->getCurrentPlayer().getId();
+    unsigned int playerId = game->getCurrentPlayer().getId();
     if (isGameOneHumanOnly) playerId = humanPlayer;
     if (cardsExchangeActive)
     {

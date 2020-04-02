@@ -1,7 +1,7 @@
 #include "Player.hpp"
 #include <iostream>
 
-Player::Player(int _playerId) : playerId(_playerId)
+Player::Player(unsigned int _playerId) : playerId(_playerId)
 {
     peasantLevel = 0;
 }
@@ -16,17 +16,17 @@ void Player::insertCard(Card card)
     cards.push_back(card);
 }
 
-void Player::selectCard(int cardId)
+void Player::selectCard(unsigned int cardId)
 {
     cards[cardId].select();
 }
 
-void Player::unselectCard(int cardId)
+void Player::unselectCard(unsigned int cardId)
 {
     cards[cardId].selected = false;
 }
 
-void Player::unselectCards(std::vector<int> cardIds)
+void Player::unselectCards(std::vector<unsigned int> cardIds)
 {
     for (unsigned int i = 0; i < cardIds.size(); i++)
     {
@@ -59,9 +59,9 @@ Cards Player::getSelectedCards() const
 
 void Player::removeSelectedCards()
 {
-    for (int i = cards.size() - 1; i >= 0; i--)
+    for (int i = static_cast<int>(cards.size()) - 1; i >= 0; i--)
     {
-        if (cards[i].selected)
+        if (cards[static_cast<unsigned int>(i)].selected)
         {
             cards.erase(cards.begin() + i);
         }
@@ -106,7 +106,7 @@ Card Player::takeCard(unsigned int cardId)
 {
     if (cardId >= cards.size())
     {
-        cardId = cards.size() -1;
+        cardId = static_cast<unsigned int>(cards.size()) -1;
     }
 
     Card card = cards[cardId];
@@ -116,7 +116,7 @@ Card Player::takeCard(unsigned int cardId)
     return card;
 }
 
-int Player::getId() const
+unsigned int Player::getId() const
 {
     return playerId;
 }

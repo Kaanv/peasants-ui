@@ -7,15 +7,15 @@
 class Player
 {
 public:
-    Player(int _playerId);
+    Player(unsigned int _playerId);
     Cards getCards() const;
     void insertCard(Card card);
-    void selectCard(int cardId);
-    void unselectCard(int cardId);
-    void unselectCards(std::vector<int> cardIds);
+    void selectCard(unsigned int cardId);
+    void unselectCard(unsigned int cardId);
+    void unselectCards(std::vector<unsigned int> cardIds);
     void unselectAllCards();
     Cards getSelectedCards() const;
-    int getId() const;
+    unsigned int getId() const;
     void removeSelectedCards();
     bool hasEnded() const;
     void setPeasantLevel(int peasantLevel);
@@ -26,7 +26,7 @@ public:
 
 private:
     int peasantLevel;
-    const int playerId;
+    const unsigned int playerId;
     Cards cards;
 };
 

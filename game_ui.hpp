@@ -62,16 +62,16 @@ private:
     void handleUIPartOfCardsExchange();
 
     Settings settings;
-    int numberOfPlayers;
+    unsigned int numberOfPlayers;
     std::unique_ptr<Game> game;
     std::map<std::pair<Color, Value>, GLuint> textureMap;
     GLuint cardTopTexture;
     bool isPopupActive;
     bool isGameAIOnly;
     bool isGameOneHumanOnly;
-    int humanPlayer;
+    unsigned int humanPlayer;
     bool cardsExchangeActive = false;
     bool drawExchangePopup = true;
-    std::vector<int> exchangePlayersIds;
+    std::vector<unsigned int> exchangePlayersIds;
     Scores scores;
 };
