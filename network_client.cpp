@@ -1,5 +1,32 @@
 #include "network_client.hpp"
 
+#define MAXLEN 1024
+
+static TCPsocket socket;
+
+int clientLoop(void*)
+{
+    int i = 0;
+    while (true)
+    {
+        std::cout << "Client " << i << std::endl;
+        i++;
+        SDL_Delay(1000);
+
+        if (!socket)
+        {
+          SDL_Delay(100);
+          continue;
+        }
+
+        char msg[MAXLEN];
+        int len = SDLNet_TCP_Recv(socket, msg, MAXLEN-1);
+        if (len > 0) std::cout << "RECEIVED " << msg << std::endl;
+    }
+
+    return 0;
+}
+
 void NetworkClient::connectToHost(std::string ip,
                                   std::string port)
 {
@@ -17,6 +44,8 @@ void NetworkClient::connectToHost(std::string ip,
     if (SDLNet_TCP_AddSocket(socketSet, socket)==-1)
         throw(NetworkException(std::string("SDLNet_TCP_AddSocket: ") +
                                std::string(SDLNet_GetError())));
+
+    SDL_CreateThread(clientLoop, nullptr);
 }
 
 void NetworkClient::sendMessage(std::string message) const
@@ -27,10 +56,10 @@ void NetworkClient::sendMessage(std::string message) const
 
 void NetworkClient::sendString(std::string message) const
 {
-    Uint32 result = SDLNet_TCP_Send(socket,
-                                    message.c_str(),
-                                    message.size() + 1);
-    if (result < message.size() + 1)
+    int result = SDLNet_TCP_Send(socket,
+                                 message.c_str(),
+                                 static_cast<int>(message.size()) + 1);
+    if (result < static_cast<int>(message.size()) + 1)
         throw(NetworkException(std::string("SDLNet_TCP_Send: ") +
               std::string(SDLNet_GetError())));
 }

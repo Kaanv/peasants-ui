@@ -13,14 +13,14 @@ NetworkServer::NetworkServer()
 
 #define MAXLEN 1024
 
-TCPsocket client;
+static TCPsocket client;
 
 int serverLoop(void*)
 {
     int i = 0;
     while (true)
     {
-        std::cout << i << std::endl;
+        std::cout << "Server " << i << std::endl;
         i++;
         SDL_Delay(1000);
 
@@ -68,3 +68,21 @@ void NetworkServer::openServerSocket()
                                std::string(SDLNet_GetError())));
     }
 }
+
+void NetworkServer::sendStringToClient(std::string message) const
+{
+    if (client)
+    {
+        int result = SDLNet_TCP_Send(client,
+                                     message.c_str(),
+                                     static_cast<int>(message.size()) + 1);
+        if (result < static_cast<int>(message.size()) + 1)
+            throw(NetworkException(std::string("SDLNet_TCP_Send: ") +
+                  std::string(SDLNet_GetError())));
+    }
+    else
+    {
+        std::cout << "NO CLIENTS" << std::endl;
+    }
+}
+

@@ -8,6 +8,7 @@ class NetworkServer
 public:
     NetworkServer();
     void startServer();
+    void sendStringToClient(std::string message) const;
 
 private:
     void resolveHost();

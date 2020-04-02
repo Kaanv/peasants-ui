@@ -24,7 +24,6 @@ private:
     void sendString(std::string message) const;
 
     IPaddress ipAddress;
-    TCPsocket socket;
     SDLNet_SocketSet socketSet;
 };
 
