@@ -6,7 +6,8 @@ enum PlayerType
 {
     PlayerType_None,
     PlayerType_Human,
-    PlayerType_AI
+    PlayerType_AI,
+    PlayerType_Network
 };
 
 struct Settings
