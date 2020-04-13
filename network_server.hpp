@@ -17,4 +17,5 @@ private:
     IPaddress ip;
     Uint16 port;
     std::string host;
+    bool serverStarted = false;
 };

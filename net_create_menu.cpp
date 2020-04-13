@@ -1,7 +1,8 @@
 #include "net_create_menu.hpp"
 #include <iostream>
 
-NetCreateMenu::NetCreateMenu(NetworkServer& _netServer) : netServer(_netServer)
+NetCreateMenu::NetCreateMenu(Settings& _settings,
+                             NetworkServer& _netServer) : SettingsMenu(_settings), netServer(_netServer)
 {
 
 }

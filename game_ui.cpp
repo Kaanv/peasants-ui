@@ -34,8 +34,9 @@ std::map<Value, std::string> valueMap
 
 }
 
-GameUI::GameUI() : numberOfPlayers(4),
-                   isPopupActive(false)
+GameUI::GameUI(NetworkServer& _netServer) : numberOfPlayers(4),
+                                            isPopupActive(false),
+                                            netServer(_netServer)
 {
     bool notVisible = false;
     ownId = PollingPlaceId_Game;

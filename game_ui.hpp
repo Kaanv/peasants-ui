@@ -7,6 +7,7 @@
 #include "settings.hpp"
 #include "Game.hpp"
 #include "score.hpp"
+#include "network_server.hpp"
 #include <vector>
 #include <map>
 #include <memory>
@@ -19,7 +20,7 @@ const double CARD_SELECT_HEIGHT = 0.05;
 class GameUI : public PollingPlace
 {
 public:
-    GameUI();
+    GameUI(NetworkServer&);
     void setSettings(Settings settings);
     Scores getGameResults();
 private:
@@ -74,4 +75,5 @@ private:
     bool drawExchangePopup = true;
     std::vector<unsigned int> exchangePlayersIds;
     Scores scores;
+    NetworkServer& netServer;
 };

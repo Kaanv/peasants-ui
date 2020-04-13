@@ -18,15 +18,16 @@ int main()
     std::srand(static_cast<unsigned int>(std::time(nullptr)));
     Resolution resolution{800, 600};
     SDL_Surface *screen = init(resolution.x, resolution.y);
+    NetworkClient netClient;
+    NetworkServer netServer;
     PollingPlaceId currentPlace = PollingPlaceId_MainMenu;
     MainMenu mainMenu;
     ResultsMenu resultsMenu;
-    GameUI game;
-    SettingsMenu settingsMenu;
-    NetworkClient netClient;
-    NetworkServer netServer;
+    GameUI game(netServer);
+    Settings settings;
+    SettingsMenu settingsMenu(settings);
     NetJoinMenu netJoinMenu(netClient);
-    NetCreateMenu netCreateMenu(netServer);
+    NetCreateMenu netCreateMenu(settings, netServer);
     WaitMenu waitMenu(netClient);
 
     try
@@ -43,7 +44,7 @@ int main()
         switch (currentPlace)
         {
         case PollingPlaceId_Game:
-            game.setSettings(settingsMenu.getSettings());
+            game.setSettings(settings);
             currentPlace = game.enter();
             break;
         case PollingPlaceId_Settings:

@@ -53,7 +53,7 @@ public:
     void performAITurnLua();
     unsigned int getNumberOfEndedRounds() const;
     const std::vector<LevelsHistory>& getLevelsHistory() const;
-    void giveCardsToPeasantAsHuman(int playerId);
+    void giveCardsToPeasantAsHuman(unsigned int playerId);
     const History& getHistory() const;
     void handleIllegalAITurn();
 
@@ -75,7 +75,7 @@ private:
     void saveThrowCardsInHistory(const Cards& cards);
     void savePassedTurnInHistory();
     void giveCardsToPeasantAsAI(int playerId);
-    void validateNumberOfCardsToGiveAway(int playerId) const;
+    void validateNumberOfCardsToGiveAway(unsigned int playerId) const;
     void indicatePeasantLevel(int playerIndex);
     void throwStartingCards();
 
@@ -83,7 +83,7 @@ private:
     Deck deck;
     const CardsValidator cardsValidator;
     History history;
-    int currentPlayerId;
+    unsigned int currentPlayerId;
     unsigned int passedTurns;
     Table table;
     std::vector<int> playersThatEnded;

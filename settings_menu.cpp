@@ -3,7 +3,7 @@
 #include <regex>
 #include "text.hpp"
 
-SettingsMenu::SettingsMenu()
+SettingsMenu::SettingsMenu(Settings& _settings) : settings(_settings)
 {
     ownId = PollingPlaceId_Settings;
     Dimensions defaultButtonDimensions = {0.7, 0.125};
@@ -42,11 +42,6 @@ SettingsMenu::SettingsMenu()
                              "Player 5", ButtonId_PlayerName5));
     buttons.push_back(Button(playerNameButtonDimensions, {0.35, 0.05},
                              "Player 6", ButtonId_PlayerName6));
-}
-
-Settings SettingsMenu::getSettings()
-{
-    return settings;
 }
 
 PollingPlaceId SettingsMenu::startEventPoll()
@@ -164,7 +159,7 @@ void SettingsMenu::drawBackground()
     Dimensions fullScreen{2.0, 2.0};
     Position rightLeftCorner{-1.0, 1.0};
 
-    glColor3f(0.1, 0.1, 0.5);
+    glColor3d(0.1, 0.1, 0.5);
     drawRectangle(fullScreen,
                   rightLeftCorner);
 }

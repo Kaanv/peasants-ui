@@ -6,8 +6,7 @@
 class SettingsMenu : public PollingPlace
 {
 public:
-    SettingsMenu();
-    Settings getSettings();
+    SettingsMenu(Settings&);
 protected:
     PollingPlaceId startEventPoll() override;
 private:
@@ -17,5 +16,5 @@ private:
     std::string nextRoundsCaption(std::string caption);
     void setSettingsAccordingToButtons();
     PlayerType convertCaptionToPlayerType(std::string caption);
-    Settings settings;
+    Settings& settings;
 };

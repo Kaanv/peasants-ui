@@ -2,7 +2,6 @@
 
 namespace
 {
-bool serverStarted = false;
 TCPsocket server;
 }
 

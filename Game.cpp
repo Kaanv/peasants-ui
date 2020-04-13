@@ -414,7 +414,7 @@ void Game::giveCardsToPeasantAsAI(int playerId)
     }
 }
 
-void Game::giveCardsToPeasantAsHuman(int playerId)
+void Game::giveCardsToPeasantAsHuman(unsigned int playerId)
 {
     validateNumberOfCardsToGiveAway(playerId);
     Cards cardsToGiveAway = players[playerId].getSelectedCards();
@@ -426,7 +426,7 @@ void Game::giveCardsToPeasantAsHuman(int playerId)
     players[playerId].removeSelectedCards();
 }
 
-void Game::validateNumberOfCardsToGiveAway(int playerId) const
+void Game::validateNumberOfCardsToGiveAway(unsigned int playerId) const
 {
     if (players[playerId].getSelectedCards().size() !=
             static_cast<unsigned int>(players[playerId].getPeasantLevel()))
@@ -443,7 +443,7 @@ unsigned int Game::getNumberOfEndedRounds() const
 
 void Game::addPeasantsLevelsToLevelsHistory()
 {
-    for (int i = 0; i < numberOfPlayers; i++)
+    for (unsigned int i = 0; i < numberOfPlayers; i++)
     {
         levelsHistory[i].push_back(players[i].getPeasantLevel());
     }
@@ -475,7 +475,7 @@ void Game::indicatePeasantLevel(int playerIndex)
 
 namespace
 {
-int getStartingCardValue(int numberOfPlayers)
+int getStartingCardValue(unsigned int numberOfPlayers)
 {
     if (numberOfPlayers == 4) return seven;
     else if (numberOfPlayers == 5) return five;

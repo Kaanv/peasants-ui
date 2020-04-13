@@ -1,5 +1,4 @@
-#ifndef NET_CREATE_MENU
-#define NET_CREATE_MENU
+#pragma once
 
 #include "settings_menu.hpp"
 #include "network_server.hpp"
@@ -7,10 +6,8 @@
 class NetCreateMenu : public SettingsMenu
 {
 public:
-    NetCreateMenu(NetworkServer&);
+    NetCreateMenu(Settings&, NetworkServer&);
 private:
     PollingPlaceId startEventPoll() override;
     NetworkServer& netServer;
 };
-
-#endif // NET_CREATE_MENU
