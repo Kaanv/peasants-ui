@@ -9,6 +9,8 @@ public:
     NetworkServer();
     void startServer();
     void sendStringToClient(std::string message) const;
+    std::string getLastMessageFromClient(unsigned int clientIndex);
+    void removeLastMessageFromClient(unsigned int clientIndex);
 
 private:
     void resolveHost();

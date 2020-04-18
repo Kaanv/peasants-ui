@@ -1,5 +1,7 @@
 #include "network_server.hpp"
 #include <vector>
+#include <array>
+#include <string>
 
 namespace
 {
@@ -14,6 +16,7 @@ NetworkServer::NetworkServer()
 #define MAXLEN 1024
 
 static std::vector<TCPsocket> clients;
+static std::array<std::vector<std::string>, 5> messages;
 
 int serverLoop(void*)
 {
@@ -41,6 +44,7 @@ int serverLoop(void*)
             char msg[MAXLEN];
             int len = SDLNet_TCP_Recv(clients[i], msg, MAXLEN-1);
             if (len > 0) std::cout << "RECEIVED FROM CLIENT " << i << ": " << msg << std::endl;
+            messages[i].push_back(msg);
         }
     }
 
@@ -94,3 +98,20 @@ void NetworkServer::sendStringToClient(std::string message) const
     }
 }
 
+std::string NetworkServer::getLastMessageFromClient(unsigned int clientIndex)
+{
+    if (clientIndex < clients.size() and messages[clientIndex].size() > 0)
+    {
+        std::string result = messages[clientIndex][messages[clientIndex].size() - 1];
+        messages[clientIndex].pop_back();
+        return result;
+    }
+    return "";
+}
+void NetworkServer::removeLastMessageFromClient(unsigned int clientIndex)
+{
+    if (clientIndex < clients.size() and messages[clientIndex].size() > 0)
+    {
+        messages[clientIndex].pop_back();
+    }
+}

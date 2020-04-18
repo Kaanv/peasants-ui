@@ -27,9 +27,31 @@ NetCreateMenu::NetCreateMenu(Settings& _settings,
 PollingPlaceId NetCreateMenu::startEventPoll()
 {
     netServer.startServer();
-    netServer.sendStringToClient("HI, IM SERVER");
-    std::cout << "SENT HI MESSAGE!" << std::endl;
-    SDL_Delay(100);
+
+    for (unsigned int clientIndex = 0; clientIndex < 5; clientIndex++)
+    {
+        std::string lastMessage = netServer.getLastMessageFromClient(clientIndex);
+        if (lastMessage == "New Player Joining")
+        {
+            for (auto& button : buttons)
+            {
+                if (button.getButtonId() == ButtonId_PlayerType1 or
+                    button.getButtonId() == ButtonId_PlayerType2 or
+                    button.getButtonId() == ButtonId_PlayerType3 or
+                    button.getButtonId() == ButtonId_PlayerType4 or
+                    button.getButtonId() == ButtonId_PlayerType5 or
+                    button.getButtonId() == ButtonId_PlayerType6)
+                {
+                    if (button.getCaption() == "Open")
+                    {
+                        button.setCaption("Network Player");
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
     PollingPlaceId result = SettingsMenu::startEventPoll();
 
     if (result != PollingPlaceId_Settings) return result;

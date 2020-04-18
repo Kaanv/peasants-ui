@@ -64,7 +64,7 @@ PollingPlaceId NetJoinMenu::startEventPoll()
                             try
                             {
                                 netClient.connectToHost("127.0.0.1", "22222");
-                                netClient.sendMessage("I am player one!");
+                                netClient.sendMessage("New Player Joining");
                                 return PollingPlaceId_WaitMenu;
                             }
                             catch(const NetworkException& e)
