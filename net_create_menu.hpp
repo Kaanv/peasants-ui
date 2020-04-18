@@ -9,5 +9,6 @@ public:
     NetCreateMenu(Settings&, NetworkServer&);
 private:
     PollingPlaceId startEventPoll() override;
+    void addMenuSpecificCaptions(std::vector<std::string>& captions) override;
     NetworkServer& netServer;
 };

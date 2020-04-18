@@ -182,10 +182,15 @@ std::vector<std::string> getCurDirFileNames()
     return names;
 }
 
-std::vector<std::string> createCaptions()
+void SettingsMenu::addMenuSpecificCaptions(std::vector<std::string>& captions)
+{
+    captions.push_back("Human");
+}
+
+std::vector<std::string> SettingsMenu::createCaptions()
 {
     std::vector<std::string> captions;
-    captions.push_back("Human");
+    addMenuSpecificCaptions(captions);
 
     std::vector<std::string> fileNames = getCurDirFileNames();
 
@@ -278,6 +283,9 @@ void SettingsMenu::setSettingsAccordingToButtons()
 PlayerType SettingsMenu::convertCaptionToPlayerType(std::string caption)
 {
     if (caption == "Human") return PlayerType_Human;
+    else if (caption == "Local Human") return PlayerType_Human;
+    else if (caption == "Open") return PlayerType_Open;
+    else if (caption == "Network Player") return PlayerType_Network;
     else if (caption == "None") return PlayerType_None;
     return PlayerType_AI;
 }
