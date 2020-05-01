@@ -170,7 +170,7 @@ bool Game::hasRoundEnded() const
     return playersThatEnded.size() >= players.size() - 1;
 }
 
-const Player &Game::getCurrentPlayer() const
+const Player& Game::getCurrentPlayer() const
 {
     return players[currentPlayerId];
 }
@@ -485,7 +485,7 @@ int getStartingCardValue(unsigned int numberOfPlayers)
 
 void Game::throwStartingCards()
 {
-    Cards cards= getCurrentPlayer().getCards();
+    const Cards& cards = getCurrentPlayer().getCards();
     players[currentPlayerId].unselectAllCards();
     for (unsigned int i = 0; i < cards.size(); i++)
     {

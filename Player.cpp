@@ -6,7 +6,12 @@ Player::Player(unsigned int _playerId) : playerId(_playerId)
     peasantLevel = 0;
 }
 
-Cards Player::getCards() const
+Cards& Player::getCards()
+{
+    return cards;
+}
+
+const Cards& Player::getCards() const
 {
     return cards;
 }

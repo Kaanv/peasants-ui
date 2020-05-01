@@ -30,6 +30,12 @@ protected:
     void drawCardTop(Position position);
     void drawCardTopHorizontal(Position position);
     void drawButtonPanel();
+    void updateSelectedCardSelection(Position glPosition,
+                                     Cards& cards,
+                                     unsigned int cardIndex);
+    void updateNotSelectedCardSelection(Position glPosition,
+                                        Cards& cards,
+                                        unsigned int cardIndex);
 
 private:
     std::map<std::pair<Color, Value>, GLuint> textureMap;
@@ -43,6 +49,11 @@ private:
     void updateScreen() override;
     void forceDrawingEverything() override;
     void enteringAction() override;
+
+    Cards lastMove;
+    unsigned int numberOfPlayers;
+    Scores scores;
+    Cards clientCards;
 };
 
 class GameUI : public BaseUI
@@ -63,12 +74,6 @@ private:
     void drawPastTurnsInfo();
     void updateCardsSelection(int x, int y);
     void forceDrawingEverything() override;
-    void updateSelectedCardSelection(Position glPosition,
-                                     const Cards& cards,
-                                     unsigned int cardIndex);
-    void updateNotSelectedCardSelection(Position glPosition,
-                                        const Cards& cards,
-                                        unsigned int cardIndex);
     void drawPopup(std::string text);
     void forceDrawButtons();
     void drawCurrentPlayerPopup();

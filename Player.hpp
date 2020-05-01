@@ -8,7 +8,8 @@ class Player
 {
 public:
     Player(unsigned int _playerId);
-    Cards getCards() const;
+    Cards& getCards();
+    const Cards& getCards() const;
     void insertCard(Card card);
     void selectCard(unsigned int cardId);
     void unselectCard(unsigned int cardId);

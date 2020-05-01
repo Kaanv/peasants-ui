@@ -374,7 +374,7 @@ void GameUI::drawCurrentPlayerCards()
     {
         playerId = exchangePlayersIds[0];
     }
-    Cards cards = game->getPlayer(playerId).getCards();
+    Cards& cards = game->getPlayer(playerId).getCards();
     for (unsigned int i = 0; i < cards.size(); i++)
     {
         drawCard(cards[i], Position{-0.5 + static_cast<double>(i) * CARD_SPACE, -0.6});
@@ -500,7 +500,7 @@ void GameUI::updateCardsSelection(int x, int y)
     Position glPosition = {static_cast<double>(x) * 2.0 / SCREEN_WIDTH - 1.0,
                            static_cast<double>(-y) * 2.0 / SCREEN_HEIGHT + 1.0};
 
-    Cards cards = getCurrentPlayer().getCards();
+    Cards& cards = getCurrentPlayer().getCards();
     for (unsigned int i = 0; i < cards.size(); i++)
     {
         if (cards[i].selected) updateSelectedCardSelection(glPosition,
@@ -512,38 +512,38 @@ void GameUI::updateCardsSelection(int x, int y)
     }
 }
 
-void GameUI::updateSelectedCardSelection(Position glPosition,
-                                         const Cards& cards,
+void BaseUI::updateSelectedCardSelection(Position glPosition,
+                                         Cards& cards,
                                          unsigned int cardIndex)
 {
-    float width = cardIndex == cards.size() - 1 ? CARD_WIDTH : CARD_SPACE;
-    float cardX = -0.5 + static_cast<float>(cardIndex) * CARD_SPACE;
-    float cardY = -0.6;
+    double width = cardIndex == cards.size() - 1 ? CARD_WIDTH : CARD_SPACE;
+    double cardX = -0.5 + static_cast<double>(cardIndex) * CARD_SPACE;
+    double cardY = -0.6;
 
     if (glPosition.x >= cardX and
         glPosition.x <= cardX + width and
         glPosition.y <= cardY and
         glPosition.y >= cardY - CARD_HEIGHT)
     {
-        getCurrentPlayer().unselectCard(cardIndex);
+        cards[cardIndex].selected = false;
         forceDrawingEverything();
     }
 }
 
-void GameUI::updateNotSelectedCardSelection(Position glPosition,
-                                            const Cards& cards,
+void BaseUI::updateNotSelectedCardSelection(Position glPosition,
+                                            Cards& cards,
                                             unsigned int cardIndex)
 {
-    float width = cardIndex == cards.size() - 1 ? CARD_WIDTH : CARD_SPACE;
-    float cardX = -0.5 + static_cast<float>(cardIndex) * CARD_SPACE;
-    float cardY = -0.6;
+    double width = cardIndex == cards.size() - 1 ? CARD_WIDTH : CARD_SPACE;
+    double cardX = -0.5 + static_cast<double>(cardIndex) * CARD_SPACE;
+    double cardY = -0.6;
 
     if (glPosition.x >= cardX and
         glPosition.x <= cardX + width and
         glPosition.y <= cardY and
         glPosition.y >= cardY - CARD_HEIGHT)
     {
-        getCurrentPlayer().selectCard(cardIndex);
+        cards[cardIndex].selected = true;
         forceDrawingEverything();
     }
 }
