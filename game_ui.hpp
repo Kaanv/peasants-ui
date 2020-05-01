@@ -17,7 +17,35 @@ const double CARD_HEIGHT = 0.3;
 const double CARD_SPACE = 0.06;
 const double CARD_SELECT_HEIGHT = 0.05;
 
-class GameUI : public PollingPlace
+class BaseUI : public PollingPlace
+{
+public:
+    BaseUI();
+protected:
+    void drawBackground() override;
+    void drawCard(Card card,
+                  Position position,
+                  double width=CARD_WIDTH,
+                  double height=CARD_HEIGHT);
+    void drawCardTop(Position position);
+    void drawCardTopHorizontal(Position position);
+    void drawButtonPanel();
+
+private:
+    std::map<std::pair<Color, Value>, GLuint> textureMap;
+    GLuint cardTopTexture;
+};
+
+class ClientUI : public BaseUI
+{
+private:
+    PollingPlaceId startEventPoll() override;
+    void updateScreen() override;
+    void forceDrawingEverything() override;
+    void enteringAction() override;
+};
+
+class GameUI : public BaseUI
 {
 public:
     GameUI(NetworkServer&);
@@ -26,12 +54,7 @@ public:
 private:
     PollingPlaceId startEventPoll() override;
     void updateScreen() override;
-    void drawBackground() override;
-    void drawButtonPanel();
-    void drawCard(Card card, Position position,
-                  double width=CARD_WIDTH, double height=CARD_HEIGHT);
-    void drawCardTop(Position position);
-    void drawCardTopHorizontal(Position position);
+    void enteringAction() override;
     void drawCards();
     void drawCurrentPlayerCards();
     void drawAnotherPlayerCards();
@@ -51,7 +74,6 @@ private:
     void drawCurrentPlayerPopup();
     void turnOnCardsExchange();
     void turnOffCardsExchange();
-    void enteringAction() override;
     bool isCurrentPlayerAI();
     void calculateIsAIOnlyGame();
     void calculateIsGameOneHumanOnly();
@@ -66,8 +88,6 @@ private:
     Settings settings;
     unsigned int numberOfPlayers;
     std::unique_ptr<Game> game;
-    std::map<std::pair<Color, Value>, GLuint> textureMap;
-    GLuint cardTopTexture;
     bool isPopupActive;
     bool isGameAIOnly;
     bool isGameOneHumanOnly;

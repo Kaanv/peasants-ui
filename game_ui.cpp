@@ -34,6 +34,26 @@ std::map<Value, std::string> valueMap
 
 }
 
+BaseUI::BaseUI()
+{
+    std::string filePath;
+    for (int color = hearts; color <= spades; color++)
+    {
+        for (int value = three; value <= ace; value++)
+        {
+            filePath = "Images//cards//"
+                     + valueMap[static_cast<Value>(value)]
+                     + colorMap[static_cast<Color>(color)]
+                     + ".png";
+            textureMap[std::make_pair<Color, Value>(
+                           static_cast<Color>(color),
+                           static_cast<Value>(value))] =
+                getTexture(filePath);
+        }
+    }
+    cardTopTexture = getTexture("Images//cards//cardtop.png");
+}
+
 GameUI::GameUI(NetworkServer& _netServer) : numberOfPlayers(4),
                                             isPopupActive(false),
                                             netServer(_netServer)
@@ -55,23 +75,6 @@ GameUI::GameUI(NetworkServer& _netServer) : numberOfPlayers(4),
                              "Exit game", ButtonId_ExitGame));
     buttons.push_back(Button(defaultButtonDimensions, {-0.4875, 0.1},
                              "OK", ButtonId_PopupOk));
-
-    std::string filePath;
-    for (int color = hearts; color <= spades; color++)
-    {
-        for (int value = three; value <= ace; value++)
-        {
-            filePath = "Images//cards//"
-                     + valueMap[static_cast<Value>(value)]
-                     + colorMap[static_cast<Color>(color)]
-                     + ".png";
-            textureMap[std::make_pair<Color, Value>(
-                           static_cast<Color>(color),
-                           static_cast<Value>(value))] =
-                getTexture(filePath);
-        }
-    }
-    cardTopTexture = getTexture("Images//cards//cardtop.png");
 }
 
 void GameUI::calculateIsAIOnlyGame()
@@ -298,7 +301,7 @@ void GameUI::updateScreen()
     backgroundNeedsDrawing = false;
 }
 
-void GameUI::drawBackground()
+void BaseUI::drawBackground()
 {
     Dimensions fullScreen{2.0, 2.0};
     Position rightLeftCorner{-1.0, 1.0};
@@ -308,7 +311,7 @@ void GameUI::drawBackground()
                   rightLeftCorner);
 }
 
-void GameUI::drawButtonPanel()
+void BaseUI::drawButtonPanel()
 {
     double width = 0.5;
 
@@ -320,7 +323,7 @@ void GameUI::drawButtonPanel()
                   position);
 }
 
-void GameUI::drawCard(Card card, Position position, double width, double height)
+void BaseUI::drawCard(Card card, Position position, double width, double height)
 {
     GLuint texture = textureMap[std::make_pair<Color, Value>(
                                     static_cast<Color>(card.color),
@@ -334,7 +337,7 @@ void GameUI::drawCard(Card card, Position position, double width, double height)
     turnOffTextureMode();
 }
 
-void GameUI::drawCardTop(Position position)
+void BaseUI::drawCardTop(Position position)
 {
     turnOnTextureMode(cardTopTexture);
 
@@ -345,7 +348,7 @@ void GameUI::drawCardTop(Position position)
     turnOffTextureMode();
 }
 
-void GameUI::drawCardTopHorizontal(Position position)
+void BaseUI::drawCardTopHorizontal(Position position)
 {
     turnOnTextureMode(cardTopTexture);
 
@@ -775,4 +778,24 @@ void GameUI::processEndOfRound()
 Scores GameUI::getGameResults()
 {
     return scores;
+}
+
+PollingPlaceId ClientUI::startEventPoll()
+{
+    return PollingPlaceId_MainMenu;
+}
+
+void ClientUI::updateScreen()
+{
+
+}
+
+void ClientUI::forceDrawingEverything()
+{
+
+}
+
+void ClientUI::enteringAction()
+{
+
 }
