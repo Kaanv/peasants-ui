@@ -8,7 +8,7 @@ class NetworkServer
 public:
     NetworkServer();
     void startServer();
-    void sendStringToClient(std::string message) const;
+    void sendStringToClient(std::string message, unsigned int clientIndex = 0) const;
     std::string getLastMessageFromClient(unsigned int clientIndex);
     void removeLastMessageFromClient(unsigned int clientIndex);
 

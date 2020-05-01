@@ -81,11 +81,11 @@ void NetworkServer::openServerSocket()
     }
 }
 
-void NetworkServer::sendStringToClient(std::string message) const
+void NetworkServer::sendStringToClient(std::string message, unsigned int clientIndex) const
 {
-    if (clients.size() > 0)
+    if (clients.size() > clientIndex)
     {
-        int result = SDLNet_TCP_Send(clients[0],
+        int result = SDLNet_TCP_Send(clients[clientIndex],
                                      message.c_str(),
                                      static_cast<int>(message.size()) + 1);
         if (result < static_cast<int>(message.size()) + 1)
@@ -94,7 +94,7 @@ void NetworkServer::sendStringToClient(std::string message) const
     }
     else
     {
-        std::cout << "NO CLIENTS" << std::endl;
+        std::cout << "NO CLIENT" << std::endl;
     }
 }
 
@@ -108,6 +108,7 @@ std::string NetworkServer::getLastMessageFromClient(unsigned int clientIndex)
     }
     return "";
 }
+
 void NetworkServer::removeLastMessageFromClient(unsigned int clientIndex)
 {
     if (clientIndex < clients.size() and messages[clientIndex].size() > 0)

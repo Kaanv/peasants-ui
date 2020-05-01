@@ -15,6 +15,7 @@ struct Settings
 {
     unsigned int numberOfPlayers;
     std::array<PlayerType, 6> playerTypes;
+    std::array<unsigned int, 6> clientId;
     std::array<std::string, 6> aiTypes;
     unsigned int numberOfRounds;
 };

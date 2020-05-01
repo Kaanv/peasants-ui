@@ -1,5 +1,4 @@
-#ifndef NETWORKCLIENT_HPP
-#define NETWORKCLIENT_HPP
+#pragma once
 
 #include "SDL/SDL_net.h"
 #include "network_common.hpp"
@@ -19,6 +18,7 @@ public:
     void connectToHost(std::string ip,
                        std::string port);
     void sendMessage(std::string message) const;
+    std::string getLastMessageFromServer();
 
 private:
     void sendString(std::string message) const;
@@ -26,5 +26,3 @@ private:
     IPaddress ipAddress;
     SDLNet_SocketSet socketSet;
 };
-
-#endif // NETWORKCLIENT_HPP

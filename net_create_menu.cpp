@@ -27,6 +27,7 @@ NetCreateMenu::NetCreateMenu(Settings& _settings,
 PollingPlaceId NetCreateMenu::startEventPoll()
 {
     netServer.startServer();
+    SDL_Delay(100);
 
     for (unsigned int clientIndex = 0; clientIndex < 5; clientIndex++)
     {
@@ -45,6 +46,12 @@ PollingPlaceId NetCreateMenu::startEventPoll()
                     if (button.getCaption() == "Open")
                     {
                         button.setCaption("Network Player");
+                        if (button.getButtonId() == ButtonId_PlayerType1) settings.clientId[0] = clientIndex;
+                        else if (button.getButtonId() == ButtonId_PlayerType2) settings.clientId[1] = clientIndex;
+                        else if (button.getButtonId() == ButtonId_PlayerType3) settings.clientId[2] = clientIndex;
+                        else if (button.getButtonId() == ButtonId_PlayerType4) settings.clientId[3] = clientIndex;
+                        else if (button.getButtonId() == ButtonId_PlayerType5) settings.clientId[4] = clientIndex;
+                        else if (button.getButtonId() == ButtonId_PlayerType6) settings.clientId[5] = clientIndex;
                         break;
                     }
                 }

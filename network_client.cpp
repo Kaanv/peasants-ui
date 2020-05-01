@@ -1,8 +1,10 @@
 #include "network_client.hpp"
+#include <vector>
 
 #define MAXLEN 1024
 
 static TCPsocket socket;
+static std::vector<std::string> messages;
 
 int clientLoop(void*)
 {
@@ -21,7 +23,11 @@ int clientLoop(void*)
 
         char msg[MAXLEN];
         int len = SDLNet_TCP_Recv(socket, msg, MAXLEN-1);
-        if (len > 0) std::cout << "RECEIVED " << msg << std::endl;
+        if (len > 0)
+        {
+            std::cout << "RECEIVED " << msg << std::endl;
+            messages.push_back(msg);
+        }
     }
 
     return 0;
@@ -62,4 +68,15 @@ void NetworkClient::sendString(std::string message) const
     if (result < static_cast<int>(message.size()) + 1)
         throw(NetworkException(std::string("SDLNet_TCP_Send: ") +
               std::string(SDLNet_GetError())));
+}
+
+std::string NetworkClient::getLastMessageFromServer()
+{
+    if (messages.size() > 0)
+    {
+        std::string result = messages[messages.size() - 1];
+        messages.pop_back();
+        return result;
+    }
+    return "";
 }

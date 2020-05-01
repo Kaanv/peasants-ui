@@ -667,6 +667,14 @@ void GameUI::enteringAction()
 {
     calculateIsAIOnlyGame();
     calculateIsGameOneHumanOnly();
+    for (unsigned int i = 0; i < numberOfPlayers; i++)
+    {
+        if (settings.playerTypes[i] == PlayerType_Network)
+        {
+            netServer.sendStringToClient("GAME STARTED", settings.clientId[i]);
+            sendGameInfoToNetworkPlayer(settings.clientId[i]);
+        }
+    }
     if (isGameAIOnly)
     {
         std::string text = "Calculating AI game results...";
@@ -676,6 +684,12 @@ void GameUI::enteringAction()
     {
         drawCurrentPlayerPopup();
     }
+}
+
+void GameUI::sendGameInfoToNetworkPlayer(unsigned int clientId)
+{
+    netServer.sendStringToClient("GAME INFO", clientId);
+    netServer.sendStringToClient(std::to_string(numberOfPlayers), clientId);
 }
 
 namespace

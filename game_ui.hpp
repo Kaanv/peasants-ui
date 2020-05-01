@@ -61,6 +61,7 @@ private:
     bool isHumanAMaster();
     void processEndOfRound();
     void handleUIPartOfCardsExchange();
+    void sendGameInfoToNetworkPlayer(unsigned int clientId);
 
     Settings settings;
     unsigned int numberOfPlayers;

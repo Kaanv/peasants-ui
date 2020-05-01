@@ -10,6 +10,7 @@ public:
 protected:
     PollingPlaceId startEventPoll() override;
     virtual void addMenuSpecificCaptions(std::vector<std::string>& captions);
+    Settings& settings;
 private:
     void updateScreen() override;
     void drawBackground() override;
@@ -18,5 +19,4 @@ private:
     void setSettingsAccordingToButtons();
     PlayerType convertCaptionToPlayerType(std::string caption);
     std::vector<std::string> createCaptions();
-    Settings& settings;
 };

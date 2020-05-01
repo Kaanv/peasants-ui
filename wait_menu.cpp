@@ -15,9 +15,14 @@ WaitMenu::WaitMenu(NetworkClient& netClient_) : netClient(netClient_)
 
 PollingPlaceId WaitMenu::startEventPoll()
 {
+    std::string lastMessage = netClient.getLastMessageFromServer();
+    if (lastMessage == "GAME STARTED")
+    {
+        return PollingPlaceId_Exit;
+    }
+
     while (SDL_PollEvent(&event))
     {
-        netClient.sendMessage("WAITING");
         if (event.type == SDL_QUIT) return PollingPlaceId_Exit;
         else if (event.type == SDL_ACTIVEEVENT &&
                  event.active.state & SDL_APPACTIVE &&
