@@ -3,20 +3,20 @@
 int nextpoweroftwo(int x)
 {
     double logbase2 = log(x) / log(2);
-    return (int)round(pow(2,ceil(logbase2)));
+    return static_cast<int>(round(pow(2,ceil(logbase2))));
 }
 
 void SDL_GL_RenderText(const char *text,
                        TTF_Font *font,
                        SDL_Color color,
-                       float x, float y, float plusH)
+                       double x, double y, double plusH)
 {
     SDL_Surface *initial;
     SDL_Surface *intermediary;
     int w,h;
     GLuint texture;
     int width;
-    float czarne;
+    double czarne;
 
     /* Use SDL_TTF to render our text */
     initial = TTF_RenderText_Blended(font, text, color);
@@ -25,15 +25,15 @@ void SDL_GL_RenderText(const char *text,
     w = nextpoweroftwo(initial->w);
     h = nextpoweroftwo(initial->h);
 
-    float wNaH=(float)w/(float)h;
-    float plusW = wNaH*plusH ;
+    double wNaH = static_cast<double>(w)/static_cast<double>(h);
+    double plusW = wNaH * plusH ;
     width = w - initial->w;
-    czarne = ((float)width/(float)w)*plusW;
+    czarne = (static_cast<double>(width)/static_cast<double>(w)) * plusW;
 
     intermediary = SDL_CreateRGBSurface(0, w, h, 32,
                                         0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
 
-    SDL_BlitSurface(initial, 0, intermediary, 0);
+    SDL_BlitSurface(initial, nullptr, intermediary, nullptr);
 
     /* Tell GL about our new texture */
     glGenTextures(1, &texture);
@@ -59,14 +59,14 @@ void SDL_GL_RenderText(const char *text,
     /* Recall that the origin is in the lower-left corner
        That is why the TexCoords specify different corners
        than the Vertex coors seem to. */
-    glTexCoord2f(0.0f, 1.0f);
-    glVertex2f(x - (plusW-czarne)/2, y - plusH);
-    glTexCoord2f(1.0f, 1.0f);
-    glVertex2f(x + (plusW+czarne)/2, y - plusH);
-    glTexCoord2f(1.0f, 0.0f);
-    glVertex2f(x + (plusW+czarne)/2, y);
-    glTexCoord2f(0.0f, 0.0f);
-    glVertex2f(x - (plusW-czarne)/2, y);
+    glTexCoord2d(0.0, 1.0);
+    glVertex2d(x - (plusW-czarne)/2, y - plusH);
+    glTexCoord2d(1.0, 1.0);
+    glVertex2d(x + (plusW+czarne)/2, y - plusH);
+    glTexCoord2d(1.0, 0.0);
+    glVertex2d(x + (plusW+czarne)/2, y);
+    glTexCoord2d(0.0, 0.0);
+    glVertex2d(x - (plusW-czarne)/2, y);
 
     glEnd();
 

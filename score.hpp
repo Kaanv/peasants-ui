@@ -6,7 +6,7 @@ struct Score
 {
     int mastersScore;
     int positiveScore;
-    int playerNumber;
+    unsigned int playerNumber;
 
     bool operator==(const Score& score)
     {

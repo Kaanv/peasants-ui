@@ -383,11 +383,11 @@ void GameUI::drawCurrentPlayerCards()
 
 void GameUI::drawAnotherPlayerCards()
 {
-    int currentPlayerId = getCurrentPlayerId();
+    unsigned int currentPlayerId = getCurrentPlayerId();
     if (isGameOneHumanOnly) currentPlayerId = humanPlayer;
 
-    int nextPlayerId = (currentPlayerId + 1) % numberOfPlayers;
-    unsigned int numberOfCards = game->getPlayer(nextPlayerId).getCards().size();
+    unsigned int nextPlayerId = (currentPlayerId + 1) % numberOfPlayers;
+    unsigned int numberOfCards = static_cast<unsigned int>(game->getPlayer(nextPlayerId).getCards().size());
 
     for (unsigned int j = 0; j < numberOfCards; j++)
     {
@@ -395,7 +395,7 @@ void GameUI::drawAnotherPlayerCards()
     }
 
     nextPlayerId = (nextPlayerId + 1) % numberOfPlayers;
-    numberOfCards = game->getPlayer(nextPlayerId).getCards().size();
+    numberOfCards = static_cast<unsigned int>(game->getPlayer(nextPlayerId).getCards().size());
 
     for (unsigned int j = 0; j < numberOfCards; j++)
     {
@@ -403,7 +403,7 @@ void GameUI::drawAnotherPlayerCards()
     }
 
     nextPlayerId = (nextPlayerId + 1) % numberOfPlayers;
-    numberOfCards = game->getPlayer(nextPlayerId).getCards().size();
+    numberOfCards = static_cast<unsigned int>(game->getPlayer(nextPlayerId).getCards().size());
 
     for (unsigned int j = 0; j < numberOfCards; j++)
     {
@@ -432,7 +432,7 @@ void GameUI::drawPeasantsInfo()
                       0.68,
                       0.1);
 
-    for (int i = 0; i < numberOfPlayers; i++)
+    for (unsigned int i = 0; i < numberOfPlayers; i++)
     {
         std::string text =
             "Player " + std::to_string(i + 1) + ": " +
@@ -460,7 +460,7 @@ void GameUI::drawPastTurnsInfo()
 
     const History& history = game->getHistory();
 
-    for (int i = 0; i < numberOfPlayers and i < static_cast<int>(history.getHistory().size()); i++)
+    for (unsigned int i = 0; i < numberOfPlayers and i < static_cast<unsigned int>(history.getHistory().size()); i++)
     {
         HistoryElement currentHistory = history.getHistory()[history.getHistory().size() - i - 1];
         std::string text =
@@ -566,7 +566,7 @@ void GameUI::drawPopup(std::string text)
     Dimensions fullScreen{1.5, 2.0};
     Position rightLeftCorner{-1.0, 1.0};
 
-    glColor3f(0.0, 0.0, 0.8);
+    glColor3d(0.0, 0.0, 0.8);
     drawRectangle(fullScreen,
                   rightLeftCorner);
 
@@ -586,7 +586,7 @@ void GameUI::drawPopup(std::string text)
 
 void GameUI::drawCurrentPlayerPopup()
 {
-    std::string text = "Player " + std::to_string(getCurrentPlayerId() + 1) + " turn";;
+    std::string text = "Player " + std::to_string(getCurrentPlayerId() + 1) + " turn";
     if (isCurrentPlayerAI()) text = "AI " + text;
     if (not isGameOneHumanOnly) drawPopup(text.c_str());
 }
@@ -656,7 +656,7 @@ void GameUI::handleUIPartOfCardsExchange()
     {
         turnOnCardsExchange();
     }
-    for (int id = 0; id < numberOfPlayers; id++)
+    for (unsigned int id = 0; id < numberOfPlayers; id++)
     {
         if (settings.playerTypes[id] == PlayerType_Human and
             game->getPlayer(id).getPeasantLevel() > 0)
@@ -733,7 +733,7 @@ void GameUI::createGameResults()
     const std::vector<LevelsHistory>& levelsHistory = game->getLevelsHistory();
     scores.clear();
 
-    for (int i = 0; i < numberOfPlayers; i++)
+    for (unsigned int i = 0; i < numberOfPlayers; i++)
     {
         int numberOfMasterTimes = calculateNumberOfMasterTimes(levelsHistory[i]);
         int positiveScore = calculatePositiveScoreAsMaster(levelsHistory[i]);
@@ -743,9 +743,9 @@ void GameUI::createGameResults()
     std::reverse(scores.begin(), scores.end());
 }
 
-int GameUI::getCurrentPlayerId()
+unsigned int GameUI::getCurrentPlayerId()
 {
-    int playerId = game->getCurrentPlayer().getId();
+    unsigned int playerId = game->getCurrentPlayer().getId();
     if (cardsExchangeActive)
     {
         playerId = exchangePlayersIds[0];
@@ -755,13 +755,13 @@ int GameUI::getCurrentPlayerId()
 
 Player& GameUI::getCurrentPlayer()
 {
-    int playerId = getCurrentPlayerId();
+    unsigned int playerId = getCurrentPlayerId();
     return game->getPlayer(playerId);
 }
 
 bool GameUI::isHumanAMaster()
 {
-    for (int i = 0; i < numberOfPlayers; i++)
+    for (unsigned int i = 0; i < numberOfPlayers; i++)
     {
         if (game->getPlayer(i).getPeasantLevel() > 0 and
             settings.playerTypes[i] == PlayerType_Human) return true;
@@ -780,9 +780,14 @@ Scores GameUI::getGameResults()
     return scores;
 }
 
+ClientUI::ClientUI()
+{
+    ownId = PollingPlaceId_ClientGame;
+}
+
 PollingPlaceId ClientUI::startEventPoll()
 {
-    return PollingPlaceId_MainMenu;
+    return PollingPlaceId_ClientGame;
 }
 
 void ClientUI::updateScreen()

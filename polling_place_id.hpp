@@ -10,6 +10,7 @@ enum PollingPlaceId
     PollingPlaceId_NetworkGameJoining,
     PollingPlaceId_WaitMenu,
     PollingPlaceId_NetworkGameCreating,
+    PollingPlaceId_ClientGame,
     PollingPlaceId_Exit
 };
 

@@ -44,6 +44,8 @@ private:
 
 class ClientUI : public BaseUI
 {
+public:
+    ClientUI();
 private:
     PollingPlaceId startEventPoll() override;
     void updateScreen() override;
@@ -83,7 +85,7 @@ private:
     void calculateIsAIOnlyGame();
     void calculateIsGameOneHumanOnly();
     void createGameResults();
-    int getCurrentPlayerId();
+    unsigned int getCurrentPlayerId();
     Player &getCurrentPlayer();
     bool isHumanAMaster();
     void processEndOfRound();
