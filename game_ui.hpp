@@ -36,6 +36,10 @@ protected:
     void updateNotSelectedCardSelection(Position glPosition,
                                         Cards& cards,
                                         unsigned int cardIndex);
+    void drawCards();
+    virtual void drawCurrentPlayerCards() = 0;
+    virtual void drawAnotherPlayerCards() = 0;
+    virtual void drawTableCards() = 0;
 
 private:
     std::map<std::pair<Color, Value>, GLuint> textureMap;
@@ -51,6 +55,9 @@ private:
     void updateScreen() override;
     void forceDrawingEverything() override;
     void enteringAction() override;
+    void drawCurrentPlayerCards() override;
+    void drawAnotherPlayerCards() override;
+    void drawTableCards() override;
 
     Cards lastMove;
     unsigned int numberOfPlayers;
@@ -68,10 +75,9 @@ private:
     PollingPlaceId startEventPoll() override;
     void updateScreen() override;
     void enteringAction() override;
-    void drawCards();
-    void drawCurrentPlayerCards();
-    void drawAnotherPlayerCards();
-    void drawTableCards();
+    void drawCurrentPlayerCards() override;
+    void drawAnotherPlayerCards() override;
+    void drawTableCards() override;
     void drawPeasantsInfo();
     void drawPastTurnsInfo();
     void updateCardsSelection(int x, int y);

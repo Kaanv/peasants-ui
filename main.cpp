@@ -24,6 +24,7 @@ int main()
     MainMenu mainMenu;
     ResultsMenu resultsMenu;
     GameUI game(netServer);
+    ClientUI clientGame;
     Settings settings;
     SettingsMenu settingsMenu(settings);
     NetJoinMenu netJoinMenu(netClient);
@@ -62,6 +63,9 @@ int main()
             break;
         case PollingPlaceId_WaitMenu:
             currentPlace = waitMenu.enter();
+            break;
+        case PollingPlaceId_ClientGame:
+            currentPlace = clientGame.enter();
             break;
         case PollingPlaceId_MainMenu:
         default:

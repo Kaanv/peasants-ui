@@ -359,7 +359,7 @@ void BaseUI::drawCardTopHorizontal(Position position)
     turnOffTextureMode();
 }
 
-void GameUI::drawCards()
+void BaseUI::drawCards()
 {
     drawCurrentPlayerCards();
     drawAnotherPlayerCards();
@@ -674,8 +674,7 @@ void GameUI::enteringAction()
     {
         if (settings.playerTypes[i] == PlayerType_Network)
         {
-            netServer.sendStringToClient("GAME STARTED", settings.clientId[i]);
-            sendGameInfoToNetworkPlayer(settings.clientId[i]);
+            netServer.sendStringToClient("GAME_STARTED", settings.clientId[i]);
         }
     }
     if (isGameAIOnly)
@@ -691,7 +690,7 @@ void GameUI::enteringAction()
 
 void GameUI::sendGameInfoToNetworkPlayer(unsigned int clientId)
 {
-    netServer.sendStringToClient("GAME INFO", clientId);
+    netServer.sendStringToClient("GAME_INFO;", clientId);
     netServer.sendStringToClient(std::to_string(numberOfPlayers), clientId);
 }
 
@@ -787,12 +786,66 @@ ClientUI::ClientUI()
 
 PollingPlaceId ClientUI::startEventPoll()
 {
+    while (SDL_PollEvent(&event))
+    {
+        if (event.type == SDL_QUIT) return PollingPlaceId_Exit;
+        else if (event.type == SDL_ACTIVEEVENT &&
+                 event.active.state & SDL_APPACTIVE &&
+                 event.active.gain != 0) updateScreen();
+        else if (event.type == SDL_VIDEOEXPOSE)
+        {
+            for (auto& button : buttons)
+            {
+                button.forceDraw();
+            }
+            backgroundNeedsDrawing = true;
+            updateScreen();
+        }
+        else if (event.type == SDL_MOUSEMOTION)
+        {
+            updateButtonsOnMotion(event.motion.x, event.motion.y);
+        }
+        else if(event.type == SDL_MOUSEBUTTONDOWN)
+        {
+            updateButtonsClickStatus();
+        }
+        else if(event.type == SDL_MOUSEBUTTONUP)
+        {
+            for (auto& button : buttons)
+            {
+                if (button.isClicked())
+                {
+                    switch (button.getButtonId())
+                    {
+                        case ButtonId_CancelGame: return PollingPlaceId_NetworkGameJoining;
+                        case ButtonId_MainMenu: return PollingPlaceId_MainMenu;
+                    }
+                }
+            }
+        }
+    }
     return PollingPlaceId_ClientGame;
 }
 
 void ClientUI::updateScreen()
 {
+    if (backgroundNeedsDrawing)
+    {
+        drawBackground();
+        drawButtonPanel();
+//        drawCards();
+//        drawPeasantsInfo();
+//        drawPastTurnsInfo();
+    }
 
+    for (auto& button : buttons)
+    {
+        if (button.getButtonId() != ButtonId_PopupOk) button.draw();
+    }
+
+    SDL_GL_SwapBuffers();
+    lastTicks = SDL_GetTicks();
+    backgroundNeedsDrawing = false;
 }
 
 void ClientUI::forceDrawingEverything()
@@ -801,6 +854,21 @@ void ClientUI::forceDrawingEverything()
 }
 
 void ClientUI::enteringAction()
+{
+
+}
+
+void ClientUI::drawCurrentPlayerCards()
+{
+
+}
+
+void ClientUI::drawAnotherPlayerCards()
+{
+
+}
+
+void ClientUI::drawTableCards()
 {
 
 }

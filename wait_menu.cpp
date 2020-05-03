@@ -16,9 +16,9 @@ WaitMenu::WaitMenu(NetworkClient& netClient_) : netClient(netClient_)
 PollingPlaceId WaitMenu::startEventPoll()
 {
     std::string lastMessage = netClient.getLastMessageFromServer();
-    if (lastMessage == "GAME STARTED")
+    if (lastMessage == "GAME_STARTED")
     {
-        return PollingPlaceId_Exit;
+        return PollingPlaceId_ClientGame;
     }
 
     while (SDL_PollEvent(&event))
@@ -86,7 +86,7 @@ void WaitMenu::drawBackground()
     Dimensions fullScreen{2.0, 2.0};
     Position rightLeftCorner{-1.0, 1.0};
 
-    glColor3f(0.1, 0.1, 0.5);
+    glColor3d(0.1, 0.1, 0.5);
     drawRectangle(fullScreen,
                   rightLeftCorner);
 }
