@@ -4,6 +4,7 @@
 #include "text.hpp"
 #include <iostream>
 #include <algorithm>
+#include <boost/algorithm/string.hpp>
 
 GameUI::GameUI(NetworkServer& _netServer) : numberOfPlayers(4),
                                             isPopupActive(false),
@@ -64,6 +65,15 @@ void GameUI::setSettings(Settings settings)
 
 PollingPlaceId GameUI::startEventPoll()
 {
+    for (unsigned int clientIndex = 0; clientIndex < 5; clientIndex++)
+    {
+        std::string lastMessage = netServer.getLastMessageFromClient(clientIndex);
+        if (lastMessage == "GET_GAME_INFO")
+        {
+            sendGameInfoToNetworkPlayer(clientIndex);
+        }
+    }
+
     if (isGameAIOnly)
     {
         try { game->performAITurnLua(); }
@@ -538,10 +548,54 @@ void GameUI::enteringAction()
     }
 }
 
+namespace
+{
+
+char convertValueToChar(Value value)
+{
+    if (value == three) return '3';
+    else if (value == four) return '4';
+    else if (value == five) return '5';
+    else if (value == six) return '6';
+    else if (value == seven) return '7';
+    else if (value == eight) return '8';
+    else if (value == nine) return '9';
+    else if (value == ten) return '0';
+    else if (value == jack) return 'j';
+    else if (value == queen) return 'q';
+    else if (value == king) return 'k';
+    else if (value == ace) return 'a';
+    return 'x';
+}
+
+char convertColorToChar(Color color)
+{
+    if (color == hearts) return 'h';
+    else if (color == diamonds) return 'd';
+    else if (color == clubs) return 'c';
+    else if (color == spades) return 's';
+    return 'x';
+}
+
+std::string convertCardsToString(const Cards& cards)
+{
+    std::string result = "";
+
+    for (const auto& card : cards)
+    {
+        result += convertValueToChar(card.value);
+        result += convertColorToChar(card.color);
+    }
+
+    return result;
+}
+}
+
 void GameUI::sendGameInfoToNetworkPlayer(unsigned int clientId)
 {
-    netServer.sendStringToClient("GAME_INFO;", clientId);
-    netServer.sendStringToClient(std::to_string(numberOfPlayers), clientId);
+    netServer.sendStringToClient("GAME_INFO;" + std::to_string(numberOfPlayers) + ";"
+                                              + convertCardsToString(game->getPlayer(0).getCards()) + ";", // TODO: Player index instead of 0
+                                 clientId);
 }
 
 namespace
@@ -629,13 +683,26 @@ Scores GameUI::getGameResults()
     return scores;
 }
 
-ClientUI::ClientUI()
+ClientUI::ClientUI(NetworkClient& _netClient) : netClient(_netClient)
 {
     ownId = PollingPlaceId_ClientGame;
 }
 
 PollingPlaceId ClientUI::startEventPoll()
 {
+    std::string lastMessage = netClient.getLastMessageFromServer();
+
+    if (lastMessage.size() > 0)
+    {
+        std::vector<std::string> results;
+        boost::split(results, lastMessage, [](char c){return c == ';';});
+
+        if (results[0] == "GAME_INFO")
+        {
+            std::cout << "RECEIVED GAME INFO!" << std::endl;
+        }
+    }
+
     while (SDL_PollEvent(&event))
     {
         if (event.type == SDL_QUIT) return PollingPlaceId_Exit;
@@ -705,7 +772,10 @@ void ClientUI::forceDrawingEverything()
 
 void ClientUI::enteringAction()
 {
-
+    if (numberOfPlayers == 0)
+    {
+        getGameInfoFromServer();
+    }
 }
 
 void ClientUI::drawCurrentPlayerCards()
@@ -721,4 +791,9 @@ void ClientUI::drawAnotherPlayerCards()
 void ClientUI::drawTableCards()
 {
 
+}
+
+void ClientUI::getGameInfoFromServer()
+{
+    netClient.sendMessage("GET_GAME_INFO");
 }

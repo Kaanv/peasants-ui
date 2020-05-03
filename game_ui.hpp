@@ -12,11 +12,12 @@
 #include <map>
 #include <memory>
 #include "base_ui.hpp"
+#include "network_client.hpp"
 
 class ClientUI : public BaseUI
 {
 public:
-    ClientUI();
+    ClientUI(NetworkClient&);
 private:
     PollingPlaceId startEventPoll() override;
     void updateScreen() override;
@@ -26,10 +27,13 @@ private:
     void drawAnotherPlayerCards() override;
     void drawTableCards() override;
 
+    void getGameInfoFromServer();
+
     Cards lastMove;
-    unsigned int numberOfPlayers;
+    unsigned int numberOfPlayers = 0;
     Scores scores;
     Cards clientCards;
+    NetworkClient& netClient;
 };
 
 class GameUI : public BaseUI

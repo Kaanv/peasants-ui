@@ -1,5 +1,4 @@
-#ifndef WAIT_MENU
-#define WAIT_MENU
+#pragma once
 
 #include "button.hpp"
 #include "polling_place.hpp"
@@ -20,5 +19,3 @@ private:
 
     NetworkClient& netClient;
 };
-
-#endif // WAIT_MENU

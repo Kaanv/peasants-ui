@@ -24,7 +24,7 @@ int main()
     MainMenu mainMenu;
     ResultsMenu resultsMenu;
     GameUI game(netServer);
-    ClientUI clientGame;
+    ClientUI clientGame(netClient);
     Settings settings;
     SettingsMenu settingsMenu(settings);
     NetJoinMenu netJoinMenu(netClient);
