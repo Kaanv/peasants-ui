@@ -16,6 +16,7 @@ LIBS += -lboost_filesystem
 INCLUDEPATH += LuaBridge/Source/
 
 SOURCES += main.cpp \
+    base_ui.cpp \
     network_server.cpp \
     textures.cpp \
     text.cpp \
@@ -63,6 +64,7 @@ HEADERS += \
     LuaBridge/detail/TypeTraits.h \
     LuaBridge/detail/Userdata.h \
     LuaBridge/detail/dump.h \
+    base_ui.hpp \
     network_server.hpp \
     textures.hpp \
     text.hpp \
