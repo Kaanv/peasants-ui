@@ -568,6 +568,23 @@ char convertValueToChar(Value value)
     return 'x';
 }
 
+Value convertCharToValue(const char value)
+{
+    if (value == '3') return three;
+    else if (value == '4') return four;
+    else if (value == '5') return five;
+    else if (value == '6') return six;
+    else if (value == '7') return seven;
+    else if (value == '8') return eight;
+    else if (value == '9') return nine;
+    else if (value == '0') return ten;
+    else if (value == 'j') return jack;
+    else if (value == 'q') return queen;
+    else if (value == 'k') return king;
+    else if (value == 'a') return ace;
+    return three;
+}
+
 char convertColorToChar(Color color)
 {
     if (color == hearts) return 'h';
@@ -575,6 +592,15 @@ char convertColorToChar(Color color)
     else if (color == clubs) return 'c';
     else if (color == spades) return 's';
     return 'x';
+}
+
+Color convertCharToColor(const char color)
+{
+    if (color == 'h') return hearts;
+    else if (color == 'd') return diamonds;
+    else if (color == 'c') return clubs;
+    else if (color == 's') return spades;
+    return spades;
 }
 
 std::string convertCardsToString(const Cards& cards)
@@ -589,6 +615,12 @@ std::string convertCardsToString(const Cards& cards)
 
     return result;
 }
+
+Card convertCharsToCard(const char value, const char color)
+{
+    return Card(convertCharToValue(value), convertCharToColor(color));
+}
+
 }
 
 void GameUI::sendGameInfoToNetworkPlayer(unsigned int clientId)
@@ -700,6 +732,7 @@ PollingPlaceId ClientUI::startEventPoll()
         if (results[0] == "GAME_INFO")
         {
             std::cout << "RECEIVED GAME INFO!" << std::endl;
+            updateCards(results[2]);
         }
     }
 
@@ -750,7 +783,7 @@ void ClientUI::updateScreen()
     {
         drawBackground();
         drawButtonPanel();
-//        drawCards();
+        drawCards();
 //        drawPeasantsInfo();
 //        drawPastTurnsInfo();
     }
@@ -780,7 +813,10 @@ void ClientUI::enteringAction()
 
 void ClientUI::drawCurrentPlayerCards()
 {
-
+    for (unsigned int i = 0; i < clientCards.size(); i++)
+    {
+        drawCard(clientCards[i], Position{-0.5 + static_cast<double>(i) * CARD_SPACE, -0.6});
+    }
 }
 
 void ClientUI::drawAnotherPlayerCards()
@@ -796,4 +832,14 @@ void ClientUI::drawTableCards()
 void ClientUI::getGameInfoFromServer()
 {
     netClient.sendMessage("GET_GAME_INFO");
+}
+
+void ClientUI::updateCards(std::string cardsInfo)
+{
+    clientCards.clear();
+    for (unsigned int i = 1; i < cardsInfo.size(); i += 2)
+    {
+        Card card = convertCharsToCard(cardsInfo[i - 1], cardsInfo[i]);
+        clientCards.push_back(card);
+    }
 }
