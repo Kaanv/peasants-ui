@@ -282,10 +282,15 @@ void GameUI::drawAnotherPlayerCards()
     unsigned int currentPlayerId = getCurrentPlayerId();
     if (isGameOneHumanOnly) currentPlayerId = humanPlayer;
 
-    drawAnotherPlayersCardForFourPlayers(std::vector<unsigned int>{
-        static_cast<unsigned int>(game->getPlayer((currentPlayerId + 1) % numberOfPlayers).getCards().size()),
-        static_cast<unsigned int>(game->getPlayer((currentPlayerId + 2) % numberOfPlayers).getCards().size()),
-        static_cast<unsigned int>(game->getPlayer((currentPlayerId + 3) % numberOfPlayers).getCards().size())});
+    std::vector<unsigned int> numbersOfPlayersCards;
+
+    for (unsigned int i = 1; i < numberOfPlayers; i++)
+    {
+        numbersOfPlayersCards.push_back(
+            static_cast<unsigned int>(game->getPlayer((currentPlayerId + i) % numberOfPlayers).getCards().size()));
+    }
+
+    drawAnotherPlayersCards(numbersOfPlayersCards);
 }
 
 void GameUI::drawTableCards()

@@ -119,6 +119,13 @@ void BaseUI::drawCards()
     drawTableCards();
 }
 
+void BaseUI::drawAnotherPlayersCards(const std::vector<unsigned int>& numberOfCards)
+{
+    if (numberOfCards.size() == 3) drawAnotherPlayersCardForFourPlayers(numberOfCards);
+    else if (numberOfCards.size() == 4) drawAnotherPlayersCardForFivePlayers(numberOfCards);
+    else if (numberOfCards.size() == 5) drawAnotherPlayersCardForSixPlayers(numberOfCards);
+}
+
 void BaseUI::drawAnotherPlayersCardForFourPlayers(const std::vector<unsigned int>& numberOfCards)
 {
     for (unsigned int j = 0; j < numberOfCards[0]; j++)
@@ -134,6 +141,57 @@ void BaseUI::drawAnotherPlayersCardForFourPlayers(const std::vector<unsigned int
     for (unsigned int j = 0; j < numberOfCards[2]; j++)
     {
         drawCardTopHorizontal(Position{0.3, 0.0 + static_cast<double>(j) * CARD_SPACE});
+    }
+}
+
+void BaseUI::drawAnotherPlayersCardForFivePlayers(const std::vector<unsigned int>& numberOfCards)
+{
+    for (unsigned int j = 0; j < numberOfCards[0]; j++)
+    {
+        drawCardTopHorizontal(Position{-0.9, -0.4 + static_cast<double>(j) * CARD_SPACE});
+    }
+
+    for (unsigned int j = 0; j < numberOfCards[1]; j++)
+    {
+        drawCardTopHorizontal(Position{-0.9, 0.4 + static_cast<double>(j) * CARD_SPACE});
+    }
+
+    for (unsigned int j = 0; j < numberOfCards[2]; j++)
+    {
+        drawCardTop(Position{-0.5 + static_cast<double>(j) * CARD_SPACE, 0.93});
+    }
+
+    for (unsigned int j = 0; j < numberOfCards[3]; j++)
+    {
+        drawCardTopHorizontal(Position{0.3, 0.0 + static_cast<double>(j) * CARD_SPACE});
+    }
+}
+
+void BaseUI::drawAnotherPlayersCardForSixPlayers(const std::vector<unsigned int>& numberOfCards)
+{
+    for (unsigned int j = 0; j < numberOfCards[0]; j++)
+    {
+        drawCardTopHorizontal(Position{-0.9, -0.4 + static_cast<double>(j) * CARD_SPACE});
+    }
+
+    for (unsigned int j = 0; j < numberOfCards[1]; j++)
+    {
+        drawCardTopHorizontal(Position{-0.9, 0.4 + static_cast<double>(j) * CARD_SPACE});
+    }
+
+    for (unsigned int j = 0; j < numberOfCards[2]; j++)
+    {
+        drawCardTop(Position{-0.5 + static_cast<double>(j) * CARD_SPACE, 0.93});
+    }
+
+    for (unsigned int j = 0; j < numberOfCards[3]; j++)
+    {
+        drawCardTopHorizontal(Position{0.3, 0.4 + static_cast<double>(j) * CARD_SPACE});
+    }
+
+    for (unsigned int j = 0; j < numberOfCards[4]; j++)
+    {
+        drawCardTopHorizontal(Position{0.3, -0.4 + static_cast<double>(j) * CARD_SPACE});
     }
 }
 
