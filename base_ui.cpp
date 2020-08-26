@@ -119,6 +119,24 @@ void BaseUI::drawCards()
     drawTableCards();
 }
 
+void BaseUI::drawAnotherPlayersCardForFourPlayers(const std::vector<unsigned int>& numberOfCards)
+{
+    for (unsigned int j = 0; j < numberOfCards[0]; j++)
+    {
+        drawCardTopHorizontal(Position{-0.9, 0.0 + static_cast<double>(j) * CARD_SPACE});
+    }
+
+    for (unsigned int j = 0; j < numberOfCards[1]; j++)
+    {
+        drawCardTop(Position{-0.5 + static_cast<double>(j) * CARD_SPACE, 0.93});
+    }
+
+    for (unsigned int j = 0; j < numberOfCards[2]; j++)
+    {
+        drawCardTopHorizontal(Position{0.3, 0.0 + static_cast<double>(j) * CARD_SPACE});
+    }
+}
+
 void BaseUI::updateSelectedCardSelection(Position glPosition,
                                          Cards& cards,
                                          unsigned int cardIndex)

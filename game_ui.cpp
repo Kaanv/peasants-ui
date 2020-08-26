@@ -282,29 +282,10 @@ void GameUI::drawAnotherPlayerCards()
     unsigned int currentPlayerId = getCurrentPlayerId();
     if (isGameOneHumanOnly) currentPlayerId = humanPlayer;
 
-    unsigned int nextPlayerId = (currentPlayerId + 1) % numberOfPlayers;
-    unsigned int numberOfCards = static_cast<unsigned int>(game->getPlayer(nextPlayerId).getCards().size());
-
-    for (unsigned int j = 0; j < numberOfCards; j++)
-    {
-        drawCardTopHorizontal(Position{-0.9, 0.0 + static_cast<double>(j) * CARD_SPACE});
-    }
-
-    nextPlayerId = (nextPlayerId + 1) % numberOfPlayers;
-    numberOfCards = static_cast<unsigned int>(game->getPlayer(nextPlayerId).getCards().size());
-
-    for (unsigned int j = 0; j < numberOfCards; j++)
-    {
-        drawCardTop(Position{-0.5 + static_cast<double>(j) * CARD_SPACE, 0.93});
-    }
-
-    nextPlayerId = (nextPlayerId + 1) % numberOfPlayers;
-    numberOfCards = static_cast<unsigned int>(game->getPlayer(nextPlayerId).getCards().size());
-
-    for (unsigned int j = 0; j < numberOfCards; j++)
-    {
-        drawCardTopHorizontal(Position{0.3, 0.0 + static_cast<double>(j) * CARD_SPACE});
-    }
+    drawAnotherPlayersCardForFourPlayers(std::vector<unsigned int>{
+        static_cast<unsigned int>(game->getPlayer((currentPlayerId + 1) % numberOfPlayers).getCards().size()),
+        static_cast<unsigned int>(game->getPlayer((currentPlayerId + 2) % numberOfPlayers).getCards().size()),
+        static_cast<unsigned int>(game->getPlayer((currentPlayerId + 3) % numberOfPlayers).getCards().size())});
 }
 
 void GameUI::drawTableCards()

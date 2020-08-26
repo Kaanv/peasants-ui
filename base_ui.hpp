@@ -40,6 +40,7 @@ protected:
     virtual void drawCurrentPlayerCards() = 0;
     virtual void drawAnotherPlayerCards() = 0;
     virtual void drawTableCards() = 0;
+    void drawAnotherPlayersCardForFourPlayers(const std::vector<unsigned int>& numberOfCards);
 
 private:
     std::map<std::pair<Color, Value>, GLuint> textureMap;
