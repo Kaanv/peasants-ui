@@ -32,6 +32,8 @@ private:
 
     Cards lastMove;
     unsigned int numberOfPlayers = 0;
+    int myPlayerId;
+    std::vector<unsigned int> numbersOfPlayersCards;
     Scores scores;
     Cards clientCards;
     NetworkClient& netClient;

@@ -611,8 +611,20 @@ Card convertCharsToCard(const char value, const char color)
 
 void GameUI::sendGameInfoToNetworkPlayer(unsigned int clientId)
 {
+    std::vector<unsigned int> numbersOfPlayersCards;
+    unsigned int playerId = settings.playerId[clientId];
+
+    /**
+     * Structure of game info message:
+     * 0. GAME_INFO
+     * 1. number of players
+     * 2. player cards
+     * 3. player id
+     * 4. numbers of players cards
+     */
     netServer.sendStringToClient("GAME_INFO;" + std::to_string(numberOfPlayers) + ";"
-                                              + convertCardsToString(game->getPlayer(0).getCards()) + ";", // TODO: Player index instead of 0
+                                              + convertCardsToString(game->getPlayer(playerId).getCards()) + ";"
+                                              + std::to_string(playerId),
                                  clientId);
 }
 
@@ -709,6 +721,14 @@ ClientUI::ClientUI(NetworkClient& _netClient) : netClient(_netClient)
 PollingPlaceId ClientUI::startEventPoll()
 {
     std::string lastMessage = netClient.getLastMessageFromServer();
+    /**
+     * Structure of game info message:
+     * 0. GAME_INFO
+     * 1. number of players
+     * 2. player cards
+     * 3. player id
+     * 4. numbers of players cards
+     */
 
     if (lastMessage.size() > 0)
     {

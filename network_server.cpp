@@ -16,6 +16,7 @@ NetworkServer::NetworkServer()
 #define MAXLEN 1024
 
 static std::vector<TCPsocket> clients;
+static SDLNet_SocketSet clientSockets = SDLNet_AllocSocketSet(5);
 static std::array<std::vector<std::string>, 5> messages;
 
 int serverLoop(void*)
@@ -29,22 +30,32 @@ int serverLoop(void*)
 
         if (clients.size() < 5)
         {
-            std::cout << "a" << std::endl;
             TCPsocket client = SDLNet_TCP_Accept(server);
-            if (client) clients.push_back(client);
+            if (client)
+            {
+                clients.push_back(client);
+                SDLNet_TCP_AddSocket(clientSockets, clients[clients.size() - 1]);
+                std::cout << "New client joined, id: " << clients.size() - 1 << std::endl;
+            }
         }
         if (clients.size() == 0)
         {
-          SDL_Delay(100);
-          continue;
+            SDL_Delay(100);
+            continue;
         }
 
-        for (unsigned int i = 0; i < clients.size(); i++)
+        if (SDLNet_CheckSockets(clientSockets, 0))
         {
-            char msg[MAXLEN];
-            int len = SDLNet_TCP_Recv(clients[i], msg, MAXLEN-1);
-            if (len > 0) std::cout << "RECEIVED FROM CLIENT " << i << ": " << msg << std::endl;
-            messages[i].push_back(msg);
+            for (unsigned int i = 0; i < clients.size(); i++)
+            {
+                if (SDLNet_SocketReady(clients[i]))
+                {
+                    char msg[MAXLEN];
+                    int len = SDLNet_TCP_Recv(clients[i], msg, MAXLEN-1);
+                    if (len > 0) std::cout << "RECEIVED FROM CLIENT " << i << ": " << msg << std::endl;
+                    messages[i].push_back(msg);
+                }
+            }
         }
     }
 
