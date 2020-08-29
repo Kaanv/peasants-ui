@@ -50,6 +50,7 @@ private:
     void updateScreen() override;
     void enteringAction() override;
     void drawCurrentPlayerCards() override;
+    std::vector<unsigned int> createNumbersOfPlayersCards();
     void drawAnotherPlayerCards() override;
     void drawTableCards() override;
     void drawPeasantsInfo();

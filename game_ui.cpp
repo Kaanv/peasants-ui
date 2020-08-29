@@ -277,7 +277,7 @@ void GameUI::drawCurrentPlayerCards()
     }
 }
 
-void GameUI::drawAnotherPlayerCards()
+std::vector<unsigned int> GameUI::createNumbersOfPlayersCards()
 {
     unsigned int currentPlayerId = getCurrentPlayerId();
     if (isGameOneHumanOnly) currentPlayerId = humanPlayer;
@@ -290,7 +290,12 @@ void GameUI::drawAnotherPlayerCards()
             static_cast<unsigned int>(game->getPlayer((currentPlayerId + i) % numberOfPlayers).getCards().size()));
     }
 
-    drawAnotherPlayersCards(numbersOfPlayersCards);
+    return numbersOfPlayersCards;
+}
+
+void GameUI::drawAnotherPlayerCards()
+{
+    drawAnotherPlayersCards(createNumbersOfPlayersCards());
 }
 
 void GameUI::drawTableCards()
@@ -622,9 +627,20 @@ void GameUI::sendGameInfoToNetworkPlayer(unsigned int clientId)
      * 3. player id
      * 4. numbers of players cards
      */
+
+    std::vector<unsigned int> numberOfPlayersCards = createNumbersOfPlayersCards();
+    std::string numberOfPlayersCardsString = "";
+
+    for (unsigned int i = 0; i < numberOfPlayersCards.size(); i++)
+    {
+        numberOfPlayersCardsString += std::to_string(numberOfPlayersCards[i]);
+        numberOfPlayersCardsString += ";";
+    }
+
     netServer.sendStringToClient("GAME_INFO;" + std::to_string(numberOfPlayers) + ";"
                                               + convertCardsToString(game->getPlayer(playerId).getCards()) + ";"
-                                              + std::to_string(playerId),
+                                              + std::to_string(playerId) + ";"
+                                              + numberOfPlayersCardsString,
                                  clientId);
 }
 
@@ -738,7 +754,13 @@ PollingPlaceId ClientUI::startEventPoll()
         if (results[0] == "GAME_INFO")
         {
             std::cout << "RECEIVED GAME INFO!" << std::endl;
+            numbersOfPlayersCards.clear();
+            numberOfPlayers = static_cast<unsigned int>(std::stoi(results[1]));
             updateCards(results[2]);
+            for (unsigned int i = 0; i < numberOfPlayers - 1; i++)
+            {
+                numbersOfPlayersCards.push_back(static_cast<unsigned int>(std::stoi(results[4 + i])));
+            }
         }
     }
 
@@ -827,7 +849,7 @@ void ClientUI::drawCurrentPlayerCards()
 
 void ClientUI::drawAnotherPlayerCards()
 {
-
+    if (numbersOfPlayersCards.size()) drawAnotherPlayersCards(numbersOfPlayersCards);
 }
 
 void ClientUI::drawTableCards()
