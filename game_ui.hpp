@@ -27,6 +27,7 @@ private:
     void drawAnotherPlayerCards() override;
     void drawTableCards() override;
     void updateCards(std::string cardsInfo);
+    void updateTableCards(std::string cardsInfo);
 
     void getGameInfoFromServer();
 
@@ -36,6 +37,7 @@ private:
     std::vector<unsigned int> numbersOfPlayersCards;
     Scores scores;
     Cards clientCards;
+    Cards tableCards;
     NetworkClient& netClient;
 };
 

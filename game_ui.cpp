@@ -625,7 +625,8 @@ void GameUI::sendGameInfoToNetworkPlayer(unsigned int clientId)
      * 1. number of players
      * 2. player cards
      * 3. player id
-     * 4. numbers of players cards
+     * 4. table cards
+     * 5. numbers of players cards
      */
 
     std::vector<unsigned int> numberOfPlayersCards = createNumbersOfPlayersCards();
@@ -640,6 +641,7 @@ void GameUI::sendGameInfoToNetworkPlayer(unsigned int clientId)
     netServer.sendStringToClient("GAME_INFO;" + std::to_string(numberOfPlayers) + ";"
                                               + convertCardsToString(game->getPlayer(playerId).getCards()) + ";"
                                               + std::to_string(playerId) + ";"
+                                              + convertCardsToString(game->getCardsFromTableTop()) + ";"
                                               + numberOfPlayersCardsString,
                                  clientId);
 }
@@ -743,7 +745,8 @@ PollingPlaceId ClientUI::startEventPoll()
      * 1. number of players
      * 2. player cards
      * 3. player id
-     * 4. numbers of players cards
+     * 4. table cards
+     * 5. numbers of players cards
      */
 
     if (lastMessage.size() > 0)
@@ -757,10 +760,13 @@ PollingPlaceId ClientUI::startEventPoll()
             numbersOfPlayersCards.clear();
             numberOfPlayers = static_cast<unsigned int>(std::stoi(results[1]));
             updateCards(results[2]);
+            updateTableCards(results[4]);
             for (unsigned int i = 0; i < numberOfPlayers - 1; i++)
             {
-                numbersOfPlayersCards.push_back(static_cast<unsigned int>(std::stoi(results[4 + i])));
+                numbersOfPlayersCards.push_back(static_cast<unsigned int>(std::stoi(results[5 + i])));
             }
+            forceDrawingEverything();
+            updateScreen();
         }
     }
 
@@ -785,6 +791,7 @@ PollingPlaceId ClientUI::startEventPoll()
         }
         else if(event.type == SDL_MOUSEBUTTONDOWN)
         {
+            getGameInfoFromServer();
             updateButtonsClickStatus();
         }
         else if(event.type == SDL_MOUSEBUTTONUP)
@@ -828,7 +835,7 @@ void ClientUI::updateScreen()
 
 void ClientUI::forceDrawingEverything()
 {
-
+    backgroundNeedsDrawing = true;
 }
 
 void ClientUI::enteringAction()
@@ -854,7 +861,10 @@ void ClientUI::drawAnotherPlayerCards()
 
 void ClientUI::drawTableCards()
 {
-
+    for (unsigned int i = 0; i < tableCards.size(); i++)
+    {
+        drawCard(tableCards[i], Position{-0.4 + static_cast<double>(i) * CARD_SPACE, 0.2});
+    }
 }
 
 void ClientUI::getGameInfoFromServer()
@@ -869,5 +879,15 @@ void ClientUI::updateCards(std::string cardsInfo)
     {
         Card card = convertCharsToCard(cardsInfo[i - 1], cardsInfo[i]);
         clientCards.push_back(card);
+    }
+}
+
+void ClientUI::updateTableCards(std::string cardsInfo)
+{
+    tableCards.clear();
+    for (unsigned int i = 1; i < cardsInfo.size(); i += 2)
+    {
+        Card card = convertCharsToCard(cardsInfo[i - 1], cardsInfo[i]);
+        tableCards.push_back(card);
     }
 }
