@@ -28,6 +28,7 @@ private:
     void drawTableCards() override;
     void updateCards(std::string cardsInfo);
     void updateTableCards(std::string cardsInfo);
+    void updateCardsSelection(int x, int y);
 
     void getGameInfoFromServer();
 

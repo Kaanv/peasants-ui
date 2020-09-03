@@ -733,7 +733,22 @@ Scores GameUI::getGameResults()
 
 ClientUI::ClientUI(NetworkClient& _netClient) : netClient(_netClient)
 {
+    bool notVisible = false;
     ownId = PollingPlaceId_ClientGame;
+
+    Dimensions defaultButtonDimensions = {0.475, 0.125};
+
+    buttons.push_back(Button(defaultButtonDimensions, {0.5125, 0.95},
+                             "Throw cards", ButtonId_ThrowCards));
+    buttons.push_back(Button(defaultButtonDimensions, {0.5125, 0.84},
+                             "Pass turn", ButtonId_PassTurn));
+    buttons.push_back(Button(defaultButtonDimensions, {0.5125, 0.95},
+                             "Give away", ButtonId_GiveAway, notVisible));
+
+    buttons.push_back(Button(defaultButtonDimensions, {0.5125, -0.675},
+                             "Main menu", ButtonId_MainMenu));
+    buttons.push_back(Button(defaultButtonDimensions, {0.5125, -0.825},
+                             "Exit game", ButtonId_ExitGame));
 }
 
 PollingPlaceId ClientUI::startEventPoll()
@@ -793,6 +808,7 @@ PollingPlaceId ClientUI::startEventPoll()
         {
             getGameInfoFromServer();
             updateButtonsClickStatus();
+            updateCardsSelection(event.motion.x, event.motion.y);
         }
         else if(event.type == SDL_MOUSEBUTTONUP)
         {
@@ -889,5 +905,21 @@ void ClientUI::updateTableCards(std::string cardsInfo)
     {
         Card card = convertCharsToCard(cardsInfo[i - 1], cardsInfo[i]);
         tableCards.push_back(card);
+    }
+}
+
+void ClientUI::updateCardsSelection(int x, int y)
+{
+    Position glPosition = {static_cast<double>(x) * 2.0 / SCREEN_WIDTH - 1.0,
+                           static_cast<double>(-y) * 2.0 / SCREEN_HEIGHT + 1.0};
+
+    for (unsigned int i = 0; i < clientCards.size(); i++)
+    {
+        if (clientCards[i].selected) updateSelectedCardSelection(glPosition,
+                                                                 clientCards,
+                                                                 i);
+        else updateNotSelectedCardSelection(glPosition,
+                                            clientCards,
+                                            i);
     }
 }
