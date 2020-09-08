@@ -852,6 +852,10 @@ void ClientUI::updateScreen()
 void ClientUI::forceDrawingEverything()
 {
     backgroundNeedsDrawing = true;
+    for (auto& button : buttons)
+    {
+        button.forceDraw();
+    }
 }
 
 void ClientUI::enteringAction()
