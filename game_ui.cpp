@@ -890,12 +890,30 @@ void ClientUI::getGameInfoFromServer()
 
 void ClientUI::updateCards(std::string cardsInfo)
 {
-    clientCards.clear();
+    Cards newClientCards;
+
     for (unsigned int i = 1; i < cardsInfo.size(); i += 2)
     {
         Card card = convertCharsToCard(cardsInfo[i - 1], cardsInfo[i]);
-        clientCards.push_back(card);
+        newClientCards.push_back(card);
     }
+
+    if (newClientCards.size() == clientCards.size())
+    {
+        for (unsigned int i = 0; i < clientCards.size(); i++)
+        {
+            if (clientCards[i] != newClientCards[i])
+            {
+                clientCards.clear();
+                clientCards = std::move(newClientCards);
+                return;
+            }
+        }
+        return;
+    }
+
+    clientCards.clear();
+    clientCards = std::move(newClientCards);
 }
 
 void ClientUI::updateTableCards(std::string cardsInfo)
