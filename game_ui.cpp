@@ -635,8 +635,9 @@ void GameUI::sendGameInfoToNetworkPlayer(unsigned int clientId)
     for (unsigned int i = 0; i < numberOfPlayersCards.size(); i++)
     {
         numberOfPlayersCardsString += std::to_string(numberOfPlayersCards[i]);
-        numberOfPlayersCardsString += ";";
+        numberOfPlayersCardsString += ",";
     }
+    if (numberOfPlayersCardsString.size() > 1) numberOfPlayersCardsString[numberOfPlayersCardsString.size() - 1] = ';';
 
     netServer.sendStringToClient("GAME_INFO;" + std::to_string(numberOfPlayers) + ";"
                                               + convertCardsToString(game->getPlayer(playerId).getCards()) + ";"
@@ -776,9 +777,11 @@ PollingPlaceId ClientUI::startEventPoll()
             numberOfPlayers = static_cast<unsigned int>(std::stoi(results[1]));
             updateCards(results[2]);
             updateTableCards(results[4]);
-            for (unsigned int i = 0; i < numberOfPlayers - 1; i++)
+            std::vector<std::string> numbersOfPlayersCardsString;
+            boost::split(numbersOfPlayersCardsString, results[5], [](char c){return c == ',';});
+            for (unsigned int i = 0; i < numbersOfPlayersCardsString.size(); i++)
             {
-                numbersOfPlayersCards.push_back(static_cast<unsigned int>(std::stoi(results[5 + i])));
+                numbersOfPlayersCards.push_back(static_cast<unsigned int>(std::stoi(numbersOfPlayersCardsString[i])));
             }
             forceDrawingEverything();
             updateScreen();
