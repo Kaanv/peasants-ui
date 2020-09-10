@@ -26,6 +26,7 @@ private:
     void drawCurrentPlayerCards() override;
     void drawAnotherPlayerCards() override;
     void drawTableCards() override;
+    void drawPeasantsInfo();
     void updateCards(std::string cardsInfo);
     void updateTableCards(std::string cardsInfo);
     void updateCardsSelection(int x, int y);
@@ -36,6 +37,7 @@ private:
     unsigned int numberOfPlayers = 0;
     int myPlayerId;
     std::vector<unsigned int> numbersOfPlayersCards;
+    std::vector<int> peasantsInfo;
     Scores scores;
     Cards clientCards;
     Cards tableCards;

@@ -627,6 +627,7 @@ void GameUI::sendGameInfoToNetworkPlayer(unsigned int clientId)
      * 3. player id
      * 4. table cards
      * 5. numbers of players cards
+     * 6. peasants info
      */
 
     std::vector<unsigned int> numberOfPlayersCards = createNumbersOfPlayersCards();
@@ -639,11 +640,21 @@ void GameUI::sendGameInfoToNetworkPlayer(unsigned int clientId)
     }
     if (numberOfPlayersCardsString.size() > 1) numberOfPlayersCardsString[numberOfPlayersCardsString.size() - 1] = ';';
 
+    std::string peasantsInfoString = "";
+
+    for (unsigned int i = 0; i < numberOfPlayers; i++)
+    {
+        peasantsInfoString += std::to_string(game->getPlayer(i).getPeasantLevel());
+        peasantsInfoString += ",";
+    }
+    peasantsInfoString[peasantsInfoString.size() - 1] = ';';
+
     netServer.sendStringToClient("GAME_INFO;" + std::to_string(numberOfPlayers) + ";"
                                               + convertCardsToString(game->getPlayer(playerId).getCards()) + ";"
                                               + std::to_string(playerId) + ";"
                                               + convertCardsToString(game->getCardsFromTableTop()) + ";"
-                                              + numberOfPlayersCardsString,
+                                              + numberOfPlayersCardsString
+                                              + peasantsInfoString,
                                  clientId);
 }
 
@@ -763,6 +774,7 @@ PollingPlaceId ClientUI::startEventPoll()
      * 3. player id
      * 4. table cards
      * 5. numbers of players cards
+     * 6. peasants info
      */
 
     if (lastMessage.size() > 0)
@@ -783,6 +795,15 @@ PollingPlaceId ClientUI::startEventPoll()
             {
                 numbersOfPlayersCards.push_back(static_cast<unsigned int>(std::stoi(numbersOfPlayersCardsString[i])));
             }
+
+            peasantsInfo.clear();
+            std::vector<std::string> peasantsInfoString;
+            boost::split(peasantsInfoString, results[6], [](char c){return c == ',';});
+            for (unsigned int i = 0; i < peasantsInfoString.size(); i++)
+            {
+                peasantsInfo.push_back(static_cast<int>(std::stoi(peasantsInfoString[i])));
+            }
+
             forceDrawingEverything();
             updateScreen();
         }
@@ -838,7 +859,7 @@ void ClientUI::updateScreen()
         drawBackground();
         drawButtonPanel();
         drawCards();
-//        drawPeasantsInfo();
+        drawPeasantsInfo();
 //        drawPastTurnsInfo();
     }
 
@@ -850,6 +871,32 @@ void ClientUI::updateScreen()
     SDL_GL_SwapBuffers();
     lastTicks = SDL_GetTicks();
     backgroundNeedsDrawing = false;
+}
+
+void ClientUI::drawPeasantsInfo()
+{
+    TTF_Font* font(TTF_OpenFont("Fonts//font.ttf", 40));
+    SDL_Color textColor({255, 255, 255, 0});
+
+    SDL_GL_RenderText("Peasant levels:",
+                      font,
+                      textColor,
+                      0.75,
+                      0.68,
+                      0.1);
+
+    for (unsigned int i = 0; i < peasantsInfo.size(); i++)
+    {
+        std::string text =
+            "Player " + std::to_string(i + 1) + ": " +
+            std::to_string(peasantsInfo[i]);
+        SDL_GL_RenderText(text.c_str(),
+                          font,
+                          textColor,
+                          0.75,
+                          0.61 - i * 0.06,
+                          0.1);
+    }
 }
 
 void ClientUI::forceDrawingEverything()
