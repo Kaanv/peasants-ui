@@ -17,6 +17,7 @@ INCLUDEPATH += LuaBridge/Source/
 
 SOURCES += main.cpp \
     base_ui.cpp \
+    client_ui.cpp \
     network_server.cpp \
     textures.cpp \
     text.cpp \
@@ -65,6 +66,7 @@ HEADERS += \
     LuaBridge/detail/Userdata.h \
     LuaBridge/detail/dump.h \
     base_ui.hpp \
+    client_ui.hpp \
     network_server.hpp \
     textures.hpp \
     text.hpp \

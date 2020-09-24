@@ -2,6 +2,7 @@
 #define CARD_HPP
 
 #include <vector>
+#include <string>
 
 enum Color
 {
@@ -69,5 +70,12 @@ struct Card
 };
 
 typedef std::vector<Card> Cards;
+
+char convertValueToChar(Value value);
+Value convertCharToValue(const char value);
+char convertColorToChar(Color color);
+Color convertCharToColor(const char color);
+std::string convertCardsToString(const Cards& cards);
+Card convertCharsToCard(const char value, const char color);
 
 #endif

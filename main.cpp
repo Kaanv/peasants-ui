@@ -2,6 +2,7 @@
 #include "polling_place_id.hpp"
 #include "menu.hpp"
 #include "game_ui.hpp"
+#include "client_ui.hpp"
 #include "sdl_gl_wrapper.hpp"
 #include "settings_menu.hpp"
 #include "results_menu.hpp"
