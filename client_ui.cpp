@@ -93,7 +93,6 @@ PollingPlaceId ClientUI::startEventPoll()
         }
         else if(event.type == SDL_MOUSEBUTTONDOWN)
         {
-            getGameInfoFromServer();
             updateButtonsClickStatus();
             updateCardsSelection(event.motion.x, event.motion.y);
         }
@@ -107,6 +106,18 @@ PollingPlaceId ClientUI::startEventPoll()
                     {
                         case ButtonId_CancelGame: return PollingPlaceId_NetworkGameJoining;
                         case ButtonId_MainMenu: return PollingPlaceId_MainMenu;
+                        case ButtonId_PassTurn:
+                        {
+                            netClient.sendMessage("PASS_TURN");
+                            forceDrawingEverything();
+                            break;
+                        }
+                        case ButtonId_ThrowCards:
+                        {
+                            netClient.sendMessage("THROW_CARDS");
+                            forceDrawingEverything();
+                            break;
+                        }
                     }
                 }
             }

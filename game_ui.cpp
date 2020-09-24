@@ -109,6 +109,7 @@ PollingPlaceId GameUI::startEventPoll()
         {
             try { game->performAITurnLua(); }
             catch(...) { game->handleIllegalAITurn(); }
+            sendGameInfoToAllNetworkPlayers();
             forceDrawingEverything();
             if (not isGameOneHumanOnly)
             {
@@ -186,6 +187,7 @@ PollingPlaceId GameUI::startEventPoll()
                                     {
                                         game->passCurrentPlayerTurn();
                                         game->nextPlayer();
+                                        sendGameInfoToAllNetworkPlayers();
                                         forceDrawingEverything();
                                         drawCurrentPlayerPopup();
                                         break;
@@ -194,6 +196,7 @@ PollingPlaceId GameUI::startEventPoll()
                                     {
                                         game->throwSelectedCards();
                                         game->nextPlayer();
+                                        sendGameInfoToAllNetworkPlayers();
                                         forceDrawingEverything();
                                         drawCurrentPlayerPopup();
                                     }
@@ -581,6 +584,14 @@ void GameUI::sendGameInfoToNetworkPlayer(unsigned int clientId)
                                               + numberOfPlayersCardsString
                                               + peasantsInfoString,
                                  clientId);
+}
+
+void GameUI::sendGameInfoToAllNetworkPlayers()
+{
+    for (unsigned int clientIndex = 0; clientIndex < netServer.getNumberOfClients(); clientIndex++)
+    {
+        sendGameInfoToNetworkPlayer(clientIndex);
+    }
 }
 
 namespace

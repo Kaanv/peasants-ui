@@ -47,6 +47,7 @@ private:
     void processEndOfRound();
     void handleUIPartOfCardsExchange();
     void sendGameInfoToNetworkPlayer(unsigned int clientId);
+    void sendGameInfoToAllNetworkPlayers();
 
     Settings settings;
     unsigned int numberOfPlayers;

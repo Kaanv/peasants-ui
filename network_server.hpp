@@ -11,6 +11,7 @@ public:
     void sendStringToClient(std::string message, unsigned int clientIndex = 0) const;
     std::string getLastMessageFromClient(unsigned int clientIndex);
     void removeLastMessageFromClient(unsigned int clientIndex);
+    unsigned int getNumberOfClients();
 
 private:
     void resolveHost();

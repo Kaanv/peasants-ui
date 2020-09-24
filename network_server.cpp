@@ -127,3 +127,8 @@ void NetworkServer::removeLastMessageFromClient(unsigned int clientIndex)
         messages[clientIndex].pop_back();
     }
 }
+
+unsigned int NetworkServer::getNumberOfClients()
+{
+    return static_cast<unsigned int>(clients.size());
+}
