@@ -48,6 +48,7 @@ private:
     void handleUIPartOfCardsExchange();
     void sendGameInfoToNetworkPlayer(unsigned int clientId);
     void sendGameInfoToAllNetworkPlayers();
+    void passCurrentPlayerTurn();
 
     Settings settings;
     unsigned int numberOfPlayers;

@@ -63,6 +63,15 @@ void GameUI::setSettings(Settings settings)
     game = std::make_unique<Game>(settings);
 }
 
+void GameUI::passCurrentPlayerTurn()
+{
+    game->passCurrentPlayerTurn();
+    game->nextPlayer();
+    sendGameInfoToAllNetworkPlayers();
+    forceDrawingEverything();
+    drawCurrentPlayerPopup();
+}
+
 PollingPlaceId GameUI::startEventPoll()
 {
     for (unsigned int clientIndex = 0; clientIndex < 5; clientIndex++)
@@ -70,6 +79,12 @@ PollingPlaceId GameUI::startEventPoll()
         std::string lastMessage = netServer.getLastMessageFromClient(clientIndex);
         if (lastMessage == "GET_GAME_INFO")
         {
+            sendGameInfoToNetworkPlayer(clientIndex);
+        }
+        else if (lastMessage == "PASS_TURN" and settings.playerIdFromClientId[clientIndex] == game->getCurrentPlayer().getId())
+        {
+            passCurrentPlayerTurn();
+            std::cout << "PASSSED NETWORK PLAYER TURN\n";
             sendGameInfoToNetworkPlayer(clientIndex);
         }
     }
@@ -185,11 +200,7 @@ PollingPlaceId GameUI::startEventPoll()
                                 {
                                     case ButtonId_PassTurn:
                                     {
-                                        game->passCurrentPlayerTurn();
-                                        game->nextPlayer();
-                                        sendGameInfoToAllNetworkPlayers();
-                                        forceDrawingEverything();
-                                        drawCurrentPlayerPopup();
+                                        passCurrentPlayerTurn();
                                         break;
                                     }
                                     case ButtonId_ThrowCards:
@@ -545,7 +556,7 @@ void GameUI::enteringAction()
 void GameUI::sendGameInfoToNetworkPlayer(unsigned int clientId)
 {
     std::vector<unsigned int> numbersOfPlayersCards;
-    unsigned int playerId = settings.playerId[clientId];
+    unsigned int playerId = settings.playerIdFromClientId[clientId];
 
     /**
      * Structure of game info message:

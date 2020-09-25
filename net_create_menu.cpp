@@ -49,32 +49,32 @@ PollingPlaceId NetCreateMenu::startEventPoll()
                         if (button.getButtonId() == ButtonId_PlayerType1)
                         {
                             settings.clientId[0] = clientIndex;
-                            settings.playerId[clientIndex] = 0;
+                            settings.playerIdFromClientId[clientIndex] = 0;
                         }
                         else if (button.getButtonId() == ButtonId_PlayerType2)
                         {
                             settings.clientId[1] = clientIndex;
-                            settings.playerId[clientIndex] = 1;
+                            settings.playerIdFromClientId[clientIndex] = 1;
                         }
                         else if (button.getButtonId() == ButtonId_PlayerType3)
                         {
                             settings.clientId[2] = clientIndex;
-                            settings.playerId[clientIndex] = 2;
+                            settings.playerIdFromClientId[clientIndex] = 2;
                         }
                         else if (button.getButtonId() == ButtonId_PlayerType4)
                         {
                             settings.clientId[3] = clientIndex;
-                            settings.playerId[clientIndex] = 3;
+                            settings.playerIdFromClientId[clientIndex] = 3;
                         }
                         else if (button.getButtonId() == ButtonId_PlayerType5)
                         {
                             settings.clientId[4] = clientIndex;
-                            settings.playerId[clientIndex] = 4;
+                            settings.playerIdFromClientId[clientIndex] = 4;
                         }
                         else if (button.getButtonId() == ButtonId_PlayerType6)
                         {
                             settings.clientId[5] = clientIndex;
-                            settings.playerId[clientIndex] = 5;
+                            settings.playerIdFromClientId[clientIndex] = 5;
                         }
                         break;
                     }
