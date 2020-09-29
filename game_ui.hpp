@@ -49,6 +49,7 @@ private:
     void sendGameInfoToNetworkPlayer(unsigned int clientId);
     void sendGameInfoToAllNetworkPlayers();
     void passCurrentPlayerTurn();
+    std::string getTurnHistoryAsString();
 
     Settings settings;
     unsigned int numberOfPlayers;

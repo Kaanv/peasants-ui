@@ -553,6 +553,34 @@ void GameUI::enteringAction()
     }
 }
 
+std::string GameUI::getTurnHistoryAsString()
+{
+    std::string turnHistory = "";
+    const History& history = game->getHistory();
+
+    for (unsigned int i = 0; i < numberOfPlayers and i < static_cast<unsigned int>(history.getHistory().size()); i++)
+    {
+        HistoryElement currentHistory = history.getHistory()[history.getHistory().size() - i - 1];
+        turnHistory += std::to_string(currentHistory.playerId);
+        turnHistory += ",";
+
+        if (currentHistory.action == "PASS TURN")
+        {
+            turnHistory += "PASS_TURN";
+            turnHistory += ",";
+        }
+        else
+        {
+            turnHistory += convertCardsToString(currentHistory.cards);
+            turnHistory += ",";
+        }
+    }
+
+    if (turnHistory.size()) turnHistory[turnHistory.size() - 1] = ';';
+    else turnHistory = ";";
+    return turnHistory;
+}
+
 void GameUI::sendGameInfoToNetworkPlayer(unsigned int clientId)
 {
     std::vector<unsigned int> numbersOfPlayersCards;
@@ -567,6 +595,7 @@ void GameUI::sendGameInfoToNetworkPlayer(unsigned int clientId)
      * 4. table cards
      * 5. numbers of players cards
      * 6. peasants info
+     * 7. turn history
      */
 
     std::vector<unsigned int> numberOfPlayersCards = createNumbersOfPlayersCards();
@@ -588,12 +617,14 @@ void GameUI::sendGameInfoToNetworkPlayer(unsigned int clientId)
     }
     peasantsInfoString[peasantsInfoString.size() - 1] = ';';
 
+
     netServer.sendStringToClient("GAME_INFO;" + std::to_string(numberOfPlayers) + ";"
                                               + convertCardsToString(game->getPlayer(playerId).getCards()) + ";"
                                               + std::to_string(playerId) + ";"
                                               + convertCardsToString(game->getCardsFromTableTop()) + ";"
                                               + numberOfPlayersCardsString
-                                              + peasantsInfoString,
+                                              + peasantsInfoString
+                                              + getTurnHistoryAsString(),
                                  clientId);
 }
 
