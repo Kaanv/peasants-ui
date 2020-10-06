@@ -30,6 +30,7 @@ private:
     void updateCards(std::string cardsInfo);
     void updateTableCards(std::string cardsInfo);
     void updateCardsSelection(int x, int y);
+    void drawPastTurnsInfo();
 
     void getGameInfoFromServer();
 
@@ -42,4 +43,5 @@ private:
     Cards clientCards;
     Cards tableCards;
     NetworkClient& netClient;
+    std::string turnsInfo;
 };

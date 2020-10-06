@@ -77,5 +77,6 @@ char convertColorToChar(Color color);
 Color convertCharToColor(const char color);
 std::string convertCardsToString(const Cards& cards);
 Card convertCharsToCard(const char value, const char color);
+Cards convertStringToCards(std::string cardsInfo);
 
 #endif

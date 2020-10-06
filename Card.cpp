@@ -78,3 +78,14 @@ Card convertCharsToCard(const char value, const char color)
 {
     return Card(convertCharToValue(value), convertCharToColor(color));
 }
+
+Cards convertStringToCards(std::string cardsInfo)
+{
+    Cards cards;
+    for (unsigned int i = 1; i < cardsInfo.size(); i += 2)
+    {
+        Card card = convertCharsToCard(cardsInfo[i - 1], cardsInfo[i]);
+        cards.push_back(card);
+    }
+    return cards;
+}

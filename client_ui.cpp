@@ -38,6 +38,7 @@ PollingPlaceId ClientUI::startEventPoll()
      * 4. table cards
      * 5. numbers of players cards
      * 6. peasants info
+     * 7. turn history
      */
 
     if (lastMessage.size() > 0)
@@ -66,6 +67,8 @@ PollingPlaceId ClientUI::startEventPoll()
             {
                 peasantsInfo.push_back(static_cast<int>(std::stoi(peasantsInfoString[i])));
             }
+
+            turnsInfo = results[7];
 
             forceDrawingEverything();
             updateScreen();
@@ -134,7 +137,7 @@ void ClientUI::updateScreen()
         drawButtonPanel();
         drawCards();
         drawPeasantsInfo();
-//        drawPastTurnsInfo();
+        drawPastTurnsInfo();
     }
 
     for (auto& button : buttons)
@@ -218,13 +221,7 @@ void ClientUI::getGameInfoFromServer()
 
 void ClientUI::updateCards(std::string cardsInfo)
 {
-    Cards newClientCards;
-
-    for (unsigned int i = 1; i < cardsInfo.size(); i += 2)
-    {
-        Card card = convertCharsToCard(cardsInfo[i - 1], cardsInfo[i]);
-        newClientCards.push_back(card);
-    }
+    Cards newClientCards = convertStringToCards(cardsInfo);
 
     if (newClientCards.size() == clientCards.size())
     {
@@ -267,5 +264,57 @@ void ClientUI::updateCardsSelection(int x, int y)
         else updateNotSelectedCardSelection(glPosition,
                                             clientCards,
                                             i);
+    }
+}
+
+void ClientUI::drawPastTurnsInfo()
+{
+    TTF_Font* font(TTF_OpenFont("Fonts//font.ttf", 40));
+    SDL_Color textColor({255, 255, 255, 0});
+
+    SDL_GL_RenderText("Past turns:",
+                      font,
+                      textColor,
+                      0.75,
+                      0.2,
+                      0.1);
+
+    std::vector<std::string> playerTurnsStrings;
+    boost::split(playerTurnsStrings, turnsInfo, [](char c){return c == ',';});
+
+    if (playerTurnsStrings.size() > 1)
+    for (unsigned int i = 0; i < playerTurnsStrings.size(); i += 2)
+    {
+        std::string text =
+            "Player " + std::to_string(std::stoi(playerTurnsStrings[i]) + 1) + ": ";
+
+        double smallFactor = 2.31;
+        if (playerTurnsStrings[i + 1] == "PASS_TURN")
+        {
+            SDL_GL_RenderText("PASS",
+                              font,
+                              textColor,
+                              0.85,
+                              0.09 - static_cast<int>(i/2) * (CARD_HEIGHT/smallFactor),
+                              0.1);
+        }
+        else
+        {
+            Cards cards = convertStringToCards(playerTurnsStrings[i + 1]);
+
+            for (unsigned int j = 0; j < cards.size(); j++)
+            {
+                drawCard(cards[j],
+                         Position{0.78 + static_cast<double>(j) * CARD_SPACE/smallFactor, 0.13 - static_cast<int>(i/2) * (CARD_HEIGHT/smallFactor) + 0.05},
+                         CARD_WIDTH/smallFactor, CARD_HEIGHT/smallFactor);
+            }
+        }
+
+        SDL_GL_RenderText(text.c_str(),
+                          font,
+                          textColor,
+                          0.65,
+                          0.09 - static_cast<int>(i/2) * (CARD_HEIGHT/smallFactor),
+                          0.1);
     }
 }
