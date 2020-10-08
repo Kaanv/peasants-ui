@@ -117,7 +117,18 @@ PollingPlaceId ClientUI::startEventPoll()
                         }
                         case ButtonId_ThrowCards:
                         {
-                            netClient.sendMessage("THROW_CARDS");
+                            std::string cardIndexes = "";
+
+                            for (unsigned int i = 0; i < clientCards.size(); i++)
+                            {
+                                if (clientCards[i].selected)
+                                {
+                                    cardIndexes += std::to_string(i);
+                                    if (i < (clientCards.size() - 1)) cardIndexes += ";";
+                                }
+                            }
+
+                            netClient.sendMessage("THROW_CARDS;" + cardIndexes);
                             forceDrawingEverything();
                             break;
                         }

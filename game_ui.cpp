@@ -77,6 +77,10 @@ PollingPlaceId GameUI::startEventPoll()
     for (unsigned int clientIndex = 0; clientIndex < 5; clientIndex++)
     {
         std::string lastMessage = netServer.getLastMessageFromClient(clientIndex);
+
+        std::vector<std::string> results;
+        boost::split(results, lastMessage, [](char c){return c == ';';});
+
         if (lastMessage == "GET_GAME_INFO")
         {
             sendGameInfoToNetworkPlayer(clientIndex);
@@ -85,6 +89,16 @@ PollingPlaceId GameUI::startEventPoll()
         {
             passCurrentPlayerTurn();
             std::cout << "PASSSED NETWORK PLAYER TURN\n";
+            sendGameInfoToNetworkPlayer(clientIndex);
+        }
+        else if (results[0] == "THROW_CARDS" and settings.playerIdFromClientId[clientIndex] == game->getCurrentPlayer().getId())
+        {
+            for (unsigned int i = 1; i < results.size(); i++)
+            {
+                game->getPlayer(settings.playerIdFromClientId[clientIndex]).selectCard(std::stoi(results[i]));
+            }
+            game->throwSelectedCards();
+            game->nextPlayer();
             sendGameInfoToNetworkPlayer(clientIndex);
         }
     }
