@@ -72,7 +72,7 @@ void GameUI::passCurrentPlayerTurn()
     drawCurrentPlayerPopup();
 }
 
-PollingPlaceId GameUI::startEventPoll()
+void GameUI::handleClientsMessages()
 {
     for (unsigned int clientIndex = 0; clientIndex < 5; clientIndex++)
     {
@@ -93,15 +93,37 @@ PollingPlaceId GameUI::startEventPoll()
         }
         else if (results[0] == "THROW_CARDS" and settings.playerIdFromClientId[clientIndex] == game->getCurrentPlayer().getId())
         {
-            for (unsigned int i = 1; i < results.size(); i++)
+            try
             {
-                game->getPlayer(settings.playerIdFromClientId[clientIndex]).selectCard(std::stoi(results[i]));
+                for (unsigned int i = 1; i < results.size(); i++)
+                {
+                    std::cout << "DBG: selecting card " << results[i] << " as client" << std::endl;
+                    try
+                    {
+                        game->getPlayer(settings.playerIdFromClientId[clientIndex]).selectCard(std::stoi(results[i]));
+                    }
+                    catch(...)
+                    {
+                        std::cout << "DBG: ignored stoi error" << std::endl;
+                    }
+                }
+                game->throwSelectedCards();
+                game->nextPlayer();
+                sendGameInfoToNetworkPlayer(clientIndex);
             }
-            game->throwSelectedCards();
-            game->nextPlayer();
-            sendGameInfoToNetworkPlayer(clientIndex);
+            catch (const std::runtime_error& e)
+            {
+                netServer.sendStringToClient("ERROR;" + std::string(e.what()),
+                                             clientIndex);
+                game->getPlayer(settings.playerIdFromClientId[clientIndex]).unselectAllCards();
+            }
         }
     }
+}
+
+PollingPlaceId GameUI::startEventPoll()
+{
+    handleClientsMessages();
 
     if (isGameAIOnly)
     {

@@ -50,6 +50,7 @@ private:
     void sendGameInfoToAllNetworkPlayers();
     void passCurrentPlayerTurn();
     std::string getTurnHistoryAsString();
+    void handleClientsMessages();
 
     Settings settings;
     unsigned int numberOfPlayers;
