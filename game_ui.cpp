@@ -7,7 +7,6 @@
 #include <boost/algorithm/string.hpp>
 
 GameUI::GameUI(NetworkServer& _netServer) : numberOfPlayers(4),
-                                            isPopupActive(false),
                                             netServer(_netServer)
 {
     bool notVisible = false;
@@ -274,15 +273,6 @@ PollingPlaceId GameUI::startEventPoll()
     return PollingPlaceId_Game;
 }
 
-void GameUI::forceDrawButtons()
-{
-    for (auto& button : buttons)
-    {
-        button.forceDraw();
-        button.draw();
-    }
-}
-
 void GameUI::updateScreen()
 {
     if (isPopupActive)
@@ -458,33 +448,6 @@ void GameUI::forceDrawingEverything()
     }
 }
 
-void GameUI::drawPopup(std::string text)
-{
-    drawBackground();
-    drawButtonPanel();
-    drawPeasantsInfo();
-    drawPastTurnsInfo();
-    Dimensions fullScreen{1.5, 2.0};
-    Position rightLeftCorner{-1.0, 1.0};
-
-    glColor3d(0.0, 0.0, 0.8);
-    drawRectangle(fullScreen,
-                  rightLeftCorner);
-
-    TTF_Font* font(TTF_OpenFont("Fonts//font.ttf", 40));
-    SDL_Color textColor({255, 255, 255, 0});
-
-    SDL_GL_RenderText(text.c_str(),
-                      font,
-                      textColor,
-                      -0.25,
-                      0.2,
-                      0.1);
-    forceDrawButtons();
-    SDL_GL_SwapBuffers();
-    isPopupActive = true;
-}
-
 void GameUI::drawCurrentPlayerPopup()
 {
     std::string text = "Player " + std::to_string(getCurrentPlayerId() + 1) + " turn";
@@ -497,62 +460,10 @@ bool GameUI::isCurrentPlayerAI()
     return settings.playerTypes[getCurrentPlayerId()] == PlayerType_AI;
 }
 
-void GameUI::turnOnCardsExchange()
-{
-    cardsExchangeActive = true;
-    for (auto& button : buttons)
-    {
-        switch (button.getButtonId())
-        {
-            case ButtonId_PassTurn:
-            {
-                button.isVisible = false;
-                break;
-            }
-            case ButtonId_ThrowCards:
-            {
-                button.isVisible = false;
-                break;
-            }
-            case ButtonId_GiveAway:
-            {
-                button.isVisible = true;
-                break;
-            }
-        }
-    }
-    forceDrawingEverything();
-}
-
-void GameUI::turnOffCardsExchange()
-{
-    cardsExchangeActive = false;
-    for (auto& button : buttons)
-    {
-        switch (button.getButtonId())
-        {
-            case ButtonId_PassTurn:
-            {
-                button.isVisible = true;
-                break;
-            }
-            case ButtonId_ThrowCards:
-            {
-                button.isVisible = true;
-                break;
-            }
-            case ButtonId_GiveAway:
-            {
-                button.isVisible = false;
-                break;
-            }
-        }
-    }
-    forceDrawingEverything();
-}
-
 void GameUI::handleUIPartOfCardsExchange()
 {
+    sendGameInfoToAllNetworkPlayers();
+    sendCardsExchangeAllNetworkPlayers();
     if (not isGameAIOnly and isHumanAMaster())
     {
         turnOnCardsExchange();
@@ -615,6 +526,16 @@ std::string GameUI::getTurnHistoryAsString()
     if (turnHistory.size()) turnHistory[turnHistory.size() - 1] = ';';
     else turnHistory = ";";
     return turnHistory;
+}
+
+void GameUI::sendCardsExchangeAllNetworkPlayers()
+{
+    for (unsigned int clientIndex = 0; clientIndex < netServer.getNumberOfClients(); clientIndex++)
+    {
+        netServer.sendStringToClient("CARDS_EXCHANGE",
+                                     clientIndex);
+    }
+
 }
 
 void GameUI::sendGameInfoToNetworkPlayer(unsigned int clientId)

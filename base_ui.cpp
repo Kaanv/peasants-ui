@@ -230,3 +230,94 @@ void BaseUI::updateNotSelectedCardSelection(Position glPosition,
         forceDrawingEverything();
     }
 }
+
+
+void BaseUI::turnOnCardsExchange()
+{
+    cardsExchangeActive = true;
+    for (auto& button : buttons)
+    {
+        switch (button.getButtonId())
+        {
+            case ButtonId_PassTurn:
+            {
+                button.isVisible = false;
+                break;
+            }
+            case ButtonId_ThrowCards:
+            {
+                button.isVisible = false;
+                break;
+            }
+            case ButtonId_GiveAway:
+            {
+                button.isVisible = true;
+                break;
+            }
+        }
+    }
+    forceDrawingEverything();
+}
+
+void BaseUI::turnOffCardsExchange()
+{
+    cardsExchangeActive = false;
+    for (auto& button : buttons)
+    {
+        switch (button.getButtonId())
+        {
+            case ButtonId_PassTurn:
+            {
+                button.isVisible = true;
+                break;
+            }
+            case ButtonId_ThrowCards:
+            {
+                button.isVisible = true;
+                break;
+            }
+            case ButtonId_GiveAway:
+            {
+                button.isVisible = false;
+                break;
+            }
+        }
+    }
+    forceDrawingEverything();
+}
+
+void BaseUI::forceDrawButtons()
+{
+    for (auto& button : buttons)
+    {
+        button.forceDraw();
+        button.draw();
+    }
+}
+
+void BaseUI::drawPopup(std::string text)
+{
+    drawBackground();
+    drawButtonPanel();
+    drawPeasantsInfo();
+    drawPastTurnsInfo();
+    Dimensions fullScreen{1.5, 2.0};
+    Position rightLeftCorner{-1.0, 1.0};
+
+    glColor3d(0.0, 0.0, 0.8);
+    drawRectangle(fullScreen,
+                  rightLeftCorner);
+
+    TTF_Font* font(TTF_OpenFont("Fonts//font.ttf", 40));
+    SDL_Color textColor({255, 255, 255, 0});
+
+    SDL_GL_RenderText(text.c_str(),
+                      font,
+                      textColor,
+                      -0.25,
+                      0.2,
+                      0.1);
+    forceDrawButtons();
+    SDL_GL_SwapBuffers();
+    isPopupActive = true;
+}

@@ -40,7 +40,17 @@ protected:
     virtual void drawCurrentPlayerCards() = 0;
     virtual void drawAnotherPlayerCards() = 0;
     virtual void drawTableCards() = 0;
+    virtual void drawPeasantsInfo() = 0;
+    virtual void drawPastTurnsInfo() = 0;
     void drawAnotherPlayersCards(const std::vector<unsigned int>& numberOfCards);
+    void turnOnCardsExchange();
+    void turnOffCardsExchange();
+    void forceDrawButtons();
+    void drawPopup(std::string text);
+
+    bool cardsExchangeActive = false;
+    bool drawExchangePopup = true;
+    bool isPopupActive = false;
 
 private:
     void drawAnotherPlayersCardForFourPlayers(const std::vector<unsigned int>& numberOfCards);

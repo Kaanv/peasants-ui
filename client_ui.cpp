@@ -73,6 +73,19 @@ PollingPlaceId ClientUI::startEventPoll()
             forceDrawingEverything();
             updateScreen();
         }
+        else if (results[0] == "CARDS_EXCHANGE")
+        {
+            drawExchangePopup = true;
+            cardsExchangeActive = true;
+        }
+    }
+
+    if (cardsExchangeActive and drawExchangePopup)
+    {
+        std::string text =
+            "Give cards to your peasant";
+        drawPopup(text.c_str());
+        drawExchangePopup = false;
     }
 
     while (SDL_PollEvent(&event))

@@ -26,11 +26,11 @@ private:
     void drawCurrentPlayerCards() override;
     void drawAnotherPlayerCards() override;
     void drawTableCards() override;
-    void drawPeasantsInfo();
+    void drawPeasantsInfo() override;
+    void drawPastTurnsInfo() override;
     void updateCards(std::string cardsInfo);
     void updateTableCards(std::string cardsInfo);
     void updateCardsSelection(int x, int y);
-    void drawPastTurnsInfo();
 
     void getGameInfoFromServer();
 
