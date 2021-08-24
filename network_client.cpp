@@ -51,7 +51,7 @@ void NetworkClient::connectToHost(std::string ip,
         throw(NetworkException(std::string("SDLNet_TCP_AddSocket: ") +
                                std::string(SDLNet_GetError())));
 
-    SDL_CreateThread(clientLoop, nullptr);
+    SDL_CreateThread(clientLoop, nullptr, nullptr);
 }
 
 void NetworkClient::sendMessage(std::string message) const

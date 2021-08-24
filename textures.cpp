@@ -1,4 +1,5 @@
 #include "textures.hpp"
+#include "sdl_gl_wrapper.hpp"
 
 using namespace std;
 
@@ -13,21 +14,16 @@ SDL_Surface *load_image( std::string filename )
     //Load the image
     loadedImage = IMG_Load( filename.c_str() );
 
+    SDL_Surface *window_surface = SDL_GetWindowSurface(getScreen());
+
     //If the image loaded
-    if( loadedImage != NULL )
+    if( loadedImage != nullptr )
     {
         //Create an optimized surface
-        optimizedImage = SDL_DisplayFormat( loadedImage );
+        optimizedImage = SDL_ConvertSurface( loadedImage, window_surface->format, 0 );
 
         //Free the old surface
         SDL_FreeSurface( loadedImage );
-
-        //If the surface was optimized
-        if( optimizedImage != NULL )
-        {
-            //Color key surface
-            SDL_SetColorKey( optimizedImage, SDL_SRCCOLORKEY, SDL_MapRGB( optimizedImage->format, 0, 0xFF, 0xFF ) );
-        }
     }
     //Return the optimized surface
     return optimizedImage;

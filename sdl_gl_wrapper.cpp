@@ -1,6 +1,8 @@
 #include "sdl_gl_wrapper.hpp"
 #include <exception>
 
+SDL_Window* screen;
+
 void init_GL()
 {
     glClearColor(0, 0, 0, 0);
@@ -11,9 +13,8 @@ void init_GL()
     if (glGetError() != GL_NO_ERROR) throw std::exception();
 }
 
-SDL_Surface* init(int SCREEN_WIDTH, int SCREEN_HEIGHT)
+void init(int SCREEN_WIDTH, int SCREEN_HEIGHT)
 {
-    SDL_Surface *screen;
     if (SDL_Init(SDL_INIT_EVERYTHING) < 0) throw std::exception();
 
     SDL_GL_SetAttribute( SDL_GL_RED_SIZE, 5);
@@ -22,12 +23,10 @@ SDL_Surface* init(int SCREEN_WIDTH, int SCREEN_HEIGHT)
     SDL_GL_SetAttribute( SDL_GL_DEPTH_SIZE, 16);
     SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1);
 
-    screen = SDL_SetVideoMode( SCREEN_WIDTH, SCREEN_HEIGHT, 32, SDL_OPENGL);
-    if (screen == NULL) throw std::exception();
+    screen = SDL_CreateWindow("Peasants", 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_OPENGL);
+    if (screen == nullptr) throw std::exception();
     init_GL();
     if (TTF_Init() == -1) throw std::exception();
-    SDL_WM_SetCaption("Peasants", NULL);
-    return screen;
 }
 
 
@@ -72,11 +71,15 @@ void drawTexturedRectangle(Dimensions dimensions, Position position)
     glEnd();
 }
 
-SDLKey intToSDLKey(int keyNumber)
+SDL_Window* getScreen()
+{
+    return screen;
+}
+
+SDL_Keycode intToSDLKey(int keyNumber)
 {
     switch (keyNumber)
     {
-        case 0: return SDLK_FIRST;
         case 8: return SDLK_BACKSPACE;
         case 9: return SDLK_TAB;
         case 12: return SDLK_CLEAR;
@@ -148,112 +151,6 @@ SDLKey intToSDLKey(int keyNumber)
         case 121: return SDLK_y;
         case 122: return SDLK_z;
         case 127: return SDLK_DELETE;
-        case 160: return SDLK_WORLD_0;
-        case 161: return SDLK_WORLD_1;
-        case 162: return SDLK_WORLD_2;
-        case 163: return SDLK_WORLD_3;
-        case 164: return SDLK_WORLD_4;
-        case 165: return SDLK_WORLD_5;
-        case 166: return SDLK_WORLD_6;
-        case 167: return SDLK_WORLD_7;
-        case 168: return SDLK_WORLD_8;
-        case 169: return SDLK_WORLD_9;
-        case 170: return SDLK_WORLD_10;
-        case 171: return SDLK_WORLD_11;
-        case 172: return SDLK_WORLD_12;
-        case 173: return SDLK_WORLD_13;
-        case 174: return SDLK_WORLD_14;
-        case 175: return SDLK_WORLD_15;
-        case 176: return SDLK_WORLD_16;
-        case 177: return SDLK_WORLD_17;
-        case 178: return SDLK_WORLD_18;
-        case 179: return SDLK_WORLD_19;
-        case 180: return SDLK_WORLD_20;
-        case 181: return SDLK_WORLD_21;
-        case 182: return SDLK_WORLD_22;
-        case 183: return SDLK_WORLD_23;
-        case 184: return SDLK_WORLD_24;
-        case 185: return SDLK_WORLD_25;
-        case 186: return SDLK_WORLD_26;
-        case 187: return SDLK_WORLD_27;
-        case 188: return SDLK_WORLD_28;
-        case 189: return SDLK_WORLD_29;
-        case 190: return SDLK_WORLD_30;
-        case 191: return SDLK_WORLD_31;
-        case 192: return SDLK_WORLD_32;
-        case 193: return SDLK_WORLD_33;
-        case 194: return SDLK_WORLD_34;
-        case 195: return SDLK_WORLD_35;
-        case 196: return SDLK_WORLD_36;
-        case 197: return SDLK_WORLD_37;
-        case 198: return SDLK_WORLD_38;
-        case 199: return SDLK_WORLD_39;
-        case 200: return SDLK_WORLD_40;
-        case 201: return SDLK_WORLD_41;
-        case 202: return SDLK_WORLD_42;
-        case 203: return SDLK_WORLD_43;
-        case 204: return SDLK_WORLD_44;
-        case 205: return SDLK_WORLD_45;
-        case 206: return SDLK_WORLD_46;
-        case 207: return SDLK_WORLD_47;
-        case 208: return SDLK_WORLD_48;
-        case 209: return SDLK_WORLD_49;
-        case 210: return SDLK_WORLD_50;
-        case 211: return SDLK_WORLD_51;
-        case 212: return SDLK_WORLD_52;
-        case 213: return SDLK_WORLD_53;
-        case 214: return SDLK_WORLD_54;
-        case 215: return SDLK_WORLD_55;
-        case 216: return SDLK_WORLD_56;
-        case 217: return SDLK_WORLD_57;
-        case 218: return SDLK_WORLD_58;
-        case 219: return SDLK_WORLD_59;
-        case 220: return SDLK_WORLD_60;
-        case 221: return SDLK_WORLD_61;
-        case 222: return SDLK_WORLD_62;
-        case 223: return SDLK_WORLD_63;
-        case 224: return SDLK_WORLD_64;
-        case 225: return SDLK_WORLD_65;
-        case 226: return SDLK_WORLD_66;
-        case 227: return SDLK_WORLD_67;
-        case 228: return SDLK_WORLD_68;
-        case 229: return SDLK_WORLD_69;
-        case 230: return SDLK_WORLD_70;
-        case 231: return SDLK_WORLD_71;
-        case 232: return SDLK_WORLD_72;
-        case 233: return SDLK_WORLD_73;
-        case 234: return SDLK_WORLD_74;
-        case 235: return SDLK_WORLD_75;
-        case 236: return SDLK_WORLD_76;
-        case 237: return SDLK_WORLD_77;
-        case 238: return SDLK_WORLD_78;
-        case 239: return SDLK_WORLD_79;
-        case 240: return SDLK_WORLD_80;
-        case 241: return SDLK_WORLD_81;
-        case 242: return SDLK_WORLD_82;
-        case 243: return SDLK_WORLD_83;
-        case 244: return SDLK_WORLD_84;
-        case 245: return SDLK_WORLD_85;
-        case 246: return SDLK_WORLD_86;
-        case 247: return SDLK_WORLD_87;
-        case 248: return SDLK_WORLD_88;
-        case 249: return SDLK_WORLD_89;
-        case 250: return SDLK_WORLD_90;
-        case 251: return SDLK_WORLD_91;
-        case 252: return SDLK_WORLD_92;
-        case 253: return SDLK_WORLD_93;
-        case 254: return SDLK_WORLD_94;
-        case 255: return SDLK_WORLD_95;
-        case 256: return SDLK_KP0;
-        case 257: return SDLK_KP1;
-        case 258: return SDLK_KP2;
-        case 259: return SDLK_KP3;
-        case 260: return SDLK_KP4;
-        case 261: return SDLK_KP5;
-        case 262: return SDLK_KP6;
-        case 263: return SDLK_KP7;
-        case 264: return SDLK_KP8;
-        case 265: return SDLK_KP9;
         case 266: return SDLK_KP_PERIOD;
         case 267: return SDLK_KP_DIVIDE;
         case 268: return SDLK_KP_MULTIPLY;
@@ -285,28 +182,20 @@ SDLKey intToSDLKey(int keyNumber)
         case 294: return SDLK_F13;
         case 295: return SDLK_F14;
         case 296: return SDLK_F15;
-        case 300: return SDLK_NUMLOCK;
+        case 300: return SDLK_NUMLOCKCLEAR;
         case 301: return SDLK_CAPSLOCK;
-        case 302: return SDLK_SCROLLOCK;
+        case 302: return SDLK_SCROLLLOCK;
         case 303: return SDLK_RSHIFT;
         case 304: return SDLK_LSHIFT;
         case 305: return SDLK_RCTRL;
         case 306: return SDLK_LCTRL;
         case 307: return SDLK_RALT;
         case 308: return SDLK_LALT;
-        case 309: return SDLK_RMETA;
-        case 310: return SDLK_LMETA;
-        case 311: return SDLK_LSUPER;
-        case 312: return SDLK_RSUPER;
         case 313: return SDLK_MODE;
-        case 314: return SDLK_COMPOSE;
         case 315: return SDLK_HELP;
-        case 316: return SDLK_PRINT;
         case 317: return SDLK_SYSREQ;
-        case 318: return SDLK_BREAK;
         case 319: return SDLK_MENU;
         case 320: return SDLK_POWER;
-        case 321: return SDLK_EURO;
         case 322: return SDLK_UNDO;
         default: return SDLK_F15;
     }

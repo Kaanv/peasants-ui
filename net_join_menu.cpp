@@ -22,9 +22,14 @@ NetJoinMenu::NetJoinMenu(NetworkClient& netClient_) : netClient(netClient_)
     buttons.push_back(Button(defaultButtonDimensions, {0.1, 0.4},
                              "Player", ButtonId_PlayerType1));
     buttons.push_back(Button(defaultButtonDimensions, {0.1, 0.25},
-                             "127.0.0.1", ButtonId_PlayerType2));
+                             "127.0.0.1", ButtonId_IP));
     buttons.push_back(Button(defaultButtonDimensions, {0.1, 0.1},
                              "22222", ButtonId_PlayerType2));
+}
+
+std::string convertKeyToString(SDL_KeyboardEvent key)
+{
+    return "a";
 }
 
 PollingPlaceId NetJoinMenu::startEventPoll()
@@ -32,16 +37,11 @@ PollingPlaceId NetJoinMenu::startEventPoll()
     while (SDL_PollEvent(&event))
     {
         if (event.type == SDL_QUIT) return PollingPlaceId_Exit;
-        else if (event.type == SDL_ACTIVEEVENT &&
-                 event.active.state & SDL_APPACTIVE &&
-                 event.active.gain != 0) updateScreen();
-        else if (event.type == SDL_VIDEOEXPOSE)
+        else if (event.type == SDL_WINDOWEVENT_ENTER or
+                 event.type == SDL_WINDOWEVENT_SHOWN or
+                 event.type == SDL_WINDOWEVENT_EXPOSED or
+                 event.type == SDL_WINDOW_INPUT_FOCUS)
         {
-            for (auto& button : buttons)
-            {
-                button.forceDraw();
-            }
-            backgroundNeedsDrawing = true;
             updateScreen();
         }
         else if (event.type == SDL_MOUSEMOTION)
@@ -54,6 +54,7 @@ PollingPlaceId NetJoinMenu::startEventPoll()
         }
         else if(event.type == SDL_MOUSEBUTTONUP)
         {
+
             for (auto& button : buttons)
             {
                 if (button.isClicked())
@@ -72,7 +73,27 @@ PollingPlaceId NetJoinMenu::startEventPoll()
                                 std::cout << "Network error: " << e.what() << std::endl;
                                 return PollingPlaceId_NetworkGameJoining;
                             }
+                        case ButtonId_IP:
+                            enteringIp = true;
+                            break;
                         case ButtonId_MainMenu: return PollingPlaceId_MainMenu;
+                    }
+                }
+            }
+        }
+        else if (event.type == SDL_KEYUP)
+        {
+            if (enteringIp)
+            {
+                for (auto& button : buttons)
+                {
+                    switch (button.getButtonId())
+                    {
+                        case ButtonId_IP:
+                            button.setCaption(button.getCaption() + convertKeyToString(event.key));
+                            button.forceDraw();
+                            updateScreen();
+                            break;
                     }
                 }
             }
@@ -94,7 +115,7 @@ void NetJoinMenu::updateScreen()
         {
             button.draw();
         }
-        SDL_GL_SwapBuffers();
+        SDL_GL_SwapWindow(getScreen());
         lastTicks = SDL_GetTicks();
         backgroundNeedsDrawing = false;
     }

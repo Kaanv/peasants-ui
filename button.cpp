@@ -50,7 +50,7 @@ void Button::immediatelyDraw()
 {
     forceDraw();
     draw();
-    SDL_GL_SwapBuffers();;
+    SDL_GL_SwapWindow(getScreen());
 }
 
 void Button::setCaption(std::string caption)

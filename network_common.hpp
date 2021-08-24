@@ -1,7 +1,7 @@
 #ifndef NETWORKCOMMON_HPP
 #define NETWORKCOMMON_HPP
 
-#include "SDL/SDL_net.h"
+#include "SDL2/SDL_net.h"
 #include <iostream>
 
 void intializeSdlNetwork();

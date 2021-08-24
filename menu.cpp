@@ -22,16 +22,11 @@ PollingPlaceId MainMenu::startEventPoll()
     while (SDL_PollEvent(&event))
     {
         if (event.type == SDL_QUIT) return PollingPlaceId_Exit;
-        else if (event.type == SDL_ACTIVEEVENT &&
-                 event.active.state & SDL_APPACTIVE &&
-                 event.active.gain != 0) updateScreen();
-        else if (event.type == SDL_VIDEOEXPOSE)
+        else if (event.type == SDL_WINDOWEVENT_ENTER or
+                 event.type == SDL_WINDOWEVENT_SHOWN or
+                 event.type == SDL_WINDOWEVENT_EXPOSED or
+                 event.type == SDL_WINDOW_INPUT_FOCUS)
         {
-            for (auto& button : buttons)
-            {
-                button.forceDraw();
-            }
-            backgroundNeedsDrawing = true;
             updateScreen();
         }
         else if (event.type == SDL_MOUSEMOTION)
@@ -75,7 +70,7 @@ void MainMenu::updateScreen()
         {
             button.draw();
         }
-        SDL_GL_SwapBuffers();
+        SDL_GL_SwapWindow(getScreen());
         lastTicks = SDL_GetTicks();
         backgroundNeedsDrawing = false;
     }
@@ -86,7 +81,7 @@ void MainMenu::drawBackground()
     Dimensions fullScreen{2.0, 2.0};
     Position rightLeftCorner{-1.0, 1.0};
 
-    glColor3f(0.1, 0.1, 0.5);
+    glColor3f(0.1f, 0.1f, 0.5);
     drawRectangle(fullScreen,
                   rightLeftCorner);
 }

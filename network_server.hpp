@@ -1,7 +1,7 @@
 #pragma once
 
 #include "network_common.hpp"
-#include "SDL/SDL_thread.h"
+#include "SDL2/SDL_thread.h"
 
 class NetworkServer
 {

@@ -70,7 +70,7 @@ void NetworkServer::startServer()
     host = SDLNet_ResolveIP(&ip);
     openServerSocket();
 
-    SDL_CreateThread(serverLoop, nullptr);
+    SDL_CreateThread(serverLoop, nullptr, nullptr);
 }
 
 void NetworkServer::resolveHost()

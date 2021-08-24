@@ -4,6 +4,7 @@
 #include "text.hpp"
 #include <iostream>
 #include <algorithm>
+#include "sdl_gl_wrapper.hpp"
 
 namespace
 {
@@ -318,6 +319,6 @@ void BaseUI::drawPopup(std::string text)
                       0.2,
                       0.1);
     forceDrawButtons();
-    SDL_GL_SwapBuffers();
+    SDL_GL_SwapWindow(getScreen());
     isPopupActive = true;
 }

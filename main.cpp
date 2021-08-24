@@ -12,13 +12,14 @@
 #include "net_create_menu.hpp"
 #include "network_server.hpp"
 #include <ctime>
-#include "SDL/SDL_thread.h"
+#include "SDL2/SDL_thread.h"
 
 int main()
 {
     std::srand(static_cast<unsigned int>(std::time(nullptr)));
     Resolution resolution{800, 600};
-    SDL_Surface *screen = init(resolution.x, resolution.y);
+    init(resolution.x, resolution.y);
+    SDL_GLContext context = SDL_GL_CreateContext(getScreen());
     NetworkClient netClient;
     NetworkServer netServer;
     PollingPlaceId currentPlace = PollingPlaceId_MainMenu;
@@ -74,7 +75,6 @@ int main()
         }
     }
 
-    delete screen;
     return 0;
 }
 

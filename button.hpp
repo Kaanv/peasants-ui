@@ -17,6 +17,7 @@ enum MenuButtonId
     ButtonId_PassTurn,
     ButtonId_ThrowCards,
     ButtonId_PopupOk,
+    ButtonId_IP,
     ButtonId_PlayerType1,
     ButtonId_PlayerType2,
     ButtonId_PlayerType3,

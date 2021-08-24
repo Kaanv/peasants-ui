@@ -1,6 +1,6 @@
 #pragma once
 
-#include "SDL/SDL_net.h"
+#include "SDL2/SDL_net.h"
 #include "network_common.hpp"
 #include <iostream>
 

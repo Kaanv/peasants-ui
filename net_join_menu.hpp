@@ -19,6 +19,7 @@ private:
     void drawTitle();
 
     NetworkClient& netClient;
+    bool enteringIp = false;
 };
 
 #endif // NET_JOIN_MENU
