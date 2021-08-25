@@ -10,7 +10,6 @@ void init_GL()
     glLoadIdentity();
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-    if (glGetError() != GL_NO_ERROR) throw std::exception();
 }
 
 void init(int SCREEN_WIDTH, int SCREEN_HEIGHT)
@@ -23,7 +22,7 @@ void init(int SCREEN_WIDTH, int SCREEN_HEIGHT)
     SDL_GL_SetAttribute( SDL_GL_DEPTH_SIZE, 16);
     SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1);
 
-    screen = SDL_CreateWindow("Peasants", 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_OPENGL);
+    screen = SDL_CreateWindow("Peasants", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_OPENGL);
     if (screen == nullptr) throw std::exception();
     init_GL();
     if (TTF_Init() == -1) throw std::exception();

@@ -277,7 +277,6 @@ void GameUI::updateScreen()
     if (isPopupActive)
     {
         forceDrawButtons();
-        SDL_GL_SwapWindow(getScreen());
     }
     else
     {
