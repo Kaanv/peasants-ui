@@ -7,6 +7,7 @@
 #include "sdl_gl_wrapper.hpp"
 #include "network_client.hpp"
 #include <vector>
+#include <string>
 
 class NetJoinMenu : public PollingPlace
 {
@@ -17,7 +18,7 @@ private:
     void updateScreen() override;
     void drawBackground() override;
     void drawTitle();
-
+    std::string getIPAsString();
     NetworkClient& netClient;
     bool enteringIp = false;
 };

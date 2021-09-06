@@ -32,6 +32,19 @@ std::string convertKeyToString(SDL_KeyboardEvent key)
     return numericOrDotToString(key.keysym.sym);
 }
 
+std::string NetJoinMenu::getIPAsString()
+{
+    for (auto& button : buttons)
+    {
+        switch (button.getButtonId())
+        {
+            case ButtonId_IP:
+                return button.getCaption();
+        }
+    }
+    return "";
+}
+
 PollingPlaceId NetJoinMenu::startEventPoll()
 {
     while (SDL_PollEvent(&event))
@@ -64,7 +77,7 @@ PollingPlaceId NetJoinMenu::startEventPoll()
                         case ButtonId_JoinNetworkGame:
                             try
                             {
-                                netClient.connectToHost("127.0.0.1", "22222");
+                                netClient.connectToHost(getIPAsString(), "22222");
                                 netClient.sendMessage("New Player Joining");
                                 return PollingPlaceId_WaitMenu;
                             }
