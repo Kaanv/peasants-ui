@@ -29,7 +29,7 @@ NetJoinMenu::NetJoinMenu(NetworkClient& netClient_) : netClient(netClient_)
 
 std::string convertKeyToString(SDL_KeyboardEvent key)
 {
-    return "a";
+    return numericOrDotToString(key.keysym.sym);
 }
 
 PollingPlaceId NetJoinMenu::startEventPoll()
@@ -90,7 +90,16 @@ PollingPlaceId NetJoinMenu::startEventPoll()
                     switch (button.getButtonId())
                     {
                         case ButtonId_IP:
-                            button.setCaption(button.getCaption() + convertKeyToString(event.key));
+                            if (event.key.keysym.sym == SDLK_BACKSPACE)
+                            {
+                                std::string captionWithoutLastElement = button.getCaption() ;
+                                captionWithoutLastElement = captionWithoutLastElement.substr(0, captionWithoutLastElement.size() - 1);
+                                button.setCaption(captionWithoutLastElement);
+                            }
+                            else
+                            {
+                                button.setCaption(button.getCaption() + convertKeyToString(event.key));
+                            }
                             button.forceDraw();
                             updateScreen();
                             break;

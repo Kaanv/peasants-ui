@@ -6,6 +6,7 @@
 #include <SDL2/SDL_ttf.h>
 #include "dimensions.hpp"
 #include "position.hpp"
+#include <string>
 
 void init_GL();
 void init(int SCREEN_WIDTH, int SCREEN_HEIGHT);
@@ -15,5 +16,6 @@ void turnOffTextureMode();
 void drawTexturedRectangle(Dimensions dimensions, Position position);
 SDL_Keycode intToSDLKey(int keyNumber);
 SDL_Window* getScreen();
+std::string numericOrDotToString(SDL_Keycode key);
 
 #endif // SDL_GL_WRAPPER_HPP
